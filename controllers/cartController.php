@@ -38,5 +38,4 @@ class CartController
   {
     $this->cartModel->clearUserCart($user_id);
   }
-
 }

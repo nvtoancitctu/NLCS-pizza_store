@@ -71,4 +71,23 @@ class Cart
         $stmt = $this->conn->prepare($query);
         return $stmt->execute([$user_id]);
     }
+
+    // Tổng số lượng sản phẩm trong giỏ hàng
+    public function getCartItemCount($user_id)
+    {
+        // Đảm bảo user_id là số nguyên
+        $user_id = (int)$user_id;
+
+        // Chuẩn bị câu lệnh với PDO
+        $stmt = $this->conn->prepare("SELECT SUM(quantity) as total FROM cart WHERE user_id = :user_id");
+        $stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
+
+        // Thực thi câu lệnh
+        $stmt->execute();
+
+        // Lấy kết quả
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        return $result['total'] ?? 0; // Trả về tổng hoặc 0 nếu không có sản phẩm
+    }
 }

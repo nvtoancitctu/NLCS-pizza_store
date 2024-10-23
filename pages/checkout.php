@@ -1,6 +1,6 @@
 <?php
 if (!isset($_SESSION['user_id'])) {
-  header("Location: /index.php?page=login"); // Điều hướng về trang đăng nhập
+  header("Location: /index.php?page=login"); // Điều hướng đến trang đăng nhập
   exit();
 }
 
@@ -8,76 +8,108 @@ require_once '../config.php';
 require_once '../controllers/CartController.php';
 require_once '../controllers/OrderController.php';
 
-// Initialize controllers
+// Khởi tạo các controller
 $cartController = new CartController($conn);
 $orderController = new OrderController($conn);
 
-// Get user_id from session
+// Lấy user_id từ phiên
 $user_id = $_SESSION['user_id'];
 
-// Get cart items for the user
+// Lấy các sản phẩm trong giỏ hàng của người dùng
 $cartItems = $cartController->viewCart($user_id);
 if (empty($cartItems)) {
-  // Redirect to cart page with an error message
+
   header("Location: /index.php?page=cart&error=empty");
   exit();
 }
-// Calculate total amount
-$totalAmount = 0;
-foreach ($cartItems as $item) {
-  $totalAmount += $item['price'] * $item['quantity'];
-}
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['checkout'])) {
-  $address = $_POST['address'];
-  $payment_method = $_POST['payment_method'];
 
-  // Call the OrderController to create a new order
+// Tính tổng số tiền
+$totalAmount = array_reduce($cartItems, function ($carry, $item) {
+  return $carry + ($item['price'] * $item['quantity']);
+}, 0);
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['checkout'])) {
+  $address = trim(strip_tags($_POST['address'])); // Làm sạch địa chỉ
+  $payment_method = $_POST['payment_method']; // Cân nhắc việc xác thực đầu vào này
+
+  // Gọi OrderController để tạo một đơn hàng mới
   $order_id = $orderController->createOrder($user_id, $totalAmount, $payment_method, $address);
 
+  // Kiểm tra xem product_id có được cung cấp không
   foreach ($cartItems as $item) {
-    // Check if product_id is correctly populated
+
     if (!isset($item['product_id']) || empty($item['product_id'])) {
       echo "Product ID is missing for an item!";
-      var_dump($item); // Debug output
+      var_dump($item); // Đầu ra gỡ lỗi
       exit();
     }
-
-    // Add the order item as before
-    $orderController->addOrderItem($order_id, $item['product_id'], $item['quantity'], $item['price']);
+    // 
   }
 
-
-  // Save order items
+  // Lưu các mặt hàng đơn hàng
   foreach ($cartItems as $item) {
     $orderController->addOrderItem($order_id, $item['product_id'], $item['quantity'], $item['price']);
   }
 
-  // Clear the cart after successful order placement
+  // Xóa giỏ hàng sau khi đặt hàng thành công
   $cartController->clearCart($user_id);
 
-  // Redirect to the order success page
+  // Điều hướng đến trang thành công đơn hàng
   header("Location: /index.php?page=order-success&order_id=$order_id");
   exit();
 }
 ?>
-<h1 class="text-center mt-4">Checkout</h1>
+<!--  -->
+<h1 class="text-center text-3xl font-bold mt-8">Checkout</h1>
+<p class="text-center mb-4 text-blue-600">Vui lòng điền thông tin dưới đây để hoàn tất đơn hàng của bạn !!!</p>
 
-<div class="container">
-  <form method="POST" action="/index.php?page=checkout">
-    <h2>Billing Details</h2>
-    <div class="form-group">
-      <label for="address">Address</label>
-      <textarea name="address" id="address" class="form-control" required></textarea>
+<div class="container mx-auto px-4">
+  <form method="POST" action="/index.php?page=checkout" class="bg-white shadow-md border rounded-lg p-6 mx-auto max-w-2xl mb-4">
+    <h2 class="text-xl font-semibold mb-4">Thông tin giao hàng</h2>
+    <div class="mb-4">
+      <label for="address" class="block text-black-500 text-sm font-bold mb-2">Địa chỉ</label>
+      <textarea name="address" id="address" class="form-control border border-gray-300 rounded-lg w-full py-2 px-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500" required></textarea>
     </div>
-    <h2>Payment Method</h2>
-    <div class="form-group">
-      <select name="payment_method" class="form-control" required>
+
+    <h2 class="text-xl font-semibold mb-4">Phương thức thanh toán</h2>
+    <div class="mb-4">
+      <select name="payment_method" class="border border-gray-300 rounded-lg w-full max-w-sm py-2 px-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500" required>
         <option value="credit_card">Credit Card</option>
         <option value="paypal">PayPal</option>
         <option value="cash_on_delivery">Cash on Delivery</option>
       </select>
     </div>
-    <h3>Total Amount: $<?= number_format($totalAmount, 2) ?></h3>
-    <button type="submit" name="checkout" class="btn btn-success">Place Order</button>
+
+    <!-- <h2 class="text-2xl font-semibold mb-4">Sản phẩm trong giỏ hàng</h2>
+    <div class="overflow-x-auto">
+      <table class="min-w-full bg-white border border-gray-300">
+        <thead>
+          <tr>
+            <th class="py-2 px-4 border-b text-left text-gray-600">Sản phẩm</th>
+            <th class="py-2 px-4 border-b text-left text-gray-600">Số lượng</th>
+            <th class="py-2 px-4 border-b text-left text-gray-600">Giá</th>
+            <th class="py-2 px-4 border-b text-left text-gray-600">Tổng</th>
+          </tr>
+        </thead>
+        <tbody>
+          <?php foreach ($cartItems as $item): ?>
+            <tr>
+              <td class="py-2 px-4 border-b"><?= htmlspecialchars($item['product_id']) ?></td>
+              <td class="py-2 px-4 border-b"><?= htmlspecialchars($item['quantity']) ?></td>
+              <td class="py-2 px-4 border-b">$<?= number_format($item['price'], 2) ?></td>
+              <td class="py-2 px-4 border-b">$<?= number_format($item['price'] * $item['quantity'], 2) ?></td>
+            </tr>
+          <?php endforeach; ?>
+        </tbody>
+      </table>
+    </div> -->
+
+    <h3 class="text-xl font-bold mt-4">Tổng số tiền: <span class="text-red-600">$<?= number_format($totalAmount, 2) ?></span></h3>
+    <div class="flex justify-between mt-6">
+      <button type="button" class="bg-red-600 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded" onclick="window.location.href='/index.php?page=cart'">Hủy</button>
+      <button type="submit" name="checkout" class="bg-green-600 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded">Đặt hàng</button>
+    </div>
   </form>
 </div>
+
+<!--  -->

@@ -1,6 +1,7 @@
 <?php
 require_once '../controllers/CartController.php';
 require_once '../config.php'; // Kết nối CSDL
+
 if (!isset($_SESSION['user_id'])) {
     header("Location: /index.php?page=login"); // Điều hướng về trang đăng nhập
     exit();
@@ -41,49 +42,79 @@ if (isset($_GET['action'])) {
 
 <h1 class="text-center mt-4 font-bold text-2xl">Your Cart</h1></br>
 
-<div class="container">
+<div class="container mx-auto">
     <?php if (!empty($cartItems)): ?>
-        <table class="table table-bordered">
+        <table class="table-auto w-4/5 mx-auto border border-gray-500">
             <thead>
-                <tr>
-                    <th>Product</th>
-                    <th>Price</th>
-                    <th>Quantity</th>
-                    <th>Total</th>
-                    <th>Actions</th>
+                <tr class="bg-gray-200">
+                    <th class="px-4 py-2">Product</th>
+                    <th class="px-4 py-2">Price</th>
+                    <th class="px-4 py-2">Quantity</th>
+                    <th class="px-4 py-2">Total</th>
+                    <th class="px-4 py-2">Actions</th>
                 </tr>
             </thead>
             <tbody>
                 <?php foreach ($cartItems as $item): ?>
-                    <tr>
-                        <td><img src="/images/<?= htmlspecialchars($item['image']) ?>"
+                    <tr class="border-t border-gray-300 hover:bg-gray-100 transition duration-200">
+                        <td class="px-4 py-2 flex items-center">
+                            <img src="/images/<?= htmlspecialchars($item['image']) ?>"
                                 alt="<?= htmlspecialchars($item['name']) ?>"
-                                width="60"><?= htmlspecialchars($item['name']) ?></td>
+                                class="w-12 h-12 mr-2 rounded-md shadow-md">
+                            <span class="font-semibold text-gray-800"><?= htmlspecialchars($item['name']) ?></span>
+                        </td>
 
-                        <td>$<?= htmlspecialchars($item['discount']) ?></td>
-                        <td>
-                            <form method="POST" action="/index.php?page=cart">
+                        <td class="px-4 py-2">
+                            <?php if ($item['discount'] > 0): ?>
+                                <div>
+                                    <p class="text-sm font-semibold text-gray-500 line-through">Original Price: $<?= htmlspecialchars($item['price']); ?></p>
+                                    <p class="text-lg font-semibold text-red-600 mt-1">Discounted Price: $<?= htmlspecialchars($item['discount']); ?></p>
+                                </div>
+                            <?php else: ?>
+                                <h3 class="text-lg font-semibold text-gray-800">$<?= htmlspecialchars($item['price']); ?></h3>
+                            <?php endif; ?>
+                        </td>
+
+                        <td class="px-4 py-2">
+                            <form method="POST" action="/index.php?page=cart" class="flex items-center">
                                 <input type="hidden" name="cart_id" value="<?= $item['id'] ?>">
-                                <input type="number" name="quantity" value="<?= $item['quantity'] ?>" min="1">
-                                <button type="submit" name="update" class="btn btn-primary">Update</button>
+                                <input type="number" name="quantity" value="<?= $item['quantity'] ?>" min="1"
+                                    class="border border-gray-300 rounded px-2 py-1 w-16 text-center">
+                                <button type="submit" name="update"
+                                    class="ml-2 bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 transition duration-200">
+                                    Update
+                                </button>
                             </form>
                         </td>
-                        <td>$<?= htmlspecialchars($item['discount'] * $item['quantity']) ?></td>
-                        <td><a href="/index.php?page=cart&action=delete&cart_id=<?= $item['id'] ?>"
-                                class="btn btn-danger">Delete</a></td>
+
+                        <td class="px-4 py-2 font-semibold text-gray-800">
+                            <?php
+                            $totalPrice = $item['discount'] > 0 ? $item['discount'] * $item['quantity'] : $item['price'] * $item['quantity'];
+                            ?>
+                            <span class="<?= $item['discount'] > 0 ? 'text-red-600 font-bold' : 'text-gray-800 font-semibold' ?>">
+                                $<?= htmlspecialchars($totalPrice) ?>
+                            </span>
+                        </td>
+
+                        <td class="px-4 py-2">
+                            <a href="/index.php?page=cart&action=delete&cart_id=<?= $item['id'] ?>"
+                                class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 transition duration-200">
+                                Delete
+                            </a>
+                        </td>
                     </tr>
 
                 <?php endforeach; ?>
             </tbody>
-
+            <!--  -->
         </table>
         <div class="text-center mt-4">
-            <a href="/index.php?page=checkout" class="btn btn-success">Proceed to Checkout</a></br>
+            <a href="/index.php?page=checkout" class="bg-green-500 text-white px-6 py-2 rounded hover:bg-green-600">Proceed to Checkout</a></br>
         </div>
     <?php else: ?>
         <div class="alert alert-info text-center">
             <p>Your cart is empty. Why not check out our delicious pizzas?</p></br>
-            <a href="/index.php?page=products" class="btn btn-primary mt-3">Go to Products</a></br>
+            <a href="/index.php?page=products" class="bg-blue-500 text-white px-6 py-2 rounded hover:bg-blue-600 mt-3">Go to Products</a></br>
         </div>
     <?php endif; ?>
 </div>

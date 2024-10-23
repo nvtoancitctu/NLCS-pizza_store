@@ -1,5 +1,5 @@
-<footer class="footer bg-dark text-white text-center py-3">
-  <div class="container">
+<footer class="footer bg-gray-800 text-white text-center py-4 mt-auto">
+  <div class="container mx-auto flex-grow">
     <p class="mb-0">© 2024 Pizza Store by MinhToan</p>
   </div>
 </footer>

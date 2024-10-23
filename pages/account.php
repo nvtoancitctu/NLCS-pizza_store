@@ -6,7 +6,7 @@ if (!isset($_SESSION['user_name']) || !isset($_SESSION['user_email'])) {
 ?>
 
 <!-- Profile Section -->
-<div class="container mx-auto mt-10 p-8 bg-white shadow-lg rounded-lg max-w-lg">
+<div class="container mx-auto w-4/5 mt-10 mb-10 p-6 bg-white shadow-lg rounded-lg">
   <h2 class="text-3xl font-bold text-center mb-6">Profile</h2>
 
   <div class="space-y-4">
@@ -14,7 +14,7 @@ if (!isset($_SESSION['user_name']) || !isset($_SESSION['user_email'])) {
       <i class="fas fa-user text-xl"></i>
       <div>
         <p class="font-bold text-gray-700">Name</p>
-        <p><?= htmlspecialchars($_SESSION['user_name']) ?></p>
+        <p class="text-gray-600"><?= htmlspecialchars($_SESSION['user_name']) ?></p>
       </div>
     </div>
 
@@ -22,7 +22,7 @@ if (!isset($_SESSION['user_name']) || !isset($_SESSION['user_email'])) {
       <i class="fas fa-envelope text-xl"></i>
       <div>
         <p class="font-bold text-gray-700">Email</p>
-        <p><?= htmlspecialchars($_SESSION['user_email']) ?></p>
+        <p class="text-gray-600"><?= htmlspecialchars($_SESSION['user_email']) ?></p>
       </div>
     </div>
 
@@ -43,59 +43,58 @@ if (!isset($_SESSION['user_name']) || !isset($_SESSION['user_email'])) {
       // Kiểm tra nếu có kết quả trả về
       if (count($orders) > 0):
       ?>
-        <ul class="list-disc pl-5">
+        <ol class="list-decimal pl-5 space-y-4">
           <?php foreach ($orders as $order): ?>
-            <li>
-              <strong>Order ID:</strong> <?= $order['id'] ?><br>
-              <strong>Total:</strong> $<?= number_format($order['total'], 2) ?><br>
-              <strong>Payment Method:</strong> <?= ucfirst($order['payment_method']) ?><br>
-              <strong>Status:</strong> <?= ucfirst($order['status']) ?><br>
-              <strong>Address:</strong> <?= htmlspecialchars($order['address']) ?><br>
-              <strong>Order Datetime:</strong> <?= $order['created_at'] ?><br>
+            <li class="mb-4">
+              <div class="border border-gray-300 rounded-lg p-4">
+                <strong>Order ID:</strong> <?= $order['id'] ?><br>
+                <strong>Total:</strong> $<?= number_format($order['total'], 2) ?><br>
+                <strong>Payment Method:</strong> <?= ucfirst($order['payment_method']) ?><br>
+                <strong>Status:</strong> <?= ucfirst($order['status']) ?><br>
+                <strong>Address:</strong> <?= htmlspecialchars($order['address']) ?><br>
+                <strong>Order Datetime:</strong> <?= $order['created_at'] ?><br>
 
-              <!-- Truy vấn chi tiết đơn hàng từ bảng order_items -->
-              <?php
-              $query_order_items = "SELECT * FROM order_items a JOIN products b ON a.product_id = b.id WHERE order_id = :order_id";
-              $stmt_items = $conn->prepare($query_order_items);
-              $stmt_items->bindParam(':order_id', $order['id'], PDO::PARAM_INT);
-              $stmt_items->execute();
-              $order_items = $stmt_items->fetchAll(PDO::FETCH_ASSOC);
-              ?>
-              <table class="table-auto w-full text-left mt-2">
-                <thead>
-                  <tr>
-                    <th class="px-2 py-1">Product Name</th>
-                    <th class="px-2 py-1">Quantity</th>
-                    <th class="px-2 py-1">Price</th>
-                    <th class="px-2 py-1">Subtotal</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <?php foreach ($order_items as $item): ?>
+                <!-- Truy vấn chi tiết đơn hàng từ bảng order_items -->
+                <?php
+                $query_order_items = "SELECT * FROM order_items a JOIN products b ON a.product_id = b.id WHERE order_id = :order_id";
+                $stmt_items = $conn->prepare($query_order_items);
+                $stmt_items->bindParam(':order_id', $order['id'], PDO::PARAM_INT);
+                $stmt_items->execute();
+                $order_items = $stmt_items->fetchAll(PDO::FETCH_ASSOC);
+                ?>
+                <table class="table-auto w-full text-left mt-2 border border-gray-300 rounded-lg overflow-hidden shadow-md">
+                  <thead class="bg-gray-100">
                     <tr>
-                      <td class="border px-2 py-1"><?= htmlspecialchars($item['name']) ?></td>
-                      <td class="border px-2 py-1"><?= $item['quantity'] ?></td>
-                      <td class="border px-2 py-1">$<?= number_format($item['price'], 2) ?></td>
-                      <td class="border px-2 py-1">$<?= number_format($item['price'] * $item['quantity'], 2) ?></td>
+                      <th class="border px-4 py-2 border-b text-left">Product Name</th>
+                      <th class="border px-4 py-2 border-b text-left">Quantity</th>
+                      <th class="border px-4 py-2 border-b text-left">Price</th>
+                      <th class="border px-4 py-2 border-b text-left">Subtotal</th>
                     </tr>
-                  <?php endforeach; ?>
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    <?php foreach ($order_items as $item): ?>
+                      <tr class="hover:bg-gray-50">
+                        <td class="border px-4 py-2"><?= htmlspecialchars($item['name']) ?></td>
+                        <td class="border px-4 py-2"><?= $item['quantity'] ?></td>
+                        <td class="border px-4 py-2">$<?= number_format($item['price'], 2) ?></td>
+                        <td class="border px-4 py-2">$<?= number_format($item['price'] * $item['quantity'], 2) ?></td>
+                      </tr>
+                    <?php endforeach; ?>
+                  </tbody>
+                </table>
+              </div>
             </li>
-            <hr class="my-4">
+            <!--  -->
           <?php endforeach; ?>
-        </ul>
-      <?php else: ?>
-        <p>No orders found.</p>
-      <?php endif; ?>
+          </ul>
+        <?php else: ?>
+          <p>No orders found.</p>
+        <?php endif; ?>
     </div>
 
     <!-- Logout Button -->
-    <form method="POST" id="logout-form" class="flex justify-center">
-      <button type="submit" name="logout"
-        class="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 transition duration-200">
-        Logout
-      </button>
+    <form method="POST" id="logout-form" class="flex justify-center mt-6">
+      <button type="submit" name="logout" class="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 transition duration-200">Logout</button>
     </form>
   </div>
 </div>

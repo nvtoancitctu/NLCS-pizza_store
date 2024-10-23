@@ -19,9 +19,9 @@ if (!$product) {
 <div class="container my-5">
     <div class="row">
         <!-- Hình ảnh sản phẩm -->
-        <div class="col-md-6">
+        <div class="col-md-6 flex justify-center items-center">
             <img src="/images/<?php echo htmlspecialchars($product['image']); ?>"
-                class="img-fluid rounded-lg shadow-lg card-img-top mx-auto" style="width: 65%; height: auto;"
+                class="img-fluid rounded-lg shadow-lg card-img-top mx-auto w-3/5 h-auto"
                 alt="<?php echo htmlspecialchars($product['name']); ?>">
         </div>
 
@@ -29,7 +29,15 @@ if (!$product) {
         <div class="col-md-6">
             <h1 class="text-3xl font-bold text-gray-800 mb-3"><?php echo htmlspecialchars($product['name']); ?></h1>
             <p class="text-lg text-gray-600 mb-3"><?php echo htmlspecialchars($product['description']); ?></p>
-            <h3 class="text-2xl font-semibold text-danger mb-4">$<?php echo htmlspecialchars($product['discount']); ?></h3>
+
+            <!-- Hiển thị giá: Nếu có giảm giá thì hiện giá giảm -->
+            <?php if ($product['discount'] > 0): ?>
+                <strong class="text-2xl font-semibold text-blue-600 mb-4">Discounted Price:</strong>
+                <span class="text-red-600 text-3xl font-bold">$<?php echo htmlspecialchars($product['discount']); ?></span>
+                <p class="text-gray-600 line-through mb-4">Original Price: $<?php echo htmlspecialchars($product['price']); ?></p>
+            <?php else: ?>
+                <h3 class="text-2xl font-semibold text-gray-800 mb-4">Price: $<?php echo htmlspecialchars($product['price']); ?></h3>
+            <?php endif; ?>
 
             <!-- Form thêm vào giỏ hàng -->
             <form method="POST" class="add-to-cart-form" style="display:inline;">
@@ -58,8 +66,16 @@ if (!$product) {
                             alt="<?php echo htmlspecialchars($relatedProduct['name']); ?>">
                         <div class="card-body">
                             <h5 class="card-title text-xl font-bold text-gray-800"><?php echo htmlspecialchars($relatedProduct['name']); ?></h5>
-                            <p class="card-text text-danger font-semibold">$<?php echo htmlspecialchars($relatedProduct['price']); ?></p>
-                            <a href="/index.php?page=product-detail&id=<?php echo $relatedProduct['id']; ?>" class="btn btn-primary mt-2">View Details</a>
+
+                            <!-- Hiển thị giá: Nếu có giảm giá thì hiện giá giảm -->
+                            <?php if ($relatedProduct['discount'] > 0): ?>
+                                <p class="card-text text-red-600 font-semibold">$<?php echo htmlspecialchars($relatedProduct['discount']); ?></p>
+                                <p class="text-gray-500 line-through">Original Price: $<?php echo htmlspecialchars($relatedProduct['price']); ?></p>
+                            <?php else: ?>
+                                <p class="card-text text-red-600 font-semibold">$<?php echo htmlspecialchars($relatedProduct['price']); ?></p>
+                            <?php endif; ?>
+                            <button type="button" class="mt-2 bg-blue-500 text-white px-5 py-2 rounded-lg transition duration-300 hover:bg-green-600 shadow-lg"
+                                onclick="window.location.href='/index.php?page=product-detail&id=<?php echo $relatedProduct['id']; ?>'">View Details</button>
                         </div>
                     </div>
                 </div>

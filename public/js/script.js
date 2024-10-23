@@ -102,3 +102,32 @@ document.addEventListener("DOMContentLoaded", function () {
         showLogoutModal();  // Show modal if logout was successful
     }
 });
+
+
+function addToCart(productId) {
+    // Tạo form ẩn để gửi dữ liệu
+    var form = document.createElement('form');
+    form.method = 'POST';
+    form.action = ''; // Đặt URL đến trang hiện tại
+
+    var inputProductId = document.createElement('input');
+    inputProductId.type = 'hidden';
+    inputProductId.name = 'product_id';
+    inputProductId.value = productId;
+    form.appendChild(inputProductId);
+
+    var inputQuantity = document.createElement('input');
+    inputQuantity.type = 'hidden';
+    inputQuantity.name = 'quantity';
+    inputQuantity.value = '1'; // Hoặc giá trị số lượng bạn muốn
+    form.appendChild(inputQuantity);
+
+    // Gửi form
+    document.body.appendChild(form);
+    form.submit();
+
+    // Làm mới trang sau khi gửi form
+    setTimeout(function () {
+        location.reload(); // Làm mới trang
+    }, 1000); // Thời gian delay 1000ms (1 giây)
+}

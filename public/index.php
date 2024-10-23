@@ -41,6 +41,9 @@ switch ($page) {
     case 'login':
         include '../pages/login.php';
         break;
+    case 'admin':
+        include '../pages/admin.php';
+        break;
     case 'account':
         include '../pages/account.php';
         break;
@@ -59,4 +62,4 @@ switch ($page) {
 }
 
 require_once '../includes/footer.php';
-ob_end_flush();  
+ob_end_flush();

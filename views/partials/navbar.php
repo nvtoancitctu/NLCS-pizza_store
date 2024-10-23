@@ -1,3 +1,30 @@
+<?php
+if (session_status() === PHP_SESSION_NONE) {
+  session_start(); // Khởi động session nếu chưa có
+}
+require_once '../models/Cart.php';
+require_once '../config.php'; // Kết nối CSDL
+
+// Kiểm tra xem khóa 'user_id' có tồn tại trong mảng $_SESSION không
+$user_id = $_SESSION['user_id'] ?? null; // Sử dụng null nếu không có user_id
+
+// Hàm lấy tổng số lượng sản phẩm trong giỏ hàng
+function getCartItemCount($conn, $user_id)
+{
+  if ($user_id === null) {
+    return 0; // Nếu không có user_id, trả về 0
+  }
+
+  $stmt = $conn->prepare("SELECT SUM(quantity) as total FROM cart WHERE user_id = :user_id");
+  $stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
+  $stmt->execute();
+  $result = $stmt->fetch(PDO::FETCH_ASSOC);
+  return $result['total'] ?? 0; // Nếu không có sản phẩm nào thì trả về 0
+}
+
+$cartItemCount = getCartItemCount($conn, $user_id);
+?>
+
 <nav class="bg-red-600 text-white shadow-lg navbar">
   <div class="container mx-auto px-4 py-3 flex justify-between items-center">
 
@@ -22,12 +49,14 @@
       <a href="/index.php?page=products" class="hover:text-yellow-300 transition duration-300">Products</a>
       <a href="/index.php?page=cart" class="relative hover:text-yellow-300 transition duration-300">
         <i class="fas fa-shopping-cart"></i> Cart
-        <span class="bg-yellow-300 text-red-600 font-bold rounded-full text-xs px-2 py-1 absolute top-0 right-0 transform translate-x-1/2 -translate-y-1/2">0</span>
-
+        <span class="bg-yellow-300 text-blue-600 font-bold rounded-full text-xs px-2 py-1 absolute -top-1 -right-2 transform translate-x-1/2 -translate-y-1/2">
+          <?= $cartItemCount ?> <!-- Số lượng sản phẩm -->
+        </span>
       </a>
       <a href="/index.php?page=contact" class="hover:text-yellow-300 transition duration-300">Contact</a>
 
       <?php if (isset($_SESSION['user_name'])): ?>
+
         <!-- User is logged in -->
         <div class="relative">
           <button class="flex items-center space-x-2 hover:text-yellow-300 transition duration-300 focus:outline-none"
@@ -37,6 +66,7 @@
           </button>
           <div id="user-dropdown" class="hidden absolute right-0 mt-2 w-48 bg-white text-black rounded-lg shadow-lg">
             <a href="/index.php?page=account" class="block px-4 py-2 hover:bg-gray-200">Profile</a>
+
             <!-- Logout form -->
             <form method="POST" id="logout-form">
               <button type="submit" name="logout" class="block w-full text-left px-4 py-2 hover:bg-gray-200">
@@ -46,6 +76,7 @@
           </div>
         </div>
       <?php else: ?>
+
         <!-- User is not logged in -->
         <a href="/index.php?page=login" class="hover:text-yellow-300 transition duration-300">Login</a>
       <?php endif; ?>
@@ -61,21 +92,21 @@
       <li><a href="/index.php?page=contact" class="block px-3 py-2 text-white hover:bg-yellow-400">Contact</a></li>
       <?php if (isset($_SESSION['user_name'])): ?>
         <button class="block px-3 py-2 text-white hover:bg-yellow-400" id="mobile-user-dropdown-toggle">
-            <i class="fas fa-user"></i>
-            <span><?= htmlspecialchars($_SESSION['user_name']) ?></span>
-          </button>
-          <div id="mobile-user-dropdown" class="hidden">
-            <a href="/index.php?page=account" class="block px-3 py-2 text-white hover:bg-yellow-400">Profile</a>
-            <!-- Logout form for mobile -->
-            <form method="POST" id="mobile-logout-form">
-              <button type="submit" name="logout" class="block w-full text-left px-3 py-2 text-white hover:bg-yellow-400">
-                Logout
-              </button>
-            </form>
-          </div>
+          <i class="fas fa-user"></i>
+          <span><?= htmlspecialchars($_SESSION['user_name']) ?></span>
+        </button>
+        <div id="mobile-user-dropdown" class="hidden">
+          <a href="/index.php?page=account" class="block px-3 py-2 text-white hover:bg-yellow-400">Profile</a>
+
+          <!-- Logout form for mobile -->
+          <form method="POST" id="mobile-logout-form">
+            <button type="submit" name="logout" class="block w-full text-left px-3 py-2 text-white hover:bg-yellow-400">Logout</button>
+          </form>
+        </div>
       <?php else: ?>
-      <li><a href="/index.php?page=login" class="block px-3 py-2 text-white hover:bg-yellow-400">Login</a></li>
+        <li><a href="/index.php?page=login" class="block px-3 py-2 text-white hover:bg-yellow-400">Login</a></li>
       <?php endif; ?>
     </ul>
   </div>
 </nav>
+<!--  -->

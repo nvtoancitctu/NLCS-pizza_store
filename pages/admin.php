@@ -1,11 +1,10 @@
 <?php
-session_start();
+require_once '../config.php'; // Database connection
+require_once '../controllers/UserController.php';
+?>
 
-// Kiểm tra nếu người dùng đã đăng nhập và là admin
-if (isset($_SESSION['username']) && $_SESSION['username'] == 'admin') {
-    echo "Chào mừng bạn đến trang admin!";
-} else {
-    echo "Bạn không có quyền truy cập trang này!";
-    header("Location: login.php");  // Chuyển hướng về trang đăng nhập nếu không có quyền
-    exit();
-}
+<div class="jumbotron text-center bg-info text-white">
+    <h1 class="display-4">Welcome to MinhToan Pizza Store !</h1>
+    <p class="lead">Delicious pizzas made with the finest ingredients. Order now!</p></br>
+    <a class="btn btn-primary btn-lg" href="/index.php?page=products" role="button">Go shopping now</a>
+</div>
