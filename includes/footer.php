@@ -1,6 +1,12 @@
-<footer class="footer bg-gray-800 text-white text-center py-4 mt-auto">
-  <div class="container mx-auto flex-grow">
-    <p class="mb-0">© 2024 Pizza Store by MinhToan</p>
+<!-- Footer -->
+<footer class="bg-gray-800 text-white py-4 mt-auto">
+  <div class="container mx-auto text-center">
+    <p class="mb-2">2024 © Pizza Store by Nguyen Van Toan B2111824</p>
+    <div class="flex justify-center space-x-4">
+      <a href="/index.php?page=privacy" class="hover:text-yellow-400 transition duration-300">Privacy Policy</a>
+      <a href="/index.php?page=terms" class="hover:text-yellow-400 transition duration-300">Terms of Service</a>
+      <a href="/index.php?page=contact" class="hover:text-yellow-400 transition duration-300">Contact Us</a>
+    </div>
   </div>
 </footer>
 

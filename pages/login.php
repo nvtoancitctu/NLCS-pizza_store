@@ -38,6 +38,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 <!-- Giao diện người dùng -->
 <h1 class="text-center text-3xl font-bold mt-10">Login</h1></br>
+
 <!-- <p class="text-center text-xl mb-10 text-gray-600">Xin hãy vui lòng đăng nhập để sử dụng các chức năng mua hàng</p> -->
 <div class="container mx-auto max-w-md p-8 bg-white shadow-lg rounded-lg">
   <form method="POST" action="/index.php?page=login">

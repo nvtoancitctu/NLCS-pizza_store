@@ -65,17 +65,21 @@ if (!$product) {
                             src="/images/<?php echo htmlspecialchars($relatedProduct['image']); ?>"
                             alt="<?php echo htmlspecialchars($relatedProduct['name']); ?>">
                         <div class="card-body">
-                            <h5 class="card-title text-xl font-bold text-gray-800"><?php echo htmlspecialchars($relatedProduct['name']); ?></h5>
+                            <h5 class="card-title text-xl font-bold text-gray-800 text-center"><?php echo htmlspecialchars($relatedProduct['name']); ?></h5>
 
                             <!-- Hiển thị giá: Nếu có giảm giá thì hiện giá giảm -->
                             <?php if ($relatedProduct['discount'] > 0): ?>
-                                <p class="card-text text-red-600 font-semibold">$<?php echo htmlspecialchars($relatedProduct['discount']); ?></p>
-                                <p class="text-gray-500 line-through">Original Price: $<?php echo htmlspecialchars($relatedProduct['price']); ?></p>
+                                <p class="text-gray-500 line-through text-center">Original Price: $<?php echo htmlspecialchars($relatedProduct['price']); ?></p>
+                                <p class="card-text text-red-600 font-semibold text-center">Discounted Price: $<?php echo htmlspecialchars($relatedProduct['discount']); ?></p>
                             <?php else: ?>
-                                <p class="card-text text-red-600 font-semibold">$<?php echo htmlspecialchars($relatedProduct['price']); ?></p>
+                                <p class="card-text text-red-600 font-semibold text-center">Price: $<?php echo htmlspecialchars($relatedProduct['price']); ?></p>
                             <?php endif; ?>
-                            <button type="button" class="mt-2 bg-blue-500 text-white px-5 py-2 rounded-lg transition duration-300 hover:bg-green-600 shadow-lg"
-                                onclick="window.location.href='/index.php?page=product-detail&id=<?php echo $relatedProduct['id']; ?>'">View Details</button>
+                            <div class="text-center mt-auto mb-2">
+                                <button type="button" class="bg-blue-500 text-white mt-2 px-5 py-2 rounded-lg transition duration-300 hover:bg-green-500 shadow-lg"
+                                    onclick="window.location.href='/index.php?page=product-detail&id=<?php echo $relatedProduct['id']; ?>'">View Details</button>
+                            </div>
+                            <!-- <button type="button" class="text-center mt-2 bg-blue-500 text-white px-5 py-2 rounded-lg transition duration-300 hover:bg-green-600 shadow-lg"
+                                onclick="window.location.href='/index.php?page=product-detail&id=<?php echo $relatedProduct['id']; ?>'">View Details</button> -->
                         </div>
                     </div>
                 </div>

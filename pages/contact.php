@@ -1,4 +1,16 @@
 <?php
+require_once '../config.php'; // Kết nối cơ sở dữ liệu
+
+$conn = new mysqli($host, $username, $password, $dbname);
+
+// Kiểm tra kết nối
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+
+// Giả định bạn có xác thực người dùng và ID của người dùng đang được lưu trong session
+$user_id = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : NULL; // Cho phép người dùng nặc danh
+
 // Xử lý dữ liệu khi form được submit
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $name = htmlspecialchars(trim($_POST['name']));
@@ -7,49 +19,64 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // Kiểm tra nếu các trường không rỗng
     if (!empty($name) && !empty($email) && !empty($message)) {
-        // Địa chỉ email của người nhận (admin hoặc hỗ trợ)
-        $to = "admin@example.com";
-        $subject = "Customer Contact Form Submission";
-        $body = "Name: $name\nEmail: $email\n\nMessage:\n$message";
-        $headers = "From: $email";
+        // Chuẩn bị câu lệnh SQL chèn dữ liệu vào bảng contact
+        $stmt = $conn->prepare("INSERT INTO contact (user_id, subject, message) VALUES (?, ?, ?)");
 
-        // Gửi email
-        if (mail($to, $subject, $body, $headers)) {
-            $success = "Your message has been sent successfully!";
-        } else {
-            $error = "Sorry, something went wrong. Please try again.";
+        // Kiểm tra xem việc chuẩn bị truy vấn có thành công không
+        if ($stmt === false) {
+            die("Error preparing statement: " . $conn->error); // Báo lỗi chi tiết
         }
+
+        // Bind tham số (ràng buộc dữ liệu với truy vấn)
+        $stmt->bind_param("iss", $user_id, $name, $message);
+
+        // Thực thi câu truy vấn
+        if ($stmt->execute()) {
+            echo "<script>alert('Your message has been submitted and stored in our database!');</script>";
+        } else {
+            echo "<script>alert('Failed to save your message. Error: " . $stmt->error . "');</script>";
+        }
+
+        // Đóng statement
+        $stmt->close();
     } else {
         $error = "All fields are required!";
     }
 }
+
+// Đóng kết nối cơ sở dữ liệu
+$conn->close();
 ?>
 
 <div class="container mx-auto p-6">
-    <h1 class="text-4xl text-center font-bold text-gray-800 mb-6">Contact Us</h1>
+    <h1 class="text-5xl text-center font-extrabold text-gray-900 mb-8">Contact Us</h1>
 
     <!-- Hiển thị thông báo thành công hoặc lỗi -->
     <?php if (isset($success)): ?>
-        <p class="bg-green-500 text-white p-4 rounded-lg text-center"><?php echo $success; ?></p>
+        <p class="bg-green-100 border border-green-500 text-green-900 p-4 rounded-lg text-center shadow-md mb-6">
+            <?php echo $success; ?>
+        </p>
     <?php elseif (isset($error)): ?>
-        <p class="bg-red-500 text-white p-4 rounded-lg text-center"><?php echo $error; ?></p>
+        <p class="bg-red-100 border border-red-500 text-red-900 p-4 rounded-lg text-center shadow-md mb-6">
+            <?php echo $error; ?>
+        </p>
     <?php endif; ?>
 
-    <form action="contact.php" method="POST" class="bg-white p-8 rounded-lg shadow-lg max-w-md mx-auto">
-        <div class="mb-4">
+    <form action="/index.php?page=contact" method="POST" class="bg-white p-10 rounded-2xl shadow-lg max-w-lg mx-auto transition duration-300 ease-in-out hover:shadow-2xl">
+        <div class="mb-6">
             <label for="name" class="block text-gray-700 text-sm font-bold mb-2">Your Name:</label>
-            <input type="text" id="name" name="name" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" placeholder="Enter your name">
+            <input type="text" id="name" name="name" class="shadow-sm appearance-none border border-gray-300 rounded-lg w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-150" placeholder="Enter your name" required>
         </div>
-        <div class="mb-4">
+        <div class="mb-6">
             <label for="email" class="block text-gray-700 text-sm font-bold mb-2">Your Email:</label>
-            <input type="email" id="email" name="email" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" placeholder="Enter your email">
+            <input type="email" id="email" name="email" class="shadow-sm appearance-none border border-gray-300 rounded-lg w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-150" placeholder="Enter your email" required>
         </div>
-        <div class="mb-4">
+        <div class="mb-6">
             <label for="message" class="block text-gray-700 text-sm font-bold mb-2">Message:</label>
-            <textarea id="message" name="message" rows="5" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" placeholder="Enter your message"></textarea>
+            <textarea id="message" name="message" rows="5" class="shadow-sm appearance-none border border-gray-300 rounded-lg w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-150" placeholder="Enter your message" required></textarea>
         </div>
         <div class="text-center">
-            <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+            <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-full shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-150 ease-in-out transform hover:scale-105">
                 Send Message
             </button>
         </div>
