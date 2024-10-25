@@ -46,25 +46,27 @@ $products = $productController->listProducts($category_id);
                         <!-- Product Info -->
                         <div class="p-4">
                             <h5 class="card-title text-2xl font-bold text-gray-800 text-center mb-2"><?= htmlspecialchars($product['name']) ?></h5>
-                            <p class="card-text text-gray-600 text-center mb-4"><?= htmlspecialchars($product['description']) ?></p>
+                            <p class="card-text text-gray-600 text-center"><?= htmlspecialchars($product['description']) ?></p>
 
                             <!-- Hiển thị giá: Nếu có giảm giá thì hiện giá giảm -->
                             <div class="text-center">
                                 <?php if ($product['discount'] > 0): ?>
-                                    <p class="text-l font-semibold text-gray-500 line-through">Original Price: $<?= htmlspecialchars($product['price']); ?></p>
-                                    <p class="text-xl font-semibold text-red-600 mt-2">Discounted Price: $<?= htmlspecialchars($product['discount']); ?></p>
+                                    <p class="text-l font-semibold text-gray-500 line-through mt-2">Original Price: $<?= htmlspecialchars($product['price']); ?></p>
+                                    <p class="text-xl font-semibold text-red-600">Discounted Price: $<?= htmlspecialchars($product['discount']); ?></p>
                                 <?php else: ?>
-                                    <h3 class="text-xl font-semibold text-red-600 mt-2 mb-2">Price: $<?= htmlspecialchars($product['price']); ?></h3>
+                                    <h3 class="text-xl font-semibold text-red-600 mt-6 mb-8">Price: $<?= htmlspecialchars($product['price']); ?></h3>
                                 <?php endif; ?>
                             </div>
 
                             <!-- Buttons for View Details and Add to Cart -->
                             <div class="mt-4 flex justify-center space-x-4">
-                                <a href="/index.php?page=product-detail&id=<?= htmlspecialchars($product['id']); ?>" class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-700 transition duration-300">View Details</a>
+                                <a href="/index.php?page=product-detail&id=<?= htmlspecialchars($product['id']); ?>"
+                                    class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-700 transition duration-300">View Details</a>
                                 <form method="POST" action="/index.php?page=cart&action=add" class="add-to-cart-form" style="display:inline;">
                                     <input type="hidden" name="product_id" value="<?= htmlspecialchars($product['id']); ?>">
                                     <input type="hidden" name="quantity" value="1">
-                                    <button type="submit" class="px-4 py-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 transition duration-300">Add to Cart</button>
+                                    <button type="button"
+                                        class="add-to-cart-button px-4 py-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 transition duration-300">Add to Cart</button>
                                 </form>
                             </div>
 

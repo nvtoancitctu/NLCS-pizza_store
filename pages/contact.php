@@ -20,7 +20,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Kiểm tra nếu các trường không rỗng
     if (!empty($name) && !empty($email) && !empty($message)) {
         // Chuẩn bị câu lệnh SQL chèn dữ liệu vào bảng contact
-        $stmt = $conn->prepare("INSERT INTO contact (user_id, subject, message) VALUES (?, ?, ?)");
+        $stmt = $conn->prepare("INSERT INTO contact (user_id, name, email, message) VALUES (?, ?, ?, ?)");
 
         // Kiểm tra xem việc chuẩn bị truy vấn có thành công không
         if ($stmt === false) {
@@ -28,7 +28,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
 
         // Bind tham số (ràng buộc dữ liệu với truy vấn)
-        $stmt->bind_param("iss", $user_id, $name, $message);
+        $stmt->bind_param("isss", $user_id, $name, $email, $message);
 
         // Thực thi câu truy vấn
         if ($stmt->execute()) {
@@ -49,19 +49,7 @@ $conn->close();
 ?>
 
 <div class="container mx-auto p-6">
-    <h1 class="text-5xl text-center font-extrabold text-gray-900 mb-8">Contact Us</h1>
-
-    <!-- Hiển thị thông báo thành công hoặc lỗi -->
-    <?php if (isset($success)): ?>
-        <p class="bg-green-100 border border-green-500 text-green-900 p-4 rounded-lg text-center shadow-md mb-6">
-            <?php echo $success; ?>
-        </p>
-    <?php elseif (isset($error)): ?>
-        <p class="bg-red-100 border border-red-500 text-red-900 p-4 rounded-lg text-center shadow-md mb-6">
-            <?php echo $error; ?>
-        </p>
-    <?php endif; ?>
-
+    <h1 class="text-4xl text-center font-bold text-gray-900 mb-8">Contact Us</h1>
     <form action="/index.php?page=contact" method="POST" class="bg-white p-10 rounded-2xl shadow-lg max-w-lg mx-auto transition duration-300 ease-in-out hover:shadow-2xl">
         <div class="mb-6">
             <label for="name" class="block text-gray-700 text-sm font-bold mb-2">Your Name:</label>
@@ -73,7 +61,7 @@ $conn->close();
         </div>
         <div class="mb-6">
             <label for="message" class="block text-gray-700 text-sm font-bold mb-2">Message:</label>
-            <textarea id="message" name="message" rows="5" class="shadow-sm appearance-none border border-gray-300 rounded-lg w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-150" placeholder="Enter your message" required></textarea>
+            <textarea id="message" name="message" rows="3" class="shadow-sm appearance-none border border-gray-300 rounded-lg w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-150" placeholder="Enter your message" required></textarea>
         </div>
         <div class="text-center">
             <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-full shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-150 ease-in-out transform hover:scale-105">

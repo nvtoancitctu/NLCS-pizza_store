@@ -4,22 +4,22 @@ require_once '../config.php'; // Kết nối tới database
 
 class ProductController
 {
-    private $productModel;
+  private $productModel;
 
-    public function __construct($conn)
-    {
-        $this->productModel = new Product($conn);
-    }
+  public function __construct($conn)
+  {
+    $this->productModel = new Product($conn);
+  }
 
-    // Lấy tất cả sản phẩm hoặc sản phẩm theo danh mục
-    public function listProducts($category_id = null)
-    {
-        if ($category_id) {
-            return $this->productModel->getProductsByCategory($category_id);
-        } else {
-            return $this->productModel->getAllProducts();
-        }
+  // Lấy tất cả sản phẩm hoặc sản phẩm theo danh mục
+  public function listProducts($category_id = null)
+  {
+    if ($category_id) {
+      return $this->productModel->getProductsByCategory($category_id);
+    } else {
+      return $this->productModel->getAllProducts();
     }
+  }
 
   // Lấy chi tiết sản phẩm
   public function getProductDetails($id)

@@ -19,12 +19,36 @@ class User
     // Đăng ký người dùng mới
     public function register($name, $email, $password)
     {
-        // Mã hóa mật khẩu
-        $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+        // Kiểm tra xem email đã tồn tại hay chưa
+        $stmt = $this->conn->prepare("SELECT * FROM users WHERE email = :email");
+        $stmt->execute(['email' => $email]);
 
-        $query = "INSERT INTO " . $this->table . " (name, email, password) VALUES (?, ?, ?)";
-        $stmt = $this->conn->prepare($query);
-        return $stmt->execute([$name, $email, $hashed_password]);
+        if ($stmt->rowCount() > 0) {
+            // Email đã tồn tại, trả về thông báo lỗi
+            return "Email already exists. Please choose a different one.";
+        }
+
+        // Kiểm tra tính hợp lệ của dữ liệu
+        if (empty($name) || empty($email) || empty($password)) {
+            return "All fields are required.";
+        }
+
+        // Kiểm tra độ dài tối thiểu của mật khẩu
+        if (strlen($password) < 6) {
+            return "Password must be at least 6 characters long.";
+        }
+
+        // Nếu email chưa tồn tại, tiếp tục đăng ký
+        $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+
+        try {
+            $stmt = $this->conn->prepare("INSERT INTO users (name, email, password) VALUES (:name, :email, :password)");
+            $stmt->execute(['name' => $name, 'email' => $email, 'password' => $hashedPassword]);
+            return "Registration successful!";
+        } catch (PDOException $e) {
+            // Xử lý lỗi nếu có
+            return "Error occurred during registration: " . $e->getMessage();
+        }
     }
 
     // Kiểm tra thông tin đăng nhập

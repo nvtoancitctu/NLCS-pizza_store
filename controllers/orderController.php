@@ -21,9 +21,14 @@ class OrderController
   {
     return $this->orderModel->addOrderItem($order_id, $product_id, $quantity, $price);
   }
+
   public function getOrderDetails($order_id, $user_id)
   {
     return $this->orderModel->getOrderDetails($order_id, $user_id);
   }
 
+  public function getOrdersByUserId($user_id)
+  {
+    return $this->orderModel->getOrdersByUserId($user_id);
+  }
 }

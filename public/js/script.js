@@ -53,15 +53,20 @@ document.addEventListener("DOMContentLoaded", function () {
                         throw new Error('Response is not JSON');
                     }
                 })
+
                 .then(data => {
                     if (data.loggedIn === false) {
                         showLoginModal();
                     } else if (data.success) {
                         alert("Product added to cart successfully!");
+                        setTimeout(function () {
+                            location.reload();
+                        }, 100);   // reload page after 0.1s
                     } else {
                         alert("An error occurred while adding the product to the cart.");
                     }
                 })
+
                 .catch(error => {
                     console.error('Error:', error);
                     alert("An error occurred. Please try again.");
@@ -69,26 +74,40 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 
-    function showLoginModal() {
-        const modalHtml = `
-            <div class="modal" id="loginModal" style="display: block; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5);">
-                <div style="background: #fff; padding: 20px; max-width: 500px; margin: 100px auto; border-radius: 8px;">
-                    <h3>Please log in to add items to your cart.</h3>
-                    <p>To add products to your cart, you need to log in. You can also continue browsing the product details.</p>
-                    <a href="/index.php?page=login" class="btn btn-primary">Log In</a>
-                    <button id="continueBrowsing" class="btn btn-secondary">Continue Browsing</button>
-                </div>
-            </div>
-        `;
-
-        document.body.insertAdjacentHTML('beforeend', modalHtml);
-
-        document.getElementById('continueBrowsing').addEventListener('click', function () {
-            document.getElementById('loginModal').remove();
-        });
-    }
 });
 
+function showLoginModal() {
+    const modalHtml = `
+        <div class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50" id="loginModal">
+            <div class="bg-white shadow-2xl rounded-xl max-w-xl w-full p-10 text-center transform scale-95 transition-transform duration-300">
+                <h2 class="text-2xl font-bold mb-4">Please log in to add items to your cart!</h3>
+                <p class="mb-8 text-lg text-gray-600">To add products to your cart, you need to log in. You can also continue browsing product details.</p>
+                <div class="flex justify-center space-x-14">
+                    <button type="button" class="bg-blue-500 text-white font-semibold px-6 py-3 rounded-xl shadow-lg hover:bg-blue-600 hover:shadow-lg transition duration-300 ease-in-out transform hover:scale-105"
+                      onclick="window.location.href='/index.php?page=login'">Log In</button>
+                    <button id="continueBrowsing" class="bg-gray-500 text-white font-semibold px-6 py-3 rounded-xl shadow-lg hover:bg-gray-600 hover:shadow-lg transition duration-300 ease-in-out transform hover:scale-105">Continue Browsing</button>
+                </div>
+            </div>
+        </div>`;
+
+    // Xóa modal cũ nếu có
+    const existingModal = document.getElementById('loginModal');
+    if (existingModal) {
+        existingModal.remove();
+    }
+
+    document.body.insertAdjacentHTML('beforeend', modalHtml);
+
+    document.getElementById('continueBrowsing').addEventListener('click', function () {
+        document.getElementById('loginModal').remove();
+    });
+
+    document.getElementById('loginModal').addEventListener('click', function (event) {
+        if (event.target === this) {
+            this.remove();
+        }
+    });
+}
 
 // Hiển thị thông báo đăng xuất
 function showLogoutModal() {
@@ -102,32 +121,3 @@ document.addEventListener("DOMContentLoaded", function () {
         showLogoutModal();  // Show modal if logout was successful
     }
 });
-
-
-function addToCart(productId) {
-    // Tạo form ẩn để gửi dữ liệu
-    var form = document.createElement('form');
-    form.method = 'POST';
-    form.action = ''; // Đặt URL đến trang hiện tại
-
-    var inputProductId = document.createElement('input');
-    inputProductId.type = 'hidden';
-    inputProductId.name = 'product_id';
-    inputProductId.value = productId;
-    form.appendChild(inputProductId);
-
-    var inputQuantity = document.createElement('input');
-    inputQuantity.type = 'hidden';
-    inputQuantity.name = 'quantity';
-    inputQuantity.value = '1'; // Hoặc giá trị số lượng bạn muốn
-    form.appendChild(inputQuantity);
-
-    // Gửi form
-    document.body.appendChild(form);
-    form.submit();
-
-    // Làm mới trang sau khi gửi form
-    setTimeout(function () {
-        location.reload(); // Làm mới trang
-    }, 1000); // Thời gian delay 1000ms (1 giây)
-}

@@ -36,7 +36,7 @@ if (!$product) {
                 <span class="text-red-600 text-3xl font-bold">$<?php echo htmlspecialchars($product['discount']); ?></span>
                 <p class="text-gray-600 line-through mb-4">Original Price: $<?php echo htmlspecialchars($product['price']); ?></p>
             <?php else: ?>
-                <h3 class="text-2xl font-semibold text-gray-800 mb-4">Price: $<?php echo htmlspecialchars($product['price']); ?></h3>
+                <h3 class="text-2xl font-semibold text-red-600 mb-4">Price: $<?php echo htmlspecialchars($product['price']); ?></h3>
             <?php endif; ?>
 
             <!-- Form thêm vào giỏ hàng -->
@@ -46,7 +46,7 @@ if (!$product) {
                     <label for="quantity" class="text-lg font-semibold">Quantity:</label>
                     <input type="number" class="form-control w-25" id="quantity" name="quantity" value="1" min="1">
                 </div>
-                <button type="button" class="btn btn-primary add-to-cart-button">Add to Cart</button>
+                <button type="button" class="add-to-cart-button px-4 py-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 transition duration-300">Add to Cart</button>
             </form>
         </div>
     </div>
@@ -61,7 +61,7 @@ if (!$product) {
             ?>
                 <div class="col-md-4 col-sm-6 p-4">
                     <div class="card h-full bg-white rounded-lg shadow-lg transform hover:scale-105 transition-transform duration-300 ease-in-out">
-                        <img class="card-img-top mx-auto" style="width: 65%; height: auto;"
+                        <img class="card-img-top mx-auto w-3/5 h-auto"
                             src="/images/<?php echo htmlspecialchars($relatedProduct['image']); ?>"
                             alt="<?php echo htmlspecialchars($relatedProduct['name']); ?>">
                         <div class="card-body">
@@ -75,7 +75,7 @@ if (!$product) {
                                 <p class="card-text text-red-600 font-semibold text-center">Price: $<?php echo htmlspecialchars($relatedProduct['price']); ?></p>
                             <?php endif; ?>
                             <div class="text-center mt-auto mb-2">
-                                <button type="button" class="bg-blue-500 text-white mt-2 px-5 py-2 rounded-lg transition duration-300 hover:bg-green-500 shadow-lg"
+                                <button type="button" class="bg-blue-500 text-white mt-2 px-5 py-2 rounded-lg transition duration-300 hover:bg-blue-600 shadow-lg"
                                     onclick="window.location.href='/index.php?page=product-detail&id=<?php echo $relatedProduct['id']; ?>'">View Details</button>
                             </div>
                             <!-- <button type="button" class="text-center mt-2 bg-blue-500 text-white px-5 py-2 rounded-lg transition duration-300 hover:bg-green-600 shadow-lg"

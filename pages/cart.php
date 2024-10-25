@@ -3,6 +3,7 @@ require_once '../controllers/CartController.php';
 require_once '../config.php'; // Kết nối CSDL
 
 if (!isset($_SESSION['user_id'])) {
+    $_SESSION['success'] = "Please log in to add items to your cart!";
     header("Location: /index.php?page=login"); // Điều hướng về trang đăng nhập
     exit();
 }
@@ -87,11 +88,11 @@ if (isset($_GET['action'])) {
                             </form>
                         </td>
 
-                        <td class="px-4 py-2 font-semibold text-gray-800">
+                        <td class="px-4 py-2 font-semibold text-gray-800 text-lg">
                             <?php
                             $totalPrice = $item['discount'] > 0 ? $item['discount'] * $item['quantity'] : $item['price'] * $item['quantity'];
                             ?>
-                            <span class="<?= $item['discount'] > 0 ? 'text-red-600 font-bold' : 'text-gray-800 font-semibold' ?>">
+                            <span class="<?= $item['discount'] > 0 ? 'text-red-600 font-semibold' : 'text-gray-800 font-semibold' ?>">
                                 $<?= htmlspecialchars($totalPrice) ?>
                             </span>
                         </td>

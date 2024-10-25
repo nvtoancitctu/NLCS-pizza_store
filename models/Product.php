@@ -69,7 +69,6 @@ class Product
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-
     // Lấy sản phẩm đang giảm giá với thời gian còn lại
     public function getDiscountProduct()
     {

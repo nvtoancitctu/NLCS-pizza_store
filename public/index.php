@@ -4,6 +4,7 @@ session_start();
 
 // Include file cấu hình (kết nối database)
 require_once '../config.php';
+
 // Kiểm tra nếu bấm đăng xuất
 if (isset($_POST['logout'])) {
     // Destroy session to log out the user
@@ -15,7 +16,7 @@ if (isset($_POST['logout'])) {
 }
 // Include các phần như header
 require_once '../includes/header.php';
-require_once '../views/partials/navbar.php';
+require_once '../includes/navbar.php';
 
 
 // Routing đơn giản thông qua tham số "page"
@@ -55,6 +56,18 @@ switch ($page) {
         break;
     case 'order-success':
         include '../pages/order-success.php';
+        break;
+    case 'list':
+        include '../admin/list.php';
+        break;
+    case 'add':
+        include '../admin/add.php';
+        break;
+    case 'edit':
+        include '../admin/edit.php';
+        break;
+    case 'delete':
+        include '../admin/delete.php';
         break;
     default:
         include '../pages/404.php'; // Trang lỗi 404
