@@ -37,19 +37,19 @@ class Product
     }
 
     // Thêm sản phẩm mới
-    public function createProduct($name, $description, $price, $image, $category_id)
+    public function createProduct($name, $description, $price, $image, $category_id, $discount, $discount_end_time)
     {
-        $query = "INSERT INTO " . $this->table . " (name, description, price, image, category_id) VALUES (?, ?, ?, ?, ?)";
+        $query = "INSERT INTO " . $this->table . " (name, description, price, image, category_id, discount, discount_end_time) VALUES (?, ?, ?, ?, ?, ?, ?)";
         $stmt = $this->conn->prepare($query);
-        return $stmt->execute([$name, $description, $price, $image, $category_id]);
+        return $stmt->execute([$name, $description, $price, $image, $category_id, $discount, $discount_end_time]);
     }
 
     // Cập nhật sản phẩm
-    public function updateProduct($id, $name, $description, $price, $image, $category_id)
+    public function updateProduct($id, $name, $description, $price, $image, $category_id, $discount, $discount_end_time)
     {
-        $query = "UPDATE " . $this->table . " SET name = ?, description = ?, price = ?, image = ?, category_id = ? WHERE id = ?";
+        $query = "UPDATE " . $this->table . " SET name = ?, description = ?, price = ?, image = ?, category_id = ?, discount = ?, discount_end_time = ? WHERE id = ?";
         $stmt = $this->conn->prepare($query);
-        return $stmt->execute([$name, $description, $price, $image, $category_id, $id]);
+        return $stmt->execute([$id, $name, $description, $price, $image, $category_id, $discount, $discount_end_time]);
     }
 
     // Xóa sản phẩm
@@ -110,5 +110,19 @@ class Product
 
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function getDistinctCategories()
+    {
+        // Ensure table and column names match
+        $query = "SELECT DISTINCT id, name FROM categories";
+        $stmt = $this->conn->query($query);
+        $categories = [];
+
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $categories[] = $row;
+        }
+
+        return $categories;
     }
 }

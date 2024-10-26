@@ -7,6 +7,13 @@ if (!isset($_SESSION['user_role']) || $_SESSION['user_role'] !== 'admin') {
     exit();
 }
 
+// Kiểm tra và lấy thông báo thành công từ session
+$success = '';
+if (isset($_SESSION['success'])) {
+    $success = $_SESSION['success'];
+    unset($_SESSION['success']); // Xóa thông báo khỏi session
+}
+
 $productController = new ProductController($conn);
 
 // Khởi tạo biến
@@ -44,6 +51,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['search'])) {
             </form>
         </div>
     </div>
+
+    <!-- Hiển thị thông báo thành công nếu có -->
+    <?php if (!empty($success)): ?>
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <?= htmlspecialchars($success) ?>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    <?php endif; ?>
+
     <!-- Product Table -->
     <table class="min-w-full bg-white border border-gray-200 rounded-lg shadow-md">
         <thead>
@@ -85,7 +101,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['search'])) {
 
                     <!-- Discount Info -->
                     <td class="px-4 py-2 border-b text-red-500 font-bold text-center">
-                        <?php if (!empty($product['discount'])): ?>
+                        <?php if (!empty($product['discount']) && $product['discount'] > 0): ?>
                             $<?= number_format($product['discount'], 2) ?>
                         <?php else: ?>
                             <span class="text-gray-500">No Discount</span>

@@ -16,41 +16,55 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $name = $_POST['name'];
     $description = $_POST['description'];
     $price = $_POST['price'];
-    $category_name = $_POST['category_name'];
-    $image = $_FILES['image']['name'];
+    $category_id = $_POST['category_id'];
 
+    // Kiểm tra discount và gán NULL nếu không có giá trị
+    $discount = !empty($_POST['discount']) ? $_POST['discount'] : null;
+    $discount_end_time = $_POST['discount_end_time'] ?? null;
+
+    // Lấy thông tin sản phẩm hiện tại để giữ lại hình ảnh nếu không có hình ảnh mới
+    $currentProduct = $productController->getProductDetails($product_id);
+    $image = $currentProduct['image']; // Giữ lại hình ảnh hiện tại
+
+    // Kiểm tra nếu có tệp hình ảnh mới được tải lên
     if (isset($_FILES['image']) && $_FILES['image']['error'] == 0) {
         $allowed = ['jpg', 'jpeg', 'png', 'gif'];
         $file_ext = pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION);
 
-        // Kiểm tra định dạng file ảnh
+        // Check image file format
         if (in_array(strtolower($file_ext), $allowed)) {
-            // Đặt tên duy nhất cho ảnh bằng cách sử dụng thời gian và tên gốc
-            $image = time() . '_' . $_FILES['image']['name'];
-
-            // Kiểm tra việc tải ảnh lên thư mục
+            // Attempt to upload the image to the images folder
             if (move_uploaded_file($_FILES['image']['tmp_name'], "images/$image")) {
-                // Thêm sản phẩm mới
-                $productController->updateProduct($product_id, $name, $description, $price, $image, $category_name);
-                header("Location: /index.php?page=admin");
+                // Cập nhật sản phẩm với thông tin giảm giá
+                $productController->updateProduct($name, $description, $price, $image, $category_id, $discount, $discount_end_time, $product['id']); // Thêm $product['id']
+                $_SESSION['success'] = "Product $product_id has been updated successfully!";
+                header("Location: /index.php?page=list");
                 exit();
             } else {
-                // Thông báo lỗi nếu không thể tải ảnh lên
                 $error = "Failed to upload the image. Please try again.";
             }
         } else {
             $error = "Invalid file format. Only JPG, JPEG, PNG, and GIF are allowed.";
         }
     } else {
-        $error = "Image upload error. Please try again.";
+        // Nếu không tải hình ảnh mới, chỉ cập nhật thông tin sản phẩm
+        $productController->updateProduct($name, $description, $price, $image, $category_id, $discount, $discount_end_time, $product['id']); // Thêm $product['id']
+        $_SESSION['success'] = "Product $product_id has been updated successfully!";
+        header("Location: /index.php?page=list");
+        exit();
     }
 }
+
 ?>
+
+<?php if (isset($error)): ?>
+    <div class="alert alert-danger"><?= htmlspecialchars($error) ?></div>
+<?php endif; ?>
 
 <h1 class="text-center">Edit Product</h1>
 
 <div class="container">
-    <form action="/index.php?page=edit&id=<?= $product['id'] ?>" method="POST" enctype="multipart/form-data">
+    <form action="/index.php?page=edit&id=<?= htmlspecialchars($product['id']) ?>" method="POST" enctype="multipart/form-data">
         <div class="form-group">
             <label for="name">Product Name</label>
             <input type="text" name="name" class="form-control" value="<?= htmlspecialchars($product['name']) ?>" required>
@@ -61,22 +75,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
         <div class="form-group">
             <label for="price">Price</label>
-            <input type="number" name="price" class="form-control" value="<?= htmlspecialchars($product['price']) ?>" required>
+            <input type="number" name="price" class="form-control" min="0" max="100" step="0.01" value="<?= htmlspecialchars($product['price']) ?>" required>
         </div>
         <div class="form-group">
-            <label for="category_name">Category</label>
-            <select name="category_name" class="form-control" required>
+            <label for="category_id">Category</label>
+            <select name="category_id" class="form-control" required>
                 <?php foreach ($categories as $category): ?>
-                    <option value="<?= $category['category_name'] ?>"><?= htmlspecialchars($category['category_name']) ?>
-                    </option>
+                    <option value="<?= htmlspecialchars($category['id']) ?>" <?= $product['category_id'] == $category['id'] ? 'selected' : '' ?>><?= htmlspecialchars($category['name']) ?></option>
                 <?php endforeach; ?>
             </select>
         </div>
         <div class="form-group">
+            <label for="discount">Discount (%)</label>
+            <input type="number" name="discount" class="form-control" min="0" max="100" step="0.01" value="<?= htmlspecialchars($product['discount']) ?>" placeholder="Enter discount (e.g., 15.50)">
+        </div>
+        <div class="form-group">
+            <label for="discount_end_time">Discount End Time</label>
+            <input type="datetime-local" name="discount_end_time" class="form-control" value="<?= htmlspecialchars($product['discount_end_time']) ?>">
+        </div>
+        <div class="form-group">
             <label for="image">Product Image</label>
             <input type="file" name="image" class="form-control">
-            <img src="/images/<?= htmlspecialchars($product['image']) ?>"
-                             alt="<?= htmlspecialchars($product['name']) ?>" width="100">
         </div>
         <button type="submit" class="btn btn-primary">Update Product</button>
     </form>

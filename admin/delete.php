@@ -12,6 +12,6 @@ $product_id = $_GET['id'];
 
 // Xóa sản phẩm
 $productController->deleteProduct($product_id);
-
-header("Location: /index.php?page=admin");
+$_SESSION['success'] = "Product $product_id has been deleted successfully!";
+header("Location: /index.php?page=list");
 exit();

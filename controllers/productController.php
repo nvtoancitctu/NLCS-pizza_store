@@ -46,15 +46,15 @@ class ProductController
   }
 
   // Thêm sản phẩm mới
-  public function createProduct($name, $description, $price, $image, $category_id)
+  public function createProduct($name, $description, $price, $image, $category_id, $discount, $discount_end_time)
   {
-    return $this->productModel->createProduct($name, $description, $price, $image, $category_id);
+    return $this->productModel->createProduct($name, $description, $price, $image, $category_id, $discount, $discount_end_time);
   }
 
   // Cập nhật sản phẩm
-  public function updateProduct($id, $name, $description, $price, $image, $category_id)
+  public function updateProduct($id, $name, $description, $price, $image, $category_id, $discount, $discount_end_time)
   {
-    return $this->productModel->updateProduct($id, $name, $description, $price, $image, $category_id);
+    return $this->productModel->updateProduct($id, $name, $description, $price, $image, $category_id, $discount, $discount_end_time);
   }
 
   // Xóa sản phẩm
@@ -67,5 +67,11 @@ class ProductController
   public function searchProducts($searchTerm)
   {
     return $this->productModel->searchProducts($searchTerm);
+  }
+
+  // Lấy tên loại sản phẩm
+  public function getDistinctCategories()
+  {
+    return $this->productModel->getDistinctCategories();
   }
 }
