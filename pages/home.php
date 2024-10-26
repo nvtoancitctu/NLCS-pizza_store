@@ -24,11 +24,11 @@ $product = $productController->getProductDetails($product_id);
 <div class="container mx-auto px-12">
   <!-- Jumbotron -->
   <div class="bg-gradient-to-r from-blue-500 to-blue-700 text-white text-center p-10 rounded-2xl shadow-2xl mt-8">
-    <h1 class="text-5xl font-extrabold mb-4 drop-shadow-lg">Welcome to Pizza Store!</h1>
+    <h1 class="text-5xl font-extrabold mb-4 drop-shadow-lg">Welcome to Lover's Hub!</h1>
     <p class="mt-2 text-lg font-light">Delicious pizzas made with the finest ingredients. Order now!</p>
     <button type="button"
       class="mt-6 inline-block bg-yellow-500 hover:bg-red-600 text-white px-6 py-3 rounded-xl text-lg transition duration-300 transform hover:-translate-y-1 hover:scale-105 shadow-lg"
-      onclick="window.location.href='/index.php?page=products'">Go Shopping Now</button>
+      onclick="window.location.href='/index.php?page=products'">Buy Now, Enjoy Later!</button>
   </div>
 
   <!-- Discount Products -->
@@ -191,7 +191,7 @@ $product = $productController->getProductDetails($product_id);
       <button type="button" class="bg-blue-500 text-white font-semibold px-6 py-3 rounded-xl shadow-lg hover:bg-blue-600 hover:shadow-lg transition duration-300 ease-in-out transform hover:scale-105"
         onclick="window.location.href='/index.php?page=login'">Log In</button>
       <button type="button" class="bg-gray-500 text-white font-semibold px-6 py-3 rounded-xl shadow-lg hover:bg-gray-600 hover:shadow-lg transition duration-300 ease-in-out transform hover:scale-105"
-        onclick="window.location.href='/index.php?page=products'">Continue Shopping</button>
+        onclick="window.location.href='/index.php?page=home'">Continue Shopping</button>
     </div>
   </div>
 </div>

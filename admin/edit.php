@@ -18,25 +18,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $price = $_POST['price'];
     $category_id = $_POST['category_id'];
 
-    // Kiểm tra discount và gán NULL nếu không có giá trị
     $discount = !empty($_POST['discount']) ? $_POST['discount'] : null;
     $discount_end_time = $_POST['discount_end_time'] ?? null;
 
-    // Lấy thông tin sản phẩm hiện tại để giữ lại hình ảnh nếu không có hình ảnh mới
     $currentProduct = $productController->getProductDetails($product_id);
-    $image = $currentProduct['image']; // Giữ lại hình ảnh hiện tại
+    $image = $currentProduct['image'];
 
-    // Kiểm tra nếu có tệp hình ảnh mới được tải lên
     if (isset($_FILES['image']) && $_FILES['image']['error'] == 0) {
         $allowed = ['jpg', 'jpeg', 'png', 'gif'];
         $file_ext = pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION);
 
-        // Check image file format
         if (in_array(strtolower($file_ext), $allowed)) {
-            // Attempt to upload the image to the images folder
             if (move_uploaded_file($_FILES['image']['tmp_name'], "images/$image")) {
-                // Cập nhật sản phẩm với thông tin giảm giá
-                $productController->updateProduct($name, $description, $price, $image, $category_id, $discount, $discount_end_time, $product['id']); // Thêm $product['id']
+                $productController->updateProduct($name, $description, $price, $image, $category_id, $discount, $discount_end_time, $product['id']);
                 $_SESSION['success'] = "Product $product_id has been updated successfully!";
                 header("Location: /index.php?page=list");
                 exit();
@@ -47,56 +41,70 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $error = "Invalid file format. Only JPG, JPEG, PNG, and GIF are allowed.";
         }
     } else {
-        // Nếu không tải hình ảnh mới, chỉ cập nhật thông tin sản phẩm
-        $productController->updateProduct($name, $description, $price, $image, $category_id, $discount, $discount_end_time, $product['id']); // Thêm $product['id']
+        $productController->updateProduct($name, $description, $price, $image, $category_id, $discount, $discount_end_time, $product['id']);
         $_SESSION['success'] = "Product $product_id has been updated successfully!";
         header("Location: /index.php?page=list");
         exit();
     }
 }
-
 ?>
 
 <?php if (isset($error)): ?>
     <div class="alert alert-danger"><?= htmlspecialchars($error) ?></div>
 <?php endif; ?>
 
-<h1 class="text-center">Edit Product</h1>
+<h1 class="text-4xl font-extrabold text-center my-10 text-blue-700 drop-shadow-lg">Edit Product</h1>
 
-<div class="container">
-    <form action="/index.php?page=edit&id=<?= htmlspecialchars($product['id']) ?>" method="POST" enctype="multipart/form-data">
-        <div class="form-group">
-            <label for="name">Product Name</label>
-            <input type="text" name="name" class="form-control" value="<?= htmlspecialchars($product['name']) ?>" required>
-        </div>
-        <div class="form-group">
-            <label for="description">Description</label>
-            <textarea name="description" class="form-control" required><?= htmlspecialchars($product['description']) ?></textarea>
-        </div>
-        <div class="form-group">
-            <label for="price">Price</label>
-            <input type="number" name="price" class="form-control" min="0" max="100" step="0.01" value="<?= htmlspecialchars($product['price']) ?>" required>
-        </div>
-        <div class="form-group">
-            <label for="category_id">Category</label>
-            <select name="category_id" class="form-control" required>
-                <?php foreach ($categories as $category): ?>
-                    <option value="<?= htmlspecialchars($category['id']) ?>" <?= $product['category_id'] == $category['id'] ? 'selected' : '' ?>><?= htmlspecialchars($category['name']) ?></option>
-                <?php endforeach; ?>
-            </select>
-        </div>
-        <div class="form-group">
-            <label for="discount">Discount (%)</label>
-            <input type="number" name="discount" class="form-control" min="0" max="100" step="0.01" value="<?= htmlspecialchars($product['discount']) ?>" placeholder="Enter discount (e.g., 15.50)">
-        </div>
-        <div class="form-group">
-            <label for="discount_end_time">Discount End Time</label>
-            <input type="datetime-local" name="discount_end_time" class="form-control" value="<?= htmlspecialchars($product['discount_end_time']) ?>">
-        </div>
-        <div class="form-group">
-            <label for="image">Product Image</label>
-            <input type="file" name="image" class="form-control">
-        </div>
-        <button type="submit" class="btn btn-primary">Update Product</button>
-    </form>
+<div class="flex justify-center">
+    <div class="w-full max-w-2xl">
+        <form action="/index.php?page=edit&id=<?= htmlspecialchars($product['id']) ?>" method="POST" enctype="multipart/form-data" class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+            <div class="mb-4">
+                <label for="name" class="block text-gray-700 text-sm font-bold mb-2">Product Name</label>
+                <input type="text" name="name" value="<?= htmlspecialchars($product['name']) ?>" class="border rounded w-full py-2 px-3 text-gray-700 focus:outline-none focus:border-blue-500" required>
+            </div>
+            <div class="mb-4">
+                <label for="description" class="block text-gray-700 text-sm font-bold mb-2">Description</label>
+                <textarea name="description" class="border rounded w-full py-2 px-3 text-gray-700 focus:outline-none focus:border-blue-500" placeholder="Can be left empty"><?= htmlspecialchars($product['description']) ?></textarea>
+            </div>
+            <div class="mb-4">
+                <label for="price" class="block text-gray-700 text-sm font-bold mb-2">Price</label>
+                <input type="number" name="price" value="<?= htmlspecialchars($product['price']) ?>" class="border rounded w-full py-2 px-3 text-gray-700 focus:outline-none focus:border-blue-500" min="0" max="100" step="0.01" placeholder="Enter price (e.g., 15.50)" required>
+            </div>
+            <div class="mb-4">
+                <label for="category_id" class="block text-gray-700 text-sm font-bold mb-2">Category</label>
+                <select name="category_id" class="border rounded w-full py-2 px-3 text-gray-700 focus:outline-none focus:border-blue-500" required>
+                    <?php foreach ($categories as $category): ?>
+                        <option value="<?= htmlspecialchars($category['id']) ?>" <?= $category['id'] == $product['category_id'] ? 'selected' : '' ?>><?= htmlspecialchars($category['name']) ?></option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+            <div class="mb-4">
+                <label for="discount" class="block text-gray-700 text-sm font-bold mb-2">Discount (%)</label>
+                <input type="number" name="discount" value="<?= htmlspecialchars($product['discount']) ?>" class="border rounded w-full py-2 px-3 text-gray-700 focus:outline-none focus:border-blue-500" min="0" max="100" step="0.01" placeholder="Enter discount (e.g., 15.50)">
+            </div>
+            <div class="mb-4">
+                <label for="discount_end_time" class="block text-gray-700 text-sm font-bold mb-2">Discount End Time (UTC)</label>
+                <input type="datetime-local" id="discount_end_time" name="discount_end_time" value="<?= htmlspecialchars($product['discount_end_time']) ?>" class="border rounded w-full py-2 px-3 text-gray-700 focus:outline-none focus:border-blue-500">
+            </div>
+            <div class="mb-4">
+                <label for="image" class="block text-gray-700 text-sm font-bold mb-2">Product Image (Optional)</label>
+                <div class="flex items-center">
+                    <input type="file" name="image" id="image" class="hidden" onchange="updateFileName(this)">
+                    <label for="image" class="border rounded w-full py-2 px-3 text-gray-700 cursor-pointer hover:bg-blue-100 transition duration-200 focus:outline-none focus:border-blue-500">
+                        <span id="file-name">Choose an image...</span>
+                    </label>
+                </div>
+            </div>
+            <div class="flex justify-center">
+                <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-8 rounded">Update Product</button>
+            </div>
+        </form>
+    </div>
 </div>
+
+<script>
+    function updateFileName(input) {
+        const fileName = input.files.length > 0 ? input.files[0].name : "Choose an image...";
+        document.getElementById("file-name").innerText = fileName;
+    }
+</script>

@@ -29,9 +29,9 @@ $cartItemCount = getCartItemCount($conn, $user_id);
   <div class="container mx-auto px-4 py-3 flex justify-between items-center">
 
     <!-- Logo and Brand Name -->
-    <div class="flex items-center space-x-3">
-      <img src="/images/logo-removebg.png" alt="Pizza Store" class="h-12 w-12">
-      <a href="/index.php?page=home" class="text-3xl font-bold">Pizza Store</a>
+    <div class="flex items-center space-x-3 bg-cover bg-no-repeat">
+      <img src="/images/logo.png" alt="Pizza Store" class="h-14 w-14">
+      <a href="/index.php?page=home" class="text-3xl font-bold">Lover's Hub</a>
     </div>
 
     <!-- Mobile Menu Button -->
@@ -86,10 +86,18 @@ $cartItemCount = getCartItemCount($conn, $user_id);
   <!-- Mobile Menu -->
   <div class="lg:hidden hidden" id="mobile-menu">
     <ul class="flex flex-col items-center bg-red-500 py-4 space-y-2">
-      <li><a href="/index.php?page=home" class="block px-3 py-2 text-white hover:bg-yellow-400">Home</a></li>
-      <li><a href="/index.php?page=products" class="block px-3 py-2 text-white hover:bg-yellow-400">Products</a></li>
-      <li><a href="/index.php?page=cart" class="block px-3 py-2 text-white hover:bg-yellow-400">Cart</a></li>
-      <li><a href="/index.php?page=contact" class="block px-3 py-2 text-white hover:bg-yellow-400">Contact</a></li>
+      <li>
+        <a href="/index.php?page=home" class="block px-3 py-2 text-white hover:bg-yellow-400">Home</a>
+      </li>
+      <li>
+        <a href="/index.php?page=products" class="block px-3 py-2 text-white hover:bg-yellow-400">Products</a>
+      </li>
+      <li>
+        <a href="/index.php?page=cart" class="block px-3 py-2 text-white hover:bg-yellow-400">Cart</a>
+      </li>
+      <li>
+        <a href="/index.php?page=contact" class="block px-3 py-2 text-white hover:bg-yellow-400">Contact</a>
+      </li>
       <?php if (isset($_SESSION['user_name'])): ?>
         <button class="block px-3 py-2 text-white hover:bg-yellow-400" id="mobile-user-dropdown-toggle">
           <i class="fas fa-user"></i>
@@ -104,7 +112,9 @@ $cartItemCount = getCartItemCount($conn, $user_id);
           </form>
         </div>
       <?php else: ?>
-        <li><a href="/index.php?page=login" class="block px-3 py-2 text-white hover:bg-yellow-400">Login</a></li>
+        <li>
+          <a href="/index.php?page=login" class="block px-3 py-2 text-white hover:bg-yellow-400">Login</a>
+        </li>
       <?php endif; ?>
     </ul>
   </div>

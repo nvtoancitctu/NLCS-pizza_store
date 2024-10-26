@@ -62,7 +62,7 @@ if (!$product) {
             ?>
                 <div class="col-md-4 col-sm-6 p-4">
                     <div class="card h-full bg-white rounded-2xl shadow-lg transform hover:scale-105 transition-transform duration-300 ease-in-out">
-                        <img class="card-img-top mx-auto w-3/5 h-auto"
+                        <img class="w-3/5 h-auto mx-auto object-cover rounded-lg transition duration-500 ease-in-out transform hover:rotate-12 hover:scale-110"
                             src="/images/<?php echo htmlspecialchars($relatedProduct['image']); ?>"
                             alt="<?php echo htmlspecialchars($relatedProduct['name']); ?>">
                         <div class="card-body">
