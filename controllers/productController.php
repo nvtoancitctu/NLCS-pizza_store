@@ -62,4 +62,10 @@ class ProductController
   {
     return $this->productModel->deleteProduct($id);
   }
+
+  // Tìm kiếm sản phẩm
+  public function searchProducts($searchTerm)
+  {
+    return $this->productModel->searchProducts($searchTerm);
+  }
 }

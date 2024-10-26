@@ -94,4 +94,21 @@ class Product
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    // Hàm tìm kiếm sản phẩm theo từ khóa
+    public function searchProducts($searchTerm)
+    {
+        $query = "SELECT * FROM products 
+                    WHERE name LIKE :searchTerm
+                    OR description LIKE :searchTerm 
+                    OR price LIKE :searchTerm 
+                    OR discount LIKE :searchTerm";
+        $stmt = $this->conn->prepare($query);
+
+        // Thêm ký tự "%" vào từ khóa để tìm kiếm bất kỳ từ nào có chứa $searchTerm
+        $stmt->bindValue(':searchTerm', '%' . $searchTerm . '%');
+
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 }
