@@ -21,46 +21,47 @@ if (!$product) {
         <!-- Hình ảnh sản phẩm -->
         <div class="col-md-6 flex justify-center items-center">
             <img src="/images/<?php echo htmlspecialchars($product['image']); ?>"
-                class="img-fluid rounded-lg shadow-lg card-img-top mx-auto w-3/5 h-auto"
+                class="w-3/5 h-auto mx-auto object-cover rounded-lg transition duration-500 ease-in-out transform hover:rotate-12 hover:scale-110"
                 alt="<?php echo htmlspecialchars($product['name']); ?>">
         </div>
 
         <!-- Chi tiết sản phẩm -->
         <div class="col-md-6">
-            <h1 class="text-3xl font-bold text-gray-800 mb-3"><?php echo htmlspecialchars($product['name']); ?></h1>
+            <h1 class="mt-8 text-4xl font-extrabold text-blue-700 tracking-wide"><?php echo htmlspecialchars($product['name']); ?></h1>
             <p class="text-lg text-gray-600 mb-3"><?php echo htmlspecialchars($product['description']); ?></p>
 
             <!-- Hiển thị giá: Nếu có giảm giá thì hiện giá giảm -->
             <?php if ($product['discount'] > 0): ?>
-                <strong class="text-2xl font-semibold text-blue-600 mb-4">Discounted Price:</strong>
+                <p class="text-gray-600 line-through">Original Price: $<?php echo htmlspecialchars($product['price']); ?></p>
+                <strong class="text-2xl font-semibold text-blue-600">Discounted Price:</strong>
                 <span class="text-red-600 text-3xl font-bold">$<?php echo htmlspecialchars($product['discount']); ?></span>
-                <p class="text-gray-600 line-through mb-4">Original Price: $<?php echo htmlspecialchars($product['price']); ?></p>
             <?php else: ?>
-                <h3 class="text-2xl font-semibold text-red-600 mb-4">Price: $<?php echo htmlspecialchars($product['price']); ?></h3>
+                <strong class="text-2xl font-semibold text-blue-600 mb-4">Price:</strong>
+                <span class="text-red-600 text-3xl font-bold">$<?php echo htmlspecialchars($product['price']); ?></span>
             <?php endif; ?>
 
             <!-- Form thêm vào giỏ hàng -->
             <form method="POST" class="add-to-cart-form" style="display:inline;">
                 <input type="hidden" name="product_id" value="<?php echo $product_id; ?>">
                 <div class="form-group mb-4">
-                    <label for="quantity" class="text-lg font-semibold">Quantity:</label>
+                    <label for="quantity" class="text-lg font-semibold mt-4">Quantity:</label>
                     <input type="number" class="form-control w-25" id="quantity" name="quantity" value="1" min="1">
                 </div>
-                <button type="button" class="add-to-cart-button px-4 py-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 transition duration-300">Add to Cart</button>
+                <button type="button" class="add-to-cart-button px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition duration-300">Add to Cart</button>
             </form>
         </div>
     </div>
 
     <!-- Sản phẩm liên quan ngẫu nhiên -->
     <div class="related-products mt-5">
-        <h2 class="text-center text-2xl font-bold text-gray-800">You May Also Like</h2>
+        <h2 class="text-center mt-8 text-4xl font-extrabold text-blue-700 tracking-wide">You May Also Like</h2>
         <div class="row">
             <?php
             $relatedProducts = $productController->getRandomProducts(3); // Lấy 3 sản phẩm ngẫu nhiên
             foreach ($relatedProducts as $relatedProduct):
             ?>
                 <div class="col-md-4 col-sm-6 p-4">
-                    <div class="card h-full bg-white rounded-lg shadow-lg transform hover:scale-105 transition-transform duration-300 ease-in-out">
+                    <div class="card h-full bg-white rounded-2xl shadow-lg transform hover:scale-105 transition-transform duration-300 ease-in-out">
                         <img class="card-img-top mx-auto w-3/5 h-auto"
                             src="/images/<?php echo htmlspecialchars($relatedProduct['image']); ?>"
                             alt="<?php echo htmlspecialchars($relatedProduct['name']); ?>">
@@ -78,8 +79,7 @@ if (!$product) {
                                 <button type="button" class="bg-blue-500 text-white mt-2 px-5 py-2 rounded-lg transition duration-300 hover:bg-blue-600 shadow-lg"
                                     onclick="window.location.href='/index.php?page=product-detail&id=<?php echo $relatedProduct['id']; ?>'">View Details</button>
                             </div>
-                            <!-- <button type="button" class="text-center mt-2 bg-blue-500 text-white px-5 py-2 rounded-lg transition duration-300 hover:bg-green-600 shadow-lg"
-                                onclick="window.location.href='/index.php?page=product-detail&id=<?php echo $relatedProduct['id']; ?>'">View Details</button> -->
+
                         </div>
                     </div>
                 </div>
