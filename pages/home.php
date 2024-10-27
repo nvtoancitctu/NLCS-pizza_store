@@ -21,9 +21,63 @@ $product_id = isset($_GET['id']) ? $_GET['id'] : null;
 $product = $productController->getProductDetails($product_id);
 ?>
 
+<style>
+  /* CSS cho hiệu ứng đập của trái tim */
+  .heart-beat {
+    animation: heartBeat 1s infinite ease-in-out;
+  }
+
+  @keyframes heartBeat {
+
+    0%,
+    100% {
+      transform: scale(1);
+    }
+
+    50% {
+      transform: scale(1.3);
+    }
+  }
+
+  /* CSS cho icon trái tim */
+  .heart-icon {
+    background-color: #ff5e5e;
+    /* Màu đỏ nổi bật */
+    color: white;
+    padding: 8px;
+    border-radius: 50%;
+    box-shadow: 0 4px 10px rgba(255, 94, 94, 0.5);
+    transition: background-color 0.3s ease, transform 0.3s ease;
+  }
+
+  /* Hover cho icon trái tim */
+  .heart-icon:hover {
+    background-color: #ff3b3b;
+    /* Màu đỏ đậm hơn khi hover */
+    transform: scale(1.2);
+    /* Phóng to nhẹ khi hover */
+  }
+
+  @keyframes pulse-effect {
+
+    0%,
+    100% {
+      transform: scale(1);
+    }
+
+    50% {
+      transform: scale(1.2);
+    }
+  }
+
+  .animate-pulse-custom {
+    animation: pulse-effect 1s infinite ease-in-out;
+  }
+</style>
+
 <div class="container mx-auto px-12">
   <!-- Jumbotron -->
-  <div class="bg-gradient-to-r from-blue-500 to-blue-700 text-white text-center p-10 rounded-2xl shadow-2xl mt-8">
+  <div class="bg-gradient-to-r from-blue-500 to-gray-500 text-white text-center p-10 rounded-2xl shadow-2xl mt-8">
     <h1 class="text-5xl font-extrabold mb-4 drop-shadow-lg">Welcome to Lover's Hub!</h1>
     <p class="mt-2 text-lg font-light">Delicious pizzas made with the finest ingredients. Order now!</p>
     <button type="button"
@@ -36,8 +90,16 @@ $product = $productController->getProductDetails($product_id);
   <?php if (!empty($discountProduct)): ?>
     <?php foreach ($discountProduct as $product): ?>
       <div class="bg-white rounded-2xl shadow-xl mb-8 p-6 transition-transform transform hover:scale-105 hover:shadow-2xl duration-300">
+
         <!-- Ưu đãi giới hạn -->
-        <div class="absolute top-4 left-4 bg-red-500 text-white text-xl font-bold py-1 px-2 rounded-lg">Limited-Time Offer</div>
+        <div class="absolute top-4 left-8 bg-red-500 text-white text-xl font-bold py-1 px-2 rounded-full animate-pulse-custom">Limited-Time Offer</div>
+
+        <!-- Icon trái tim nổi bật với hiệu ứng đập -->
+        <div class="absolute top-4 right-4 heart-icon heart-beat">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 20 20" fill="currentColor">
+            <path d="M10 18l-1.45-1.32C4.4 12.36 2 9.28 2 6.5 2 4.42 3.42 3 5.5 3c1.54 0 3.04.99 3.57 2.36h1.87C11.46 3.99 12.96 3 14.5 3 16.58 3 18 4.42 18 6.5c0 2.78-2.4 5.86-6.55 10.18L10 18z" />
+          </svg>
+        </div>
 
         <div class="flex justify-center">
           <div class="flex-shrink-0 w-1/3 flex justify-center items-center">

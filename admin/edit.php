@@ -62,7 +62,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <label for="name" class="block text-gray-700 text-sm font-bold mb-2">Product Name</label>
                 <input type="text" name="name" value="<?= htmlspecialchars($product['name']) ?>" class="border rounded w-full py-2 px-3 text-gray-700 focus:outline-none focus:border-blue-500" required>
             </div>
-            <div class="mb-4">
+            <div class="mb-2">
                 <label for="description" class="block text-gray-700 text-sm font-bold mb-2">Description</label>
                 <textarea name="description" class="border rounded w-full py-2 px-3 text-gray-700 focus:outline-none focus:border-blue-500" placeholder="Can be left empty"><?= htmlspecialchars($product['description']) ?></textarea>
             </div>
@@ -79,7 +79,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </select>
             </div>
             <div class="mb-4">
-                <label for="discount" class="block text-gray-700 text-sm font-bold mb-2">Discount (%)</label>
+                <label for="discount" class="block text-gray-700 text-sm font-bold mb-2">Discount Price</label>
                 <input type="number" name="discount" value="<?= htmlspecialchars($product['discount']) ?>" class="border rounded w-full py-2 px-3 text-gray-700 focus:outline-none focus:border-blue-500" min="0" max="100" step="0.01" placeholder="Enter discount (e.g., 15.50)">
             </div>
             <div class="mb-4">

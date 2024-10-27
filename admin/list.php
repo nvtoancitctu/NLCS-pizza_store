@@ -32,7 +32,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['search'])) {
 ?>
 
 <h1 class="text-4xl font-extrabold text-center my-10 text-blue-700 drop-shadow-lg">Product Management</h1>
-<div class="container mx-auto p-6 bg-white shadow-xl rounded-lg w-4/5 mb-4">
+<div class="container mx-auto p-6 bg-white shadow-xl rounded-lg w-full mb-4">
     <div class="row mb-2">
         <div class="col-md-4">
             <!-- Add New Product Button -->

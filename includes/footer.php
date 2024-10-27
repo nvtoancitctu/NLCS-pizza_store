@@ -1,5 +1,5 @@
 <!-- Footer -->
-<footer class="bg-gray-800 text-white py-4 mt-auto">
+<footer class="bg-gradient-to-r from-red-600 to-gray-500 text-white py-4 mt-auto">
   <div class="container mx-auto text-center">
     <p class="mb-2">2024 © Pizza Store by Nguyen Van Toan B2111824</p>
     <div class="flex justify-center space-x-4">

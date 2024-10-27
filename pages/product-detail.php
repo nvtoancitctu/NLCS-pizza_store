@@ -27,7 +27,7 @@ if (!$product) {
 
         <!-- Chi tiết sản phẩm -->
         <div class="col-md-6">
-            <h1 class="mt-8 text-4xl font-extrabold text-blue-700 tracking-wide"><?php echo htmlspecialchars($product['name']); ?></h1>
+            <h1 class="mt-8 text-5xl font-extrabold text-black-700 tracking-wide mb-2"><?php echo htmlspecialchars($product['name']); ?></h1>
             <p class="text-lg text-gray-600 mb-3"><?php echo htmlspecialchars($product['description']); ?></p>
 
             <!-- Hiển thị giá: Nếu có giảm giá thì hiện giá giảm -->

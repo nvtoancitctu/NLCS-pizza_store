@@ -86,7 +86,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['checkout'])) {
     <!--  -->
     <div class="overflow-x-auto">
       <table class="min-w-full border border-black shadow-md rounded-lg">
-        <caption class="text-l text-center text-blue-600">Products in Cart</caption>
         <thead class="bg-gray-300 border-b">
           <tr class="text-sm">
             <th class="py-3 px-4 text-left text-gray-600">Product</th>
@@ -108,7 +107,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['checkout'])) {
       </table>
     </div>
 
-    <h3 class="text-xl font-bold mt-2">Total Amount: <span class="text-red-600">$<?= number_format($totalAmount, 2) ?></span></h3>
+    <h3 class="text-xl font-bold mt-4">Total Amount: <span class="text-red-600">$<?= number_format($totalAmount, 2) ?></span></h3>
     <div class="flex justify-between mt-6">
       <button type="button" class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded"
         onclick="window.location.href='/index.php?page=cart'">Cancel</button>

@@ -72,7 +72,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </select>
             </div>
             <div class="mb-4">
-                <label for="discount" class="block text-gray-700 text-sm font-bold mb-2">Discount</label>
+                <label for="discount" class="block text-gray-700 text-sm font-bold mb-2">Discount Price</label>
                 <input type="number" name="discount" class="border rounded w-full py-2 px-3 text-gray-700 focus:outline-none focus:border-blue-500" min="0" max="100" step="0.01" placeholder="Enter discount (e.g., 15,50)">
             </div>
             <!-- Thay đổi theo giờ của máy -->

@@ -62,17 +62,17 @@ if (isset($_GET['action'])) {
                             <img src="/images/<?= htmlspecialchars($item['image']) ?>"
                                 alt="<?= htmlspecialchars($item['name']) ?>"
                                 class="w-12 h-12 mr-2 rounded-md shadow-md">
-                            <span class="font-semibold text-gray-800"><?= htmlspecialchars($item['name']) ?></span>
+                            <span class="text-gray-800"><?= htmlspecialchars($item['name']) ?></span>
                         </td>
 
                         <td class="px-4 py-2">
                             <?php if ($item['discount'] > 0): ?>
                                 <div>
-                                    <p class="text-sm font-semibold text-gray-500 line-through">$<?= htmlspecialchars($item['price']); ?></p>
-                                    <p class="text-lg font-semibold text-red-600 mt-1">$<?= htmlspecialchars($item['discount']); ?></p>
+                                    <p class="text-xs text-gray-500 line-through">$<?= htmlspecialchars($item['price']); ?></p>
+                                    <p class="text-sm text-red-600 mt-1">$<?= htmlspecialchars($item['discount']); ?></p>
                                 </div>
                             <?php else: ?>
-                                <h3 class="text-lg font-semibold text-gray-800">$<?= htmlspecialchars($item['price']); ?></h3>
+                                <h3 class="text-sm text-gray-800">$<?= htmlspecialchars($item['price']); ?></h3>
                             <?php endif; ?>
                         </td>
 
@@ -88,11 +88,11 @@ if (isset($_GET['action'])) {
                             </form>
                         </td>
 
-                        <td class="px-4 py-2 font-semibold text-gray-800 text-lg">
+                        <td class="px-4 py-2 text-gray-800 text-sm">
                             <?php
                             $totalPrice = $item['discount'] > 0 ? $item['discount'] * $item['quantity'] : $item['price'] * $item['quantity'];
                             ?>
-                            <span class="<?= $item['discount'] > 0 ? 'text-red-600 font-semibold' : 'text-gray-800 font-semibold' ?>">
+                            <span class="<?= $item['discount'] > 0 ? 'text-red-600' : 'text-gray-800' ?>">
                                 $<?= htmlspecialchars($totalPrice) ?>
                             </span>
                         </td>

@@ -25,7 +25,7 @@ function getCartItemCount($conn, $user_id)
 $cartItemCount = getCartItemCount($conn, $user_id);
 ?>
 
-<nav class="bg-red-600 text-white shadow-lg navbar">
+<nav class="bg-gradient-to-r from-red-600 to-gray-500 text-white shadow-lg navbar">
   <div class="container mx-auto px-4 py-3 flex justify-between items-center">
 
     <!-- Logo and Brand Name -->
@@ -49,7 +49,7 @@ $cartItemCount = getCartItemCount($conn, $user_id);
       <a href="/index.php?page=products" class="hover:text-yellow-300 transition duration-300">Products</a>
       <a href="/index.php?page=cart" class="relative hover:text-yellow-300 transition duration-300">
         <i class="fas fa-shopping-cart"></i> Cart
-        <span class="bg-yellow-300 text-blue-600 font-bold rounded-full text-xs px-2 py-1 absolute -top-1 -right-2 transform translate-x-1/2 -translate-y-1/2">
+        <span class="bg-yellow-300 text-blue-600 font-bold rounded-full text-xs px-2 py-1 absolute -top-2 -right-2 transform translate-x-1/2 -translate-y-1/2">
           <?= $cartItemCount ?> <!-- Số lượng sản phẩm -->
         </span>
       </a>
