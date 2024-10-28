@@ -1,7 +1,8 @@
 <?php
 session_start();
+
 // Include necessary files
-require_once '../config.php';
+require_once '../includes/config.php';
 require_once '../controllers/CartController.php';
 
 // Initialize CartController

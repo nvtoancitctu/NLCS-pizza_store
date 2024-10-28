@@ -1,6 +1,6 @@
 <?php
+
 require_once '../models/Product.php';
-require_once '../config.php'; // Kết nối tới database
 
 class ProductController
 {

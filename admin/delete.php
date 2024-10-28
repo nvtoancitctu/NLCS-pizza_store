@@ -1,17 +1,18 @@
 <?php
-require_once '../config.php';
-require_once '../controllers/ProductController.php';
-
+// Kiểm tra quyền truy cập
 if (!isset($_SESSION['user_role']) || $_SESSION['user_role'] !== 'admin') {
     header("Location: /index.php?page=login");
     exit();
 }
 
 $productController = new ProductController($conn);
-$product_id = $_GET['id'];
+$products = $productController->listProducts(); // Giả sử có phương thức này để lấy danh sách sản phẩm
 
-// Xóa sản phẩm
-$productController->deleteProduct($product_id);
-$_SESSION['success'] = "Product $product_id has been deleted successfully!";
-header("Location: /index.php?page=list");
-exit();
+// Xóa sản phẩm nếu có yêu cầu từ GET
+if (isset($_GET['id'])) {
+    $product_id = $_GET['id'];
+    $productController->deleteProduct($product_id);
+    $_SESSION['success'] = "Product $product_id has been deleted successfully!";
+    header("Location: /index.php?page=list");
+    exit();
+}

@@ -1,35 +1,28 @@
 <?php
 if (session_status() === PHP_SESSION_NONE) {
-  session_start(); // Khởi động session nếu chưa có
+  session_start();
 }
 require_once '../models/Cart.php';
-require_once '../config.php'; // Kết nối CSDL
+require_once '../includes/config.php';
 
-// Kiểm tra xem khóa 'user_id' có tồn tại trong mảng $_SESSION không
-$user_id = $_SESSION['user_id'] ?? null; // Sử dụng null nếu không có user_id
+$user_id = $_SESSION['user_id'] ?? null;
+$cartItemCount = getCartItemCount($conn, $user_id);
 
 // Hàm lấy tổng số lượng sản phẩm trong giỏ hàng
 function getCartItemCount($conn, $user_id)
 {
-  if ($user_id === null) {
-    return 0; // Nếu không có user_id, trả về 0
-  }
+  if (!$user_id) return 0;
 
   $stmt = $conn->prepare("SELECT SUM(quantity) as total FROM cart WHERE user_id = :user_id");
   $stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
   $stmt->execute();
-  $result = $stmt->fetch(PDO::FETCH_ASSOC);
-  return $result['total'] ?? 0; // Nếu không có sản phẩm nào thì trả về 0
+  return $stmt->fetch(PDO::FETCH_ASSOC)['total'] ?? 0;
 }
-
-$cartItemCount = getCartItemCount($conn, $user_id);
 ?>
 
-<nav class="bg-gradient-to-r from-red-600 to-gray-500 text-white shadow-lg navbar">
+<nav class="bg-gradient-to-r from-red-600 to-blue-600 text-white shadow-lg navbar">
   <div class="container mx-auto px-4 py-3 flex justify-between items-center">
-
-    <!-- Logo and Brand Name -->
-    <div class="flex items-center space-x-3 bg-cover bg-no-repeat">
+    <div class="flex items-center space-x-3">
       <img src="/images/logo.png" alt="Pizza Store" class="h-14 w-14">
       <a href="/index.php?page=home" class="text-3xl font-bold">Lover's Hub</a>
     </div>
@@ -37,7 +30,7 @@ $cartItemCount = getCartItemCount($conn, $user_id);
     <!-- Mobile Menu Button -->
     <div class="lg:hidden">
       <button id="navbar-toggler" class="text-white focus:outline-none">
-        <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
         </svg>
       </button>
@@ -45,40 +38,44 @@ $cartItemCount = getCartItemCount($conn, $user_id);
 
     <!-- Navbar Links for Desktop -->
     <div class="hidden lg:flex space-x-8 items-center" id="navbar-menu">
-      <a href="/index.php?page=home" class="hover:text-yellow-300 transition duration-300">Home</a>
-      <a href="/index.php?page=products" class="hover:text-yellow-300 transition duration-300">Products</a>
-      <a href="/index.php?page=cart" class="relative hover:text-yellow-300 transition duration-300">
-        <i class="fas fa-shopping-cart"></i> Cart
-        <span class="bg-yellow-300 text-blue-600 font-bold rounded-full text-xs px-2 py-1 absolute -top-2 -right-2 transform translate-x-1/2 -translate-y-1/2">
-          <?= $cartItemCount ?> <!-- Số lượng sản phẩm -->
-        </span>
-      </a>
-      <a href="/index.php?page=contact" class="hover:text-yellow-300 transition duration-300">Contact</a>
+      <?php
+      $nav_links = [
+        'home' => ['label' => 'Home', 'icon' => 'fas fa-home'],
+        'products' => ['label' => 'Products', 'icon' => 'fas fa-pizza-slice'],
+        'cart' => ['label' => 'Cart', 'icon' => 'fas fa-shopping-cart'],
+        'contact' => ['label' => 'Contact', 'icon' => 'fas fa-envelope']
+      ];
+      foreach ($nav_links as $page => $data): ?>
+        <a href="/index.php?page=<?= $page ?>" class="hover:text-yellow-300 transition duration-300 flex items-center space-x-1 relative">
+          <i class="<?= $data['icon'] ?>"></i>
+          <span><?= $data['label'] ?></span>
+          <?php if ($page == 'cart'): ?>
+            <!-- Số lượng sản phẩm trong giỏ hàng hiển thị ở góc trên -->
+            <span class="absolute  transform -top-1 -right-1.5 -translate-y-1/2 translate-x-1/2 bg-yellow-300 text-blue-600 font-bold rounded-full text-xs px-2 py-1">
+              <?= $cartItemCount ?>
+            </span>
+          <?php endif; ?>
+        </a>
+      <?php endforeach; ?>
 
       <?php if (isset($_SESSION['user_name'])): ?>
-
-        <!-- User is logged in -->
         <div class="relative">
-          <button class="flex items-center space-x-2 hover:text-yellow-300 transition duration-300 focus:outline-none"
-            id="user-dropdown-toggle">
+          <button class="flex items-center space-x-2 hover:text-yellow-300" id="user-dropdown-toggle">
             <i class="fas fa-user"></i>
             <span><?= htmlspecialchars($_SESSION['user_name']) ?></span>
           </button>
           <div id="user-dropdown" class="hidden absolute right-0 mt-2 w-48 bg-white text-black rounded-lg shadow-lg">
             <a href="/index.php?page=account" class="block px-4 py-2 hover:bg-gray-200">Profile</a>
-
-            <!-- Logout form -->
             <form method="POST" id="logout-form">
-              <button type="submit" name="logout" class="block w-full text-left px-4 py-2 hover:bg-gray-200">
-                Logout
-              </button>
+              <button type="submit" name="logout" class="block w-full text-left px-4 py-2 hover:bg-gray-200">Logout</button>
             </form>
           </div>
         </div>
       <?php else: ?>
-
-        <!-- User is not logged in -->
-        <a href="/index.php?page=login" class="hover:text-yellow-300 transition duration-300">Login</a>
+        <a href="/index.php?page=login" class="hover:text-yellow-300 transition duration-300 flex items-center space-x-1">
+          <i class="fas fa-sign-in-alt"></i>
+          <span>Login</span>
+        </a>
       <?php endif; ?>
     </div>
   </div>
@@ -86,37 +83,34 @@ $cartItemCount = getCartItemCount($conn, $user_id);
   <!-- Mobile Menu -->
   <div class="lg:hidden hidden" id="mobile-menu">
     <ul class="flex flex-col items-center bg-red-500 py-4 space-y-2">
-      <li>
-        <a href="/index.php?page=home" class="block px-3 py-2 text-white hover:bg-yellow-400">Home</a>
-      </li>
-      <li>
-        <a href="/index.php?page=products" class="block px-3 py-2 text-white hover:bg-yellow-400">Products</a>
-      </li>
-      <li>
-        <a href="/index.php?page=cart" class="block px-3 py-2 text-white hover:bg-yellow-400">Cart</a>
-      </li>
-      <li>
-        <a href="/index.php?page=contact" class="block px-3 py-2 text-white hover:bg-yellow-400">Contact</a>
-      </li>
+      <?php foreach ($nav_links as $page => $data): ?>
+        <li>
+          <a href="/index.php?page=<?= $page ?>" class="block px-3 py-2 text-white hover:bg-yellow-400 flex items-center space-x-1">
+            <i class="<?= $data['icon'] ?>"></i>
+            <span><?= $data['label'] ?></span>
+          </a>
+        </li>
+      <?php endforeach; ?>
+
       <?php if (isset($_SESSION['user_name'])): ?>
-        <button class="block px-3 py-2 text-white hover:bg-yellow-400" id="mobile-user-dropdown-toggle">
+        <button class="block px-3 py-2 text-white hover:bg-yellow-400 flex items-center space-x-1" id="mobile-user-dropdown-toggle">
           <i class="fas fa-user"></i>
           <span><?= htmlspecialchars($_SESSION['user_name']) ?></span>
         </button>
         <div id="mobile-user-dropdown" class="hidden">
           <a href="/index.php?page=account" class="block px-3 py-2 text-white hover:bg-yellow-400">Profile</a>
-
-          <!-- Logout form for mobile -->
           <form method="POST" id="mobile-logout-form">
             <button type="submit" name="logout" class="block w-full text-left px-3 py-2 text-white hover:bg-yellow-400">Logout</button>
           </form>
         </div>
       <?php else: ?>
         <li>
-          <a href="/index.php?page=login" class="block px-3 py-2 text-white hover:bg-yellow-400">Login</a>
+          <a href="/index.php?page=login" class="block px-3 py-2 text-white hover:bg-yellow-400 flex items-center space-x-1">
+            <i class="fas fa-sign-in-alt"></i>
+            <span>Login</span>
+          </a>
         </li>
       <?php endif; ?>
     </ul>
   </div>
 </nav>
-<!--  -->

@@ -1,16 +1,16 @@
 <?php
-require_once '../controllers/CartController.php';
-require_once '../config.php'; // Kết nối CSDL
 
+// Kiểm tra đăng nhập
 if (!isset($_SESSION['user_id'])) {
     $_SESSION['success'] = "Please log in to add items to your cart!";
-    header("Location: /index.php?page=login"); // Điều hướng về trang đăng nhập
+    header("Location: /index.php?page=login");
     exit();
 }
+
 // Khởi tạo CartController
 $cartController = new CartController($conn);
 
-// Giả sử user_id được lưu trong session (để đơn giản, bạn có thể lấy user_id từ session)
+// Lấy user_id từ phiên
 $user_id = $_SESSION['user_id'];
 
 // Lấy sản phẩm trong giỏ hàng
@@ -28,12 +28,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['update'])) {
 // Xử lý xóa sản phẩm khỏi giỏ hàng
 if (isset($_GET['action'])) {
     if ($_GET['action'] === 'delete' && isset($_GET['cart_id']) && is_numeric($_GET['cart_id'])) {
-        $cart_id = (int) $_GET['cart_id']; // Convert $cart_id to an integer
+        $cart_id = (int) $_GET['cart_id'];
         $cartController->deleteCartItem($cart_id);
         header("Location: /index.php?page=cart");
         exit();
     } else {
-        // Only display the error if the action is specifically delete but invalid
+        // 
         if ($_GET['action'] === 'delete') {
             echo "Invalid cart ID or action.";
         }
@@ -66,13 +66,13 @@ if (isset($_GET['action'])) {
                         </td>
 
                         <td class="px-4 py-2">
-                            <?php if ($item['discount'] > 0): ?>
+                            <?php if ($item['price_to_display'] < $item['price']): ?>
                                 <div>
-                                    <p class="text-xs text-gray-500 line-through">$<?= htmlspecialchars($item['price']); ?></p>
-                                    <p class="text-sm text-red-600 mt-1">$<?= htmlspecialchars($item['discount']); ?></p>
+                                    <p class="text-xs text-gray-500 line-through">$<?= htmlspecialchars(number_format($item['price'], 2)); ?></p>
+                                    <p class="text-sm text-red-600 mt-1">$<?= htmlspecialchars(number_format($item['price_to_display'], 2)); ?></p>
                                 </div>
                             <?php else: ?>
-                                <h3 class="text-sm text-gray-800">$<?= htmlspecialchars($item['price']); ?></h3>
+                                <h3 class="text-sm text-gray-800">$<?= htmlspecialchars(number_format($item['price'], 2)); ?></h3>
                             <?php endif; ?>
                         </td>
 
@@ -89,12 +89,7 @@ if (isset($_GET['action'])) {
                         </td>
 
                         <td class="px-4 py-2 text-gray-800 text-sm">
-                            <?php
-                            $totalPrice = $item['discount'] > 0 ? $item['discount'] * $item['quantity'] : $item['price'] * $item['quantity'];
-                            ?>
-                            <span class="<?= $item['discount'] > 0 ? 'text-red-600' : 'text-gray-800' ?>">
-                                $<?= htmlspecialchars($totalPrice) ?>
-                            </span>
+                            $<?= number_format($item['total_price'], 2) ?>
                         </td>
 
                         <td class="px-4 py-2">
@@ -109,7 +104,17 @@ if (isset($_GET['action'])) {
             </tbody>
             <!--  -->
         </table>
-        <div class="text-center mt-auto mb-2">
+        <!-- Hiển thị tổng giá giỏ hàng -->
+        <div class="text-center font-bold text-lg mt-4 mb-2" style="margin-left: 500px;">
+            <span>Total Price: </span>
+            <span class="text-red-600">$<?= number_format(array_sum(array_map(function ($item) {
+                                            // Tính giá tổng dựa trên giá giảm giá nếu có
+                                            $unitPrice = !empty($item['price_to_display']) ? $item['price_to_display'] : $item['price'];
+                                            return $unitPrice * $item['quantity'];
+                                        }, $cartItems)), 2) ?></span>
+        </div>
+
+        <div class="text-center mt-auto mb-4">
             <button type="button" class="bg-green-500 text-white px-5 py-2 rounded-lg transition duration-300 hover:bg-red-500 shadow-lg"
                 onclick="window.location.href='/index.php?page=checkout'">Proceed to Checkout</button>
         </div>

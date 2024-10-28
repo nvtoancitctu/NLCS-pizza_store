@@ -1,4 +1,5 @@
 <?php
+
 require_once '../models/Order.php';
 
 class OrderController
@@ -30,5 +31,10 @@ class OrderController
   public function getOrdersByUserId($user_id)
   {
     return $this->orderModel->getOrdersByUserId($user_id);
+  }
+
+  public function getOrderDetailsByOrderId($order_id)
+  {
+    return $this->orderModel->getOrderDetailsByOrderId($order_id);
   }
 }

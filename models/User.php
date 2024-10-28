@@ -16,16 +16,21 @@ class User
         $this->conn = $db;
     }
 
-    // Đăng ký người dùng mới
+    /**
+     * Đăng ký người dùng mới
+     * @param string $name - Tên người dùng
+     * @param string $email - Địa chỉ email
+     * @param string $password - Mật khẩu
+     * @return string - Thông báo trạng thái
+     */
     public function register($name, $email, $password)
     {
-        // Kiểm tra xem email đã tồn tại hay chưa
+        // Kiểm tra email đã tồn tại
         $stmt = $this->conn->prepare("SELECT * FROM users WHERE email = :email");
         $stmt->execute(['email' => $email]);
 
         if ($stmt->rowCount() > 0) {
-            // Email đã tồn tại, trả về thông báo lỗi
-            return "Email already exists. Please choose a different one.";
+            return "Email already exists.";
         }
 
         // Kiểm tra tính hợp lệ của dữ liệu
@@ -33,12 +38,11 @@ class User
             return "All fields are required.";
         }
 
-        // Kiểm tra độ dài tối thiểu của mật khẩu
         if (strlen($password) < 6) {
             return "Password must be at least 6 characters long.";
         }
 
-        // Nếu email chưa tồn tại, tiếp tục đăng ký
+        // Mã hóa mật khẩu và thực hiện đăng ký
         $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
         try {
@@ -46,12 +50,16 @@ class User
             $stmt->execute(['name' => $name, 'email' => $email, 'password' => $hashedPassword]);
             return "Registration successful!";
         } catch (PDOException $e) {
-            // Xử lý lỗi nếu có
-            return "Error occurred during registration: " . $e->getMessage();
+            return "Error during registration: " . $e->getMessage();
         }
     }
 
-    // Kiểm tra thông tin đăng nhập
+    /**
+     * Kiểm tra thông tin đăng nhập
+     * @param string $email - Địa chỉ email
+     * @param string $password - Mật khẩu
+     * @return mixed - Thông tin người dùng nếu thành công, false nếu thất bại
+     */
     public function login($email, $password)
     {
         $query = "SELECT * FROM " . $this->table . " WHERE email = ?";
@@ -59,19 +67,22 @@ class User
         $stmt->execute([$email]);
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        // Kiểm tra mật khẩu
         if ($user && password_verify($password, $user['password'])) {
-            return $user; // Trả về thông tin người dùng nếu đăng nhập thành công
+            return $user;
         }
-        return false; // Sai thông tin đăng nhập
+        return false;
     }
 
-    // Lấy thông tin người dùng dựa trên ID
+    /**
+     * Lấy thông tin người dùng theo ID
+     * @param int $id - ID người dùng
+     * @return array|null - Thông tin người dùng hoặc null
+     */
     public function getUserById($id)
     {
         $query = "SELECT * FROM " . $this->table . " WHERE id = ?";
         $stmt = $this->conn->prepare($query);
         $stmt->execute([$id]);
-        return $stmt->fetch(PDO::FETCH_ASSOC);
+        return $stmt->fetch(PDO::FETCH_ASSOC); // Trả về thông tin người dùng
     }
 }

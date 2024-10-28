@@ -1,6 +1,4 @@
 <?php
-require_once '../config.php'; // Database connection
-require_once '../controllers/UserController.php';
 
 // Khởi tạo UserController
 $userController = new UserController($conn);

@@ -1,7 +1,5 @@
 <?php
-require_once '../config.php';
-require_once '../controllers/ProductController.php';
-
+// Kiểm tra quyền admin
 if (!isset($_SESSION['user_role']) || $_SESSION['user_role'] !== 'admin') {
     header("Location: /index.php?page=login");
     exit();
@@ -19,7 +17,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $category_id = $_POST['category_id'];
 
     $discount = !empty($_POST['discount']) ? $_POST['discount'] : null;
-    $discount_end_time = $_POST['discount_end_time'] ?? null;
+    $discount_end_time = !empty($_POST['discount_end_time']) ? $_POST['discount_end_time'] : null;
 
     $currentProduct = $productController->getProductDetails($product_id);
     $image = $currentProduct['image'];
@@ -29,32 +27,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $file_ext = pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION);
 
         if (in_array(strtolower($file_ext), $allowed)) {
-            if (move_uploaded_file($_FILES['image']['tmp_name'], "images/$image")) {
-                $productController->updateProduct($name, $description, $price, $image, $category_id, $discount, $discount_end_time, $product['id']);
-                $_SESSION['success'] = "Product $product_id has been updated successfully!";
-                header("Location: /index.php?page=list");
-                exit();
+            // Đặt tên mới cho ảnh để tránh trùng tên
+            $newImageName = "images/" . basename($_FILES['image']['name']);
+            if (move_uploaded_file($_FILES['image']['tmp_name'], $newImageName)) {
+                $image = $newImageName; // Cập nhật đường dẫn ảnh mới nếu tải lên thành công
             } else {
                 $error = "Failed to upload the image. Please try again.";
             }
         } else {
             $error = "Invalid file format. Only JPG, JPEG, PNG, and GIF are allowed.";
         }
-    } else {
-        $productController->updateProduct($name, $description, $price, $image, $category_id, $discount, $discount_end_time, $product['id']);
-        $_SESSION['success'] = "Product $product_id has been updated successfully!";
-        header("Location: /index.php?page=list");
-        exit();
     }
+
+    // Chạy cập nhật sản phẩm trong mọi trường hợp (dù có hoặc không có ảnh mới)
+    $productController->updateProduct($product_id, $name, $description, $price, $image, $category_id, $discount, $discount_end_time);
+    $_SESSION['success'] = "Product $product_id has been updated successfully!";
+    header("Location: /index.php?page=list");
+    exit();
 }
+
 ?>
-
-<?php if (isset($error)): ?>
-    <div class="alert alert-danger"><?= htmlspecialchars($error) ?></div>
-<?php endif; ?>
-
+<!--  -->
 <h1 class="text-4xl font-extrabold text-center my-10 text-blue-700 drop-shadow-lg">Edit Product</h1>
-
+<!--  -->
 <div class="flex justify-center">
     <div class="w-full max-w-2xl">
         <form action="/index.php?page=edit&id=<?= htmlspecialchars($product['id']) ?>" method="POST" enctype="multipart/form-data" class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">

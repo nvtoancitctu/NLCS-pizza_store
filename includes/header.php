@@ -6,33 +6,34 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lover's Hub</title>
 
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
-    <!-- Font Awesome CDN -->
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Lobster&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome (cho biểu tượng) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <!-- Chỉ giữ lại phiên bản Bootstrap mới nhất -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <!-- Bootstrap JS (cần jQuery nếu bạn sử dụng Bootstrap < 5) -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- Ajax CSS -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    <!-- Tailwin CSS -->
+
+    <!-- Tailwind CSS -->
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Lobster&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+    <!-- Custom CSS -->
     <link rel="stylesheet" href="css/style.css?v=3.0">
 
+    <!-- Inline CSS cho hình nền và font chữ -->
     <style>
         body {
-            background: linear-gradient(to bottom right, rgba(255, 245, 204, 0.8), rgba(255, 200, 0, 0.8)),
-                url('/images/pizza-pattern.png') no-repeat center center fixed;
+            background: linear-gradient(to bottom right, rgba(255, 248, 235, 0.9), rgba(255, 210, 160, 0.6));
             background-size: cover;
-            /* Đảm bảo hình ảnh nền phủ kín */
             font-family: 'Poppins', sans-serif;
         }
     </style>
-
 </head>
 
-<body class="min-h-screen flex flex-col">
+<body class="min-h-screen flex flex-col bg-gradient-to-r from-gray-100 to-gray-50 bg-opacity-50 font-sans">
+    <!-- Nội dung trang -->
+</body>
+
+</html>

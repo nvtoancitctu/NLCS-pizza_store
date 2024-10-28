@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Máy chủ: 127.0.0.1
--- Thời gian đã tạo: Th10 25, 2024 lúc 02:02 PM
+-- Thời gian đã tạo: Th10 28, 2024 lúc 04:30 AM
 -- Phiên bản máy phục vụ: 10.4.32-MariaDB
 -- Phiên bản PHP: 8.2.12
 
@@ -71,15 +71,6 @@ CREATE TABLE `contact` (
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Đang đổ dữ liệu cho bảng `contact`
---
-
-INSERT INTO `contact` (`id`, `user_id`, `name`, `email`, `message`, `created_at`) VALUES
-(1, 1, 'Phan Trung Thuan', 'me@example.com', 'thkkkk', '2024-10-25 07:27:22'),
-(2, 1, 'Nguyễn Văn Toàn', 'me@example.com', 'thk', '2024-10-25 07:27:45'),
-(3, NULL, 'Nguyễn Văn Toàn', 'admin@localhost.com', 'thkoi', '2024-10-25 07:28:09');
-
 -- --------------------------------------------------------
 
 --
@@ -96,13 +87,6 @@ CREATE TABLE `orders` (
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Đang đổ dữ liệu cho bảng `orders`
---
-
-INSERT INTO `orders` (`id`, `user_id`, `total`, `payment_method`, `status`, `address`, `created_at`) VALUES
-(1, 1, 32.98, 'paypal', 'pending', 'fff', '2024-10-25 09:43:43');
-
 -- --------------------------------------------------------
 
 --
@@ -116,14 +100,6 @@ CREATE TABLE `order_items` (
   `quantity` int(11) NOT NULL,
   `price` decimal(10,2) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Đang đổ dữ liệu cho bảng `order_items`
---
-
-INSERT INTO `order_items` (`id`, `order_id`, `product_id`, `quantity`, `price`) VALUES
-(1, 1, 2, 1, 15.99),
-(2, 1, 4, 1, 16.99);
 
 -- --------------------------------------------------------
 

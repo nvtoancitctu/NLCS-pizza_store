@@ -1,7 +1,5 @@
 <?php
-require_once '../config.php';
-require_once '../controllers/ProductController.php';
-
+// Kiểm tra quyền admin
 if (!isset($_SESSION['user_role']) || $_SESSION['user_role'] !== 'admin') {
     header("Location: /index.php?page=login");
     exit();
@@ -78,7 +76,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <!-- Thay đổi theo giờ của máy -->
             <div class="mb-4">
                 <label for="discount_end_time" class="block text-gray-700 text-sm font-bold mb-2">Discount End Time (UTC)</label>
-                <input type="datetime-local" id="discount_end_time" name="discount_end_time" class="border rounded w-full py-2 px-3 text-gray-700 focus:outline-none focus:border-blue-500" required>
+                <input type="datetime-local" id="discount_end_time" name="discount_end_time" class="border rounded w-full py-2 px-3 text-gray-700 focus:outline-none focus:border-blue-500">
             </div>
 
             <script>

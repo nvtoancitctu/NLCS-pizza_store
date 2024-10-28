@@ -1,6 +1,4 @@
 <?php
-require_once '../config.php';
-require_once '../controllers/ProductController.php';
 
 // Initialize the Product Controller
 $productController = new ProductController($conn);
@@ -36,7 +34,7 @@ $products = $productController->listProducts($category_id);
         <?php if (!empty($products)): ?>
             <?php foreach ($products as $product): ?>
                 <div class="p-2">
-                    <div class="bg-white rounded-lg shadow-lg transition-transform transform hover:scale-105">
+                    <div class="bg-pink-50 rounded-lg shadow-lg transition-transform transform hover:scale-105">
                         <!-- Product Image -->
                         <div class="flex justify-center">
                             <img src="/images/<?= htmlspecialchars($product['image']) ?>"
@@ -51,11 +49,27 @@ $products = $productController->listProducts($category_id);
 
                             <!-- Hiển thị giá: Nếu có giảm giá thì hiện giá giảm -->
                             <div class="text-center">
-                                <?php if ($product['discount'] > 0): ?>
-                                    <p class="text-l font-semibold text-gray-500 line-through mt-2">Original Price: $<?= htmlspecialchars($product['price']); ?></p>
-                                    <p class="text-xl font-semibold text-red-600">Discounted Price: $<?= htmlspecialchars($product['discount']); ?></p>
+                                <?php
+                                // Lấy thời gian hiện tại
+                                $currentDateTime = new DateTime();
+
+                                // Lấy thời gian hết hạn của giảm giá từ cơ sở dữ liệu
+                                $discountEndTime = new DateTime($product['discount_end_time']);
+
+                                if ($product['discount'] > 0 && $discountEndTime >= $currentDateTime): ?>
+                                    <!-- Hiển thị giá gốc bị gạch ngang -->
+                                    <p class="text-l font-semibold text-gray-500 line-through mt-2">
+                                        Original Price: $<?= htmlspecialchars($product['price']); ?>
+                                    </p>
+                                    <!-- Hiển thị giá giảm -->
+                                    <p class="text-xl font-semibold text-red-600">
+                                        Discounted Price: $<?= htmlspecialchars($product['discount']); ?>
+                                    </p>
                                 <?php else: ?>
-                                    <h3 class="text-xl font-semibold text-red-600 mt-6 mb-8">Price: $<?= htmlspecialchars($product['price']); ?></h3>
+                                    <!-- Nếu không có giảm giá hoặc đã hết hạn, hiển thị giá gốc -->
+                                    <h3 class="text-xl font-semibold text-red-600 mt-6 mb-8">
+                                        Price: $<?= htmlspecialchars($product['price']); ?>
+                                    </h3>
                                 <?php endif; ?>
                             </div>
 

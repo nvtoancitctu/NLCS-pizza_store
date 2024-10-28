@@ -3,7 +3,7 @@ ob_start();
 session_start();
 
 // Include file cấu hình (kết nối database)
-require_once '../config.php';
+require_once '../includes/config.php';
 
 // Kiểm tra nếu bấm đăng xuất
 if (isset($_POST['logout'])) {
@@ -14,10 +14,16 @@ if (isset($_POST['logout'])) {
     header("Location: /index.php?page=home&logout=success");
     exit();
 }
-// Include các phần như header
+
+// Include các phần như header, navbar
 require_once '../includes/header.php';
 require_once '../includes/navbar.php';
 
+// Include các controllers
+require_once '../controllers/CartController.php';
+require_once '../controllers/OrderController.php';
+require_once '../controllers/ProductController.php';
+require_once '../controllers/UserController.php';
 
 // Routing đơn giản thông qua tham số "page"
 $page = isset($_GET['page']) ? $_GET['page'] : 'home';
@@ -65,6 +71,9 @@ switch ($page) {
         break;
     case 'delete':
         include '../admin/delete.php';
+        break;
+    case 'export':
+        include '../admin/export.php';
         break;
     default:
         include '../pages/404.php'; // Trang lỗi 404

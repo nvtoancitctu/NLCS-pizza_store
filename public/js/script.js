@@ -27,54 +27,52 @@ if (mobileUserDropdownToggle) {
 
 
 // Xử lý việc thêm SP vào giỏ với Ajax (không tải lại trang)
-document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener("DOMContentLoaded", () => {
     const addToCartButtons = document.querySelectorAll('.add-to-cart-button');
 
-    addToCartButtons.forEach(button => {
-        button.addEventListener('click', function (e) {
-            e.preventDefault();
-            const form = e.target.closest('.add-to-cart-form');
-            const formData = new FormData(form);
+    const handleAddToCart = async (event) => {
+        event.preventDefault();
+        const form = event.target.closest('.add-to-cart-form');
+        const formData = new FormData(form);
+        formData.append('action', 'add_to_cart');
 
-            // Add the action parameter for the AJAX endpoint
-            formData.append('action', 'add_to_cart');
-
-            fetch('/ajax.php', {
+        try {
+            const response = await fetch('/cart.php', {
                 method: 'POST',
                 body: formData,
                 headers: {
-                    'X-Requested-With': 'XMLHttpRequest' // Marks the request as an AJAX request
+                    'X-Requested-With': 'XMLHttpRequest'
                 }
-            })
-                .then(response => {
-                    if (response.headers.get('content-type')?.includes('application/json')) {
-                        return response.json();
-                    } else {
-                        throw new Error('Response is not JSON');
-                    }
-                })
+            });
 
-                .then(data => {
-                    if (data.loggedIn === false) {
-                        showLoginModal();
-                    } else if (data.success) {
-                        alert("Product added to cart successfully!");
-                        setTimeout(function () {
-                            location.reload();
-                        }, 100);   // reload page after 0.1s
-                    } else {
-                        alert("An error occurred while adding the product to the cart.");
-                    }
-                })
+            if (!response.ok || !response.headers.get('content-type')?.includes('application/json')) {
+                throw new Error('Response is not JSON or status is not OK');
+            }
 
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert("An error occurred. Please try again.");
-                });
-        });
+            const data = await response.json();
+            handleResponse(data);
+        } catch (error) {
+            console.error('Fetch Error:', error);
+            alert("An error occurred. Please try again.");
+        }
+    };
+
+    const handleResponse = (data) => {
+        if (data.loggedIn === false) {
+            showLoginModal();
+        } else if (data.success) {
+            alert("Product added to cart successfully!");
+            setTimeout(() => location.reload(), 100);
+        } else {
+            alert("An error occurred while adding the product to the cart.");
+        }
+    };
+
+    addToCartButtons.forEach(button => {
+        button.addEventListener('click', handleAddToCart);
     });
-
 });
+
 
 function showLoginModal() {
     const modalHtml = `

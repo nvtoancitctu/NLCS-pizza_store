@@ -1,6 +1,4 @@
 <?php
-require_once '../config.php';
-require_once '../controllers/ProductController.php';
 
 // Khởi tạo ProductController
 $productController = new ProductController($conn);
@@ -31,13 +29,25 @@ if (!$product) {
             <p class="text-lg text-gray-600 mb-3"><?php echo htmlspecialchars($product['description']); ?></p>
 
             <!-- Hiển thị giá: Nếu có giảm giá thì hiện giá giảm -->
-            <?php if ($product['discount'] > 0): ?>
-                <p class="text-gray-600 line-through">Original Price: $<?php echo htmlspecialchars($product['price']); ?></p>
+            <?php
+            $currentDateTime = new DateTime();
+            $discountEndTime = new DateTime($product['discount_end_time']);
+
+            if ($product['discount'] > 0 && $discountEndTime >= $currentDateTime): ?>
+                <!-- Hiển thị giá gốc bị gạch ngang -->
+                <p class="text-gray-600 line-through">
+                    Original Price: $<?php echo htmlspecialchars($product['price']); ?>
+                </p>
                 <strong class="text-2xl font-semibold text-blue-600">Discounted Price:</strong>
-                <span class="text-red-600 text-3xl font-bold">$<?php echo htmlspecialchars($product['discount']); ?></span>
+                <span class="text-red-600 text-3xl font-bold">
+                    $<?php echo htmlspecialchars($product['discount']); ?>
+                </span>
             <?php else: ?>
+                <!-- Nếu không có giảm giá hoặc đã hết hạn, hiển thị giá gốc -->
                 <strong class="text-2xl font-semibold text-blue-600 mb-4">Price:</strong>
-                <span class="text-red-600 text-3xl font-bold">$<?php echo htmlspecialchars($product['price']); ?></span>
+                <span class="text-red-600 text-3xl font-bold">
+                    $<?php echo htmlspecialchars($product['price']); ?>
+                </span>
             <?php endif; ?>
 
             <!-- Form thêm vào giỏ hàng -->
@@ -61,7 +71,7 @@ if (!$product) {
             foreach ($relatedProducts as $relatedProduct):
             ?>
                 <div class="col-md-4 col-sm-6 p-4">
-                    <div class="card h-full bg-white rounded-2xl shadow-lg transform hover:scale-105 transition-transform duration-300 ease-in-out">
+                    <div class="card h-full bg-pink-50 rounded-2xl shadow-lg transform hover:scale-105 transition-transform duration-300 ease-in-out">
                         <img class="w-3/5 h-auto mx-auto object-cover rounded-lg transition duration-500 ease-in-out transform hover:rotate-12 hover:scale-110"
                             src="/images/<?php echo htmlspecialchars($relatedProduct['image']); ?>"
                             alt="<?php echo htmlspecialchars($relatedProduct['name']); ?>">
@@ -69,17 +79,21 @@ if (!$product) {
                             <h5 class="card-title text-xl font-bold text-gray-800 text-center"><?php echo htmlspecialchars($relatedProduct['name']); ?></h5>
 
                             <!-- Hiển thị giá: Nếu có giảm giá thì hiện giá giảm -->
-                            <?php if ($relatedProduct['discount'] > 0): ?>
-                                <p class="text-gray-500 line-through text-center">Original Price: $<?php echo htmlspecialchars($relatedProduct['price']); ?></p>
-                                <p class="card-text text-red-600 font-semibold text-center">Discounted Price: $<?php echo htmlspecialchars($relatedProduct['discount']); ?></p>
+                            <?php
+                            $currentDateTime = new DateTime();
+                            $discountEndTime = new DateTime($relatedProduct['discount_end_time']);
+
+                            if ($relatedProduct['discount'] > 0 && $discountEndTime >= $currentDateTime): ?>
+                                <p class="text-gray-500 text-center line-through">Original Price: $<?php echo htmlspecialchars($relatedProduct['price']); ?></p>
+                                <p class="card-text text-center text-red-600 font-semibold">Discounted Price: $<?php echo htmlspecialchars($relatedProduct['discount']); ?></p>
                             <?php else: ?>
-                                <p class="card-text text-red-600 font-semibold text-center">Price: $<?php echo htmlspecialchars($relatedProduct['price']); ?></p>
+                                <p class="card-text text-center text-red-600 font-semibold">Price: $<?php echo htmlspecialchars($relatedProduct['price']); ?></p>
                             <?php endif; ?>
+
                             <div class="text-center mt-auto mb-2">
                                 <button type="button" class="bg-blue-500 text-white mt-2 px-5 py-2 rounded-lg transition duration-300 hover:bg-blue-600 shadow-lg"
                                     onclick="window.location.href='/index.php?page=product-detail&id=<?php echo $relatedProduct['id']; ?>'">View Details</button>
                             </div>
-
                         </div>
                     </div>
                 </div>
