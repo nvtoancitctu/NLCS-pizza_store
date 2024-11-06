@@ -3,7 +3,7 @@ ob_start();
 session_start();
 
 // Include file cấu hình (kết nối database)
-require_once '../includes/config.php';
+require_once '../config/config.php';
 
 // Kiểm tra nếu bấm đăng xuất
 if (isset($_POST['logout'])) {
@@ -16,14 +16,14 @@ if (isset($_POST['logout'])) {
 }
 
 // Include các phần như header, navbar
-require_once '../includes/header.php';
-require_once '../includes/navbar.php';
+require_once '../app/views/includes/header.php';
+require_once '../app/views/includes/navbar.php';
 
 // Include các controllers
-require_once '../controllers/CartController.php';
-require_once '../controllers/OrderController.php';
-require_once '../controllers/ProductController.php';
-require_once '../controllers/UserController.php';
+require_once '../app/controllers/CartController.php';
+require_once '../app/controllers/OrderController.php';
+require_once '../app/controllers/ProductController.php';
+require_once '../app/controllers/UserController.php';
 
 // Routing đơn giản thông qua tham số "page"
 $page = isset($_GET['page']) ? $_GET['page'] : 'home';
@@ -31,54 +31,55 @@ $page = isset($_GET['page']) ? $_GET['page'] : 'home';
 // Điều hướng tới các trang khác nhau
 switch ($page) {
     case 'home':
-        include '../pages/home.php';
+        include '../app/views/pages/home.php';
         break;
     case 'products':
-        include '../pages/products.php';
+        include '../app/views/pages/products.php';
         break;
     case 'product-detail':
-        include '../pages/product-detail.php';
+        include '../app/views/pages/product-detail.php';
         break;
     case 'cart':
-        include '../pages/cart.php';
+        include '../app/views/pages/cart.php';
         break;
     case 'checkout':
-        include '../pages/checkout.php';
+        include '../app/views/pages/checkout.php';
         break;
     case 'login':
-        include '../pages/login.php';
+        include '../app/views/pages/login.php';
         break;
     case 'account':
-        include '../pages/account.php';
+        include '../app/views/pages/account.php';
         break;
     case 'contact':
-        include '../pages/contact.php';
+        include '../app/views/pages/contact.php';
         break;
     case 'register':
-        include '../pages/register.php';
+        include '../app/views/pages/register.php';
         break;
     case 'order-success':
-        include '../pages/order-success.php';
+        include '../app/views/pages/order-success.php';
         break;
     case 'list':
-        include '../admin/list.php';
+        include '../app/views/admin/list.php';
         break;
     case 'add':
-        include '../admin/add.php';
+        include '../app/views/admin/add.php';
         break;
     case 'edit':
-        include '../admin/edit.php';
+        include '../app/views/admin/edit.php';
         break;
     case 'delete':
-        include '../admin/delete.php';
+        include '../app/views/admin/delete.php';
         break;
     case 'export':
-        include '../admin/export.php';
+        include '../app/views/admin/export.php';
         break;
     default:
-        include '../pages/404.php'; // Trang lỗi 404
+        include '../app/views/pages/404.php'; // Trang lỗi 404
         break;
 }
 
-require_once '../includes/footer.php';
+// Include footer
+require_once '../app/views/includes/footer.php';
 ob_end_flush();

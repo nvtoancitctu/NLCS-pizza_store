@@ -1,6 +1,6 @@
 <?php
 
-require_once '../models/Cart.php';
+require_once dirname(__DIR__) . '/models/Cart.php';
 
 class CartController
 {

@@ -37,7 +37,7 @@ document.addEventListener("DOMContentLoaded", () => {
         formData.append('action', 'add_to_cart');
 
         try {
-            const response = await fetch('/cart.php', {
+            const response = await fetch('/ajax.php', {
                 method: 'POST',
                 body: formData,
                 headers: {

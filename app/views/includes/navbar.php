@@ -2,8 +2,10 @@
 if (session_status() === PHP_SESSION_NONE) {
   session_start();
 }
-require_once '../models/Cart.php';
-require_once '../includes/config.php';
+
+// Sử dụng đường dẫn tuyệt đối để đảm bảo tìm thấy file
+require_once '../app/models/Cart.php';
+require_once '../config/config.php';
 
 $user_id = $_SESSION['user_id'] ?? null;
 $cartItemCount = getCartItemCount($conn, $user_id);
