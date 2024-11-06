@@ -15,7 +15,7 @@ if (isset($_SESSION['success'])) {
 // Kiểm tra nếu người dùng đã đăng nhập
 if (isset($_SESSION['user_id'])) {
   // Người dùng đã đăng nhập, điều hướng về trang chủ
-  header("Location: /index.php?page=home");
+  header("Location: /home");
   exit();
 }
 
@@ -34,7 +34,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $_SESSION['user_email'] = $user['email']; // Lưu email người dùng vào session
     $_SESSION['user_role'] = $user['role'];   // Lưu role người dùng vào session
 
-    header("Location: /index.php?page=home"); // Điều hướng về trang chủ
+    header("Location: /home"); // Điều hướng về trang chủ
     exit();
   } else {
     // Thông tin đăng nhập sai
@@ -46,7 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 <!-- Giao diện người dùng -->
 <h1 class="text-center text-4xl font-bold mt-10 text-gray-900">Login</h1>
 <div class="container mx-auto max-w-md p-8 bg-white shadow-lg rounded-xl mt-8 mb-8">
-  <form method="POST" action="/index.php?page=login">
+  <form method="POST" action="/login">
     <div class="mb-6">
       <label for="email" class="block text-gray-700 font-bold mb-2">Email:</label>
       <input type="email" name="email" class="shadow-sm appearance-none border border-gray-300 rounded-md w-full p-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-400 transition duration-150" required>
@@ -76,5 +76,5 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
       <button type="submit" class="w-3/5 text-center p-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-md transition duration-200">Login</button>
     </div>
   </form>
-  <p class="text-center mt-6 text-gray-600">Don't have an account? <a href="/index.php?page=register" class="text-blue-600 hover:underline">Register here</a></p>
+  <p class="text-center mt-6 text-gray-600">Don't have an account? <a href="/register" class="text-blue-600 hover:underline">Register here</a></p>
 </div>

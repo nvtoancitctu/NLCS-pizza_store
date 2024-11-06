@@ -2,7 +2,7 @@
 
 // Kiểm tra xem người dùng đã đăng nhập chưa, nếu chưa sẽ điều hướng về trang đăng nhập
 if (!isset($_SESSION['user_name'], $_SESSION['user_email'], $_SESSION['user_id'])) {
-  header("Location: /index.php?page=login");
+  header("Location: /login");
   exit();
 }
 
@@ -15,13 +15,13 @@ $orders = $orderController->getOrdersByUserId($user_id);
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   if (isset($_POST['admin_panel']) && $_SESSION['user_role'] === 'admin') {
     // Điều hướng đến trang quản lý sản phẩm nếu người dùng có quyền admin
-    header("Location: /index.php?page=list");
+    header("Location: /admin/list");
     exit();
   }
   if (isset($_POST['logout'])) {
     // Đăng xuất và chuyển về trang đăng nhập
     session_destroy();
-    header("Location: /index.php?page=login");
+    header("Location: /login");
     exit();
   }
 }
@@ -48,7 +48,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </div>
     <!-- Nút Admin Panel chỉ hiển thị nếu người dùng là admin -->
     <?php if ($_SESSION['user_role'] === 'admin'): ?>
-      <form method="POST" action="/index.php?page=account" class="ml-4">
+      <form method="POST" action="/account" class="ml-4">
         <button type="submit" name="admin_panel" class="bg-yellow-400 hover:bg-yellow-500 text-black font-bold py-2 px-4 rounded-lg transition duration-200 shadow">Admin Panel</button>
       </form>
     <?php endif; ?>
@@ -108,6 +108,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
   <!-- Logout Button -->
   <form method="POST" class="flex justify-center mt-8">
-    <button type="submit" name="logout" class="bg-red-500 text-white px-5 py-2 rounded-md hover:bg-red-600 transition duration-200 shadow">Logout</button>
+    <button type="submit" name="logout" onclick="confirmLogout(event)" class="bg-red-500 text-white px-5 py-2 rounded-md hover:bg-red-600 transition duration-200 shadow">Logout</button>
   </form>
 </div>
+
+<script>
+  function confirmLogout(event) {
+    // Hiển thị hộp thoại xác nhận
+    const userConfirmed = confirm("Are you sure you want to logout?");
+    if (userConfirmed) {
+      // Người dùng xác nhận thì submit form
+      document.getElementById('logout-form').submit();
+    } else {
+      // Ngăn chặn submit nếu người dùng nhấn "Hủy"
+      event.preventDefault();
+    }
+  }
+</script>

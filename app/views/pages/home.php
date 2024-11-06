@@ -77,7 +77,7 @@ $product = $productController->getProductDetails($product_id);
     <p class="mt-2 text-xl font-light">Delicious pizzas made with the finest ingredients. Order now!</p>
     <button type="button"
       class="mt-6 inline-block bg-red-500 hover:bg-red-600 text-white px-6 py-3 rounded-xl text-lg transition duration-300 transform hover:-translate-y-1 hover:scale-105 shadow-lg"
-      onclick="window.location.href='/index.php?page=products'">Buy Now, Enjoy Later!</button>
+      onclick="window.location.href='/products'">Buy Now, Enjoy Later!</button>
   </div>
 
   <!-- Discount Products -->
@@ -128,7 +128,7 @@ $product = $productController->getProductDetails($product_id);
             </div>
 
             <!-- Nút Thêm vào giỏ hàng -->
-            <form method="POST" action="/index.php?page=cart&action=add" class="add-to-cart-form" style="display:inline;">
+            <form method="POST" action="/add" class="add-to-cart-form" style="display:inline;">
               <input type="hidden" name="product_id" value="<?= htmlspecialchars($product['id']); ?>">
               <input type="hidden" name="quantity" value="1">
               <button type="button" class="add-to-cart-button bg-red-500 text-white px-5 py-2 rounded-lg transition duration-300 ease-in-out transform hover:bg-purple-600 hover:shadow-lg hover:-translate-y-1 hover:scale-105">Add to Cart</button>
@@ -231,24 +231,10 @@ $product = $productController->getProductDetails($product_id);
           <p class="card-text text-sm text-gray-600 text-center mb-4"><?php echo htmlspecialchars($product['description']); ?></p>
           <div class="text-center mt-auto mb-2">
             <button type="button" class="bg-blue-500 text-white px-5 py-2 rounded-lg transition duration-300 hover:bg-green-500 shadow-lg"
-              onclick="window.location.href='/index.php?page=product-detail&id=<?php echo $product['id']; ?>'">View Details</button>
+              onclick="window.location.href='/product-detail&id=<?php echo $product['id']; ?>'">View Details</button>
           </div>
         </div>
       </div>
     <?php endforeach; ?>
-  </div>
-</div>
-
-<!-- Logout Modal -->
-<div id="logout-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
-  <div class="bg-white shadow-2xl rounded-xl max-w-xl w-full p-10 text-center transform scale-95 transition-transform duration-300">
-    <h2 class="text-2xl font-bold text-gray-800 mb-6">You have successfully logged out!</h2>
-    <p class="mb-8 text-lg text-gray-600">To place orders, please log in or sign up for an account.</p>
-    <div class="flex justify-center space-x-14">
-      <button type="button" class="bg-blue-500 text-white font-semibold px-6 py-3 rounded-xl shadow-lg hover:bg-blue-600 hover:shadow-lg transition duration-300 ease-in-out transform hover:scale-105"
-        onclick="window.location.href='/index.php?page=login'">Log In</button>
-      <button type="button" class="bg-gray-500 text-white font-semibold px-6 py-3 rounded-xl shadow-lg hover:bg-gray-600 hover:shadow-lg transition duration-300 ease-in-out transform hover:scale-105"
-        onclick="window.location.href='/index.php?page=home'">Continue Shopping</button>
-    </div>
   </div>
 </div>

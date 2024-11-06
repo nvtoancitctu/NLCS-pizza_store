@@ -11,7 +11,7 @@ if (isset($_POST['logout'])) {
     session_unset();
     session_destroy();
     // Redirect to the home page but with a URL parameter to show the modal
-    header("Location: /index.php?page=home&logout=success");
+    header("Location: /");
     exit();
 }
 

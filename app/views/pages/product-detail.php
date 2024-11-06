@@ -92,7 +92,7 @@ if (!$product) {
 
                             <div class="text-center mt-auto mb-2">
                                 <button type="button" class="bg-blue-500 text-white mt-2 px-5 py-2 rounded-lg transition duration-300 hover:bg-blue-600 shadow-lg"
-                                    onclick="window.location.href='/index.php?page=product-detail&id=<?php echo $relatedProduct['id']; ?>'">View Details</button>
+                                    onclick="window.location.href='/product-detail&id=<?php echo $relatedProduct['id']; ?>'">View Details</button>
                             </div>
                         </div>
                     </div>

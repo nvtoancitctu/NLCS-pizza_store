@@ -52,7 +52,7 @@ $conn->close();
 <!-- Form liên hệ được căn giữa trong container, với thiết kế responsive và hộp thoại -->
 <div class="container mx-auto p-6">
     <h1 class="text-4xl text-center font-bold text-gray-900 mb-8">Contact Us</h1>
-    <form action="/index.php?page=contact" method="POST"
+    <form action="/contact" method="POST"
         class="bg-white p-10 rounded-xl shadow-lg max-w-lg mx-auto transition duration-300 ease-in-out hover:shadow-2xl">
         <!-- Trường nhập tên -->
         <div class="mb-6">

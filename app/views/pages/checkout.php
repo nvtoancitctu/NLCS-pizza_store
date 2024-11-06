@@ -1,7 +1,7 @@
 <?php
 // Kiểm tra xem người dùng đã đăng nhập chưa
 if (!isset($_SESSION['user_id'])) {
-  header("Location: /index.php?page=login");
+  header("Location: /login");
   exit();
 }
 
@@ -34,16 +34,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['checkout'])) { // Ki�
   $cartController->clearCart($user_id);
 
   // Điều hướng đến trang thành công đơn hàng
-  header("Location: /index.php?page=order-success&order_id=$order_id");
+  header("Location: /order-success&order_id=$order_id");
   exit();
 }
 ?>
 
 <!-- Thông tin thanh toán -->
-<h1 class="text-center mt-8 text-3xl font-extrabold text-blue-700 tracking-wide">Checkout</h1>
+<h1 class="text-center mt-8 text-3xl font-bold text-blue-700 tracking-wide">Checkout</h1>
 
 <div class="container mx-auto px-4 mt-4">
-  <form method="POST" action="/index.php?page=checkout" id="checkout-form" class="bg-white shadow-md border rounded-2xl p-6 mx-auto max-w-xl mb-4">
+  <form method="POST" action="/checkout" id="checkout-form" class="bg-white shadow-md border rounded-2xl p-6 mx-auto max-w-xl mb-4">
     <h2 class="text-xl font-semibold mb-4">Shipping Information</h2>
     <div class="mb-4">
       <textarea name="address" id="address" class="form-control border border-gray-300 rounded-lg w-full py-2 px-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500" required></textarea> <!-- Nhập địa chỉ giao hàng -->
@@ -96,18 +96,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['checkout'])) { // Ki�
     <input type="hidden" name="checkout" value="1">
 
     <div class="flex justify-between mt-6">
-      <button type="button" class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded" onclick="window.location.href='/index.php?page=cart'">Cancel</button> <!-- Nút hủy -->
-      <button type="button" onclick="confirmCheckout()" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded">Place Order</button> <!-- Nút đặt hàng -->
+      <button type="button" class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded" onclick="window.location.href='/cart'">Cancel</button> <!-- Nút hủy -->
+      <button type="submit" onclick="confirmCheckout(event)" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded">Place Order</button> <!-- Nút đặt hàng -->
     </div>
   </form>
 </div>
 
 <script>
-  function confirmCheckout() {
+  function confirmCheckout(event) {
     const confirmOrder = confirm("Are you sure you want to place an order?");
     if (confirmOrder) {
       // Gửi biểu mẫu với ID xác định
       document.getElementById('checkout-form').submit();
+    } else {
+      // Ngăn chặn submit nếu người dùng nhấn "Hủy"
+      event.preventDefault();
     }
   }
 </script>

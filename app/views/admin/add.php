@@ -1,7 +1,7 @@
 <?php
 // Kiểm tra quyền admin
 if (!isset($_SESSION['user_role']) || $_SESSION['user_role'] !== 'admin') {
-    header("Location: /index.php?page=login");
+    header("Location: /login");
     exit();
 }
 
@@ -35,7 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $productController->createProduct($name, $description, $price, $image, $category_id, $discount, $discount_end_time);
     $_SESSION['success'] = "Product has been added successfully!";
-    header("Location: /index.php?page=list");
+    header("Location: /admin/list");
     exit();
 }
 ?>
@@ -48,7 +48,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 <div class="flex justify-center">
     <div class="w-full max-w-2xl">
-        <form action="/index.php?page=add" method="POST" enctype="multipart/form-data" class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+        <form action="/admin/add" method="POST" enctype="multipart/form-data" class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
             <div class="mb-4">
                 <label for="name" class="block text-gray-700 text-sm font-bold mb-2">Product Name</label>
                 <input type="text" name="name" class="border rounded w-full py-2 px-3 text-gray-700 focus:outline-none focus:border-blue-500" required>

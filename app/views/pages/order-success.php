@@ -2,7 +2,7 @@
 
 // Điều hướng đến trang login 
 if (!isset($_SESSION['user_id'])) {
-  header("Location: /index.php?page=login");
+  header("Location: /login");
   exit(); // Dừng thực thi nếu không có user_id
 }
 
@@ -72,7 +72,7 @@ $orderDetails = $orderController->getOrderDetails($order_id, $user_id); // Gọi
 
     <div class="text-center mt-4">
       <button type="button" class="inline-block bg-blue-500 text-white px-6 py-2 rounded-full shadow-md hover:bg-blue-600"
-        onclick="window.location.href='/index.php?page=home'">Back to Home</button>
+        onclick="window.location.href='/home'">Back to Home</button>
     </div>
   <?php else: ?> <!-- Nếu không có chi tiết đơn hàng -->
     <p class="text-center text-gray-500">Order not found or you are not authorized to view this order.</p>

@@ -1,6 +1,7 @@
 // navbar đối với giao diện cửa sổ nhỏ
 document.getElementById('navbar-toggler').addEventListener('click', function () {
-    document.getElementById('mobile-menu').classList.toggle('hidden');
+    const menu = document.getElementById('mobile-menu');
+    menu.classList.toggle('hidden');
 });
 
 // Khi đăng nhập thành công sẽ thay đổi navbar
@@ -53,7 +54,7 @@ document.addEventListener("DOMContentLoaded", () => {
             handleResponse(data);
         } catch (error) {
             console.error('Fetch Error:', error);
-            alert("An error occurred. Please try again.");
+            // alert("An error occurred. Please try again.");
         }
     };
 
@@ -73,20 +74,18 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 });
 
-
 function showLoginModal() {
     const modalHtml = `
-        <div class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50" id="loginModal">
-            <div class="bg-white shadow-2xl rounded-xl max-w-xl w-full p-10 text-center transform scale-95 transition-transform duration-300">
-                <h2 class="text-2xl font-bold mb-4">Please log in to add items to your cart!</h3>
+        <div id="loginModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50" >
+            <div class="bg-white shadow-2xl rounded-xl max-w-xl w-full p-12 text-center transform scale-95 transition-transform duration-300">
+                <h2 class="text-2xl font-bold mb-6 text-gray-900">Please LOGIN to add items to your cart!</h2>
                 <p class="mb-8 text-lg text-gray-600">To add products to your cart, you need to log in. You can also continue browsing product details.</p>
-                <div class="flex justify-center space-x-14">
-                    <button type="button" class="bg-blue-500 text-white font-semibold px-6 py-3 rounded-xl shadow-lg hover:bg-blue-600 hover:shadow-lg transition duration-300 ease-in-out transform hover:scale-105"
-                      onclick="window.location.href='/index.php?page=login'">Log In</button>
-                    <button id="continueBrowsing" class="bg-gray-500 text-white font-semibold px-6 py-3 rounded-xl shadow-lg hover:bg-gray-600 hover:shadow-lg transition duration-300 ease-in-out transform hover:scale-105">Continue Browsing</button>
+                <div class="flex justify-center">
+                    <button type="button" class="bg-blue-500 text-white font-semibold px-6 py-2 rounded-xl shadow-lg hover:bg-blue-600 hover:shadow-lg transition duration-300 ease-in-out transform hover:scale-105 w-full sm:w-3/5"
+                        onclick="window.location.href='/login'">Login</button>
                 </div>
             </div>
-        </div>`;
+        </div>  `;
 
     // Xóa modal cũ nếu có
     const existingModal = document.getElementById('loginModal');
@@ -106,16 +105,3 @@ function showLoginModal() {
         }
     });
 }
-
-// Hiển thị thông báo đăng xuất
-function showLogoutModal() {
-    document.getElementById('logout-modal').classList.remove('hidden');
-}
-
-// Check the URL for 'logout=success' and trigger the modal
-document.addEventListener("DOMContentLoaded", function () {
-    const urlParams = new URLSearchParams(window.location.search);
-    if (urlParams.get('logout') === 'success') {
-        showLogoutModal();  // Show modal if logout was successful
-    }
-});

@@ -22,7 +22,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         // Kiểm tra kết quả đăng ký
         if (strpos($result, 'successful') !== false) {
             $_SESSION['success'] = "Registration successful! You can now log in.";
-            header("Location: /index.php?page=login");
+            header("Location: /login");
             exit();
         } else {
             $error = $result;
@@ -35,7 +35,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <h1 class="text-center text-4xl font-bold mt-10 text-gray-900">Register</h1>
 
 <div class="container mx-auto max-w-md p-8 bg-white shadow-lg rounded-xl mt-8 mb-8">
-    <form method="POST" action="/index.php?page=register">
+    <form method="POST" action="/register">
 
         <div class="mb-6">
             <label for="name" class="block text-gray-700 font-bold mb-2">Name:</label>
@@ -70,5 +70,5 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         </div>
     </form>
 
-    <p class="text-center mt-6 text-gray-600">Already have an account? <a href="/index.php?page=login" class="text-blue-600 hover:underline">Login here</a></p>
+    <p class="text-center mt-6 text-gray-600">Already have an account? <a href="/login" class="text-blue-600 hover:underline">Login here</a></p>
 </div>

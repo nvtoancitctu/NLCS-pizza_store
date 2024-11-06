@@ -26,7 +26,7 @@ function getCartItemCount($conn, $user_id)
   <div class="container mx-auto px-4 py-3 flex justify-between items-center">
     <div class="flex items-center space-x-3">
       <img src="/images/logo.png" alt="Pizza Store" class="h-14 w-14">
-      <a href="/index.php?page=home" class="text-3xl font-bold">Lover's Hub</a>
+      <a href="/" class="text-3xl font-bold">Lover's Hub</a>
     </div>
 
     <!-- Mobile Menu Button -->
@@ -48,7 +48,7 @@ function getCartItemCount($conn, $user_id)
         'contact' => ['label' => 'Contact', 'icon' => 'fas fa-envelope']
       ];
       foreach ($nav_links as $page => $data): ?>
-        <a href="/index.php?page=<?= $page ?>" class="hover:text-yellow-300 transition duration-300 flex items-center space-x-1 relative">
+        <a href="/<?= $page ?>" class="hover:text-yellow-300 transition duration-300 flex items-center space-x-1 relative">
           <i class="<?= $data['icon'] ?>"></i>
           <span><?= $data['label'] ?></span>
           <?php if ($page == 'cart'): ?>
@@ -66,15 +66,40 @@ function getCartItemCount($conn, $user_id)
             <i class="fas fa-user"></i>
             <span><?= htmlspecialchars($_SESSION['user_name']) ?></span>
           </button>
-          <div id="user-dropdown" class="hidden absolute right-0 mt-2 w-48 bg-white text-black rounded-lg shadow-lg">
-            <a href="/index.php?page=account" class="block px-4 py-2 hover:bg-gray-200">Profile</a>
+          <div id="user-dropdown" class="hidden absolute right-0 mt-2 w-36 bg-white text-black rounded-lg shadow-lg">
+            <a href="/account" class="text-center block px-4 py-2 hover:bg-gray-200">Profile</a>
             <form method="POST" id="logout-form">
-              <button type="submit" name="logout" class="block w-full text-left px-4 py-2 hover:bg-gray-200">Logout</button>
+              <button type="submit" name="logout" onclick="confirmLogout(event)" class="text-center block w-full text-left px-4 py-2 hover:bg-gray-200">Logout</button>
             </form>
           </div>
         </div>
+
+        <script>
+          function confirmLogout(event) {
+            // Hiển thị hộp thoại xác nhận
+            const userConfirmed = confirm("Are you sure you want to logout?");
+            if (userConfirmed) {
+              // Người dùng xác nhận thì submit form
+              document.getElementById('logout-form').submit();
+            } else {
+              // Ngăn chặn submit nếu người dùng nhấn "Hủy"
+              event.preventDefault();
+            }
+          }
+
+          // Đóng dropdown khi nhấp ra ngoài
+          document.addEventListener('click', function(event) {
+            const dropdown = document.getElementById('user-dropdown');
+            const toggle = document.getElementById('user-dropdown-toggle');
+            // Kiểm tra nếu nhấp bên ngoài toggle và dropdown
+            if (!toggle.contains(event.target) && !dropdown.contains(event.target)) {
+              dropdown.classList.add('hidden');
+            }
+          });
+        </script>
+
       <?php else: ?>
-        <a href="/index.php?page=login" class="hover:text-yellow-300 transition duration-300 flex items-center space-x-1">
+        <a href="/login" class="hover:text-yellow-300 transition duration-300 flex items-center space-x-1">
           <i class="fas fa-sign-in-alt"></i>
           <span>Login</span>
         </a>
@@ -87,7 +112,7 @@ function getCartItemCount($conn, $user_id)
     <ul class="flex flex-col items-center bg-red-500 py-4 space-y-2">
       <?php foreach ($nav_links as $page => $data): ?>
         <li>
-          <a href="/index.php?page=<?= $page ?>" class="block px-3 py-2 text-white hover:bg-yellow-400 flex items-center space-x-1">
+          <a href="/<?= $page ?>" class="block px-3 py-2 text-white hover:bg-yellow-400 flex items-center space-x-1">
             <i class="<?= $data['icon'] ?>"></i>
             <span><?= $data['label'] ?></span>
           </a>
@@ -100,14 +125,14 @@ function getCartItemCount($conn, $user_id)
           <span><?= htmlspecialchars($_SESSION['user_name']) ?></span>
         </button>
         <div id="mobile-user-dropdown" class="hidden">
-          <a href="/index.php?page=account" class="block px-3 py-2 text-white hover:bg-yellow-400">Profile</a>
+          <a href="/account" class="block px-3 py-2 text-white hover:bg-yellow-400">Profile</a>
           <form method="POST" id="mobile-logout-form">
             <button type="submit" name="logout" class="block w-full text-left px-3 py-2 text-white hover:bg-yellow-400">Logout</button>
           </form>
         </div>
       <?php else: ?>
         <li>
-          <a href="/index.php?page=login" class="block px-3 py-2 text-white hover:bg-yellow-400 flex items-center space-x-1">
+          <a href="/login" class="block px-3 py-2 text-white hover:bg-yellow-400 flex items-center space-x-1">
             <i class="fas fa-sign-in-alt"></i>
             <span>Login</span>
           </a>

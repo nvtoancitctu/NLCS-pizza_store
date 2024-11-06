@@ -10,7 +10,7 @@
         'contact' => ['label' => 'Contact Us', 'icon' => 'fas fa-envelope']
       ];
       foreach ($footerLinks as $page => $data): ?>
-        <a href="/index.php?page=<?= $page ?>" class="hover:text-yellow-400 transition duration-300 flex items-center space-x-2">
+        <a href="/<?= $page ?>" class="hover:text-yellow-400 transition duration-300 flex items-center space-x-2">
           <i class="<?= $data['icon'] ?>"></i>
           <span><?= $data['label'] ?></span>
         </a>
@@ -20,7 +20,7 @@
 </footer>
 
 <!-- Optional Scripts -->
-<script src="js/script.js?v=1.0"></script>
+<script src="js/script.js?v=4.0"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
