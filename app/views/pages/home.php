@@ -84,7 +84,7 @@ $product = $productController->getProductDetails($product_id);
   <h2 class="text-4xl font-extrabold text-center my-10 text-blue-700 drop-shadow-lg">Special Discount Offer</h2>
   <?php if (!empty($discountProduct)): ?>
     <?php foreach ($discountProduct as $product): ?>
-      <div class="bg-pink-50 rounded-2xl shadow-xl mb-8 p-6 transition-transform transform hover:scale-105 hover:shadow-2xl duration-300">
+      <div class="bg-yellow-50 rounded-2xl shadow-xl mb-8 p-6 transition-transform transform hover:scale-105 hover:shadow-2xl duration-300">
 
         <!-- Ưu đãi giới hạn -->
         <div class="absolute top-4 left-8 bg-red-500 text-white text-xl font-bold py-1 px-2 rounded-full animate-pulse-custom">Limited-Time Offer</div>
@@ -222,7 +222,7 @@ $product = $productController->getProductDetails($product_id);
   <h2 class="text-4xl font-extrabold text-center my-10 text-blue-700 drop-shadow-lg">Featured Pizzas</h2>
   <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mb-6">
     <?php foreach ($randomProducts as $product): ?>
-      <div class="bg-pink-50 rounded-2xl shadow-lg transition-transform transform hover:scale-105">
+      <div class="rounded-2xl shadow-lg transition-transform transform hover:scale-105">
         <img src="/images/<?php echo htmlspecialchars($product['image']); ?>"
           class="w-3/5 h-auto mx-auto object-cover rounded-lg transition duration-500 ease-in-out transform hover:rotate-12 hover:scale-110"
           alt="<?php echo htmlspecialchars($product['name']); ?>">

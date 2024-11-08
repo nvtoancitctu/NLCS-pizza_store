@@ -34,7 +34,7 @@ $products = $productController->listProducts($category_id);
         <?php if (!empty($products)): ?>
             <?php foreach ($products as $product): ?>
                 <div class="p-2">
-                    <div class="bg-pink-50 rounded-lg shadow-lg transition-transform transform hover:scale-105">
+                    <div class="rounded-lg shadow-lg transition-transform transform hover:scale-105">
                         <!-- Product Image -->
                         <div class="flex justify-center">
                             <img src="/images/<?= htmlspecialchars($product['image']) ?>"

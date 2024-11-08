@@ -27,17 +27,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['search'])) {
 ?>
 
 <h1 class="text-4xl font-extrabold text-center my-10 text-blue-700 drop-shadow-lg">Product Management</h1>
+
 <div class="container mx-auto p-6 bg-white shadow-xl rounded-lg mb-4 w-11/12">
     <div class="row mb-4 d-flex align-items-center">
-        <!-- Phần nút thêm sản phẩm và xuất file -->
+        <!-- Phần nút thêm sản phẩm và thống kê -->
         <div class="col-md-6 d-flex align-items-center justify-content-start">
             <button type="button"
                 class="inline-block bg-green-500 hover:bg-green-600 text-white font-bold px-6 py-2 rounded-lg text-sm transition duration-300 transform hover:-translate-y-1 hover:scale-105 shadow-lg"
                 onclick="window.location.href='/admin/add'">+ New Product
             </button>
             <button type="button"
-                class="ml-8 inline-block bg-yellow-500 hover:bg-yellow-600 text-white font-bold px-6 py-2 rounded-lg text-sm transition duration-300 transform hover:-translate-y-1 hover:scale-105 shadow-lg ml-2"
-                onclick="window.location.href='/admin/export'">Export to Excel
+                class="ml-8 inline-block bg-blue-500 hover:bg-blue-600 text-white font-bold px-6 py-2 rounded-lg text-sm transition duration-300 transform hover:-translate-y-1 hover:scale-105 shadow-lg"
+                onclick="window.location.href='/admin/statistics'">Statistics
             </button>
         </div>
 

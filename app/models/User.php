@@ -85,4 +85,69 @@ class User
         $stmt->execute([$id]);
         return $stmt->fetch(PDO::FETCH_ASSOC); // Trả về thông tin người dùng
     }
+
+    /**
+     * Cập nhật thông tin người dùng (name, phone, address) theo ID người dùng
+     *
+     * @param int $user_id - ID của người dùng
+     * @param string $name - Tên người dùng mới
+     * @param string $phone - Số điện thoại mới của người dùng
+     * @param string $address - Địa chỉ mới của người dùng
+     * @return bool - Trả về true nếu cập nhật thành công, ngược lại trả về false
+     */
+    public function updateUserProfile($user_id, $name, $phone, $address)
+    {
+        // Cập nhật thông tin người dùng trong database
+        $query = "UPDATE " . $this->table . " SET name = :name, phone = :phone, address = :address WHERE id = :id";
+        $stmt = $this->conn->prepare($query);
+
+        // Bind giá trị vào các tham số
+        $stmt->bindParam(':name', $name);
+        $stmt->bindParam(':phone', $phone);
+        $stmt->bindParam(':address', $address);
+        $stmt->bindParam(':id', $user_id, PDO::PARAM_INT);
+
+        // Thực thi câu lệnh và kiểm tra kết quả
+        if ($stmt->execute()) {
+            // Cập nhật thông tin trong session nếu cập nhật thành công
+            $_SESSION['user_name'] = $name;
+            $_SESSION['user_phone'] = $phone;
+            $_SESSION['user_address'] = $address;
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * Thêm thông tin liên hệ của người dùng vào cơ sở dữ liệu.
+     *
+     * @param int $user_id - ID người dùng
+     * @param string $name - Tên người gửi
+     * @param string $email - Email người gửi
+     * @param string $message - Tin nhắn người gửi
+     * 
+     * @return bool - Trả về true nếu thành công, ném ngoại lệ nếu thất bại
+     *
+     * @throws Exception - Nếu có lỗi trong quá trình thực thi câu truy vấn
+     */
+    public function addContact($user_id, $name, $email, $message)
+    {
+        $stmt = $this->conn->prepare("INSERT INTO contact (user_id, name, email, message) VALUES (:user_id, :name, :email, :message)");
+
+        if ($stmt === false) {
+            throw new Exception("Error preparing statement: " . $this->conn->errorInfo()[2]);
+        }
+
+        $stmt->bindValue(':user_id', $user_id, PDO::PARAM_INT);
+        $stmt->bindValue(':name', $name, PDO::PARAM_STR);
+        $stmt->bindValue(':email', $email, PDO::PARAM_STR);
+        $stmt->bindValue(':message', $message, PDO::PARAM_STR);
+
+        if (!$stmt->execute()) {
+            throw new Exception("Failed to save message: " . implode(" ", $stmt->errorInfo()));
+        }
+
+        return true;
+    }
 }

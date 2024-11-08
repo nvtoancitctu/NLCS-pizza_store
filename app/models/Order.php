@@ -209,4 +209,60 @@ class Order
 
         return $stmt_items->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    /**
+     * Lấy thống kê doanh thu dựa trên khoảng thời gian yêu cầu.
+     *
+     * @param string $timePeriod Thời gian thống kê cần lấy, có thể là 'daily', 'monthly' hoặc 'yearly'.
+     *                           - 'daily': Doanh thu theo ngày.
+     *                           - 'monthly': Doanh thu theo tháng.
+     *                           - 'yearly': Doanh thu theo năm.
+     * @return array Mảng chứa các bản ghi doanh thu, mỗi bản ghi có 'date' (ngày hoặc khoảng thời gian) và 'revenue' (doanh thu).
+     * @throws Exception Nếu tham số $timePeriod không hợp lệ.
+     */
+    public function getSalesStatistics($timePeriod)
+    {
+        $query = '';
+
+        switch ($timePeriod) {
+            case 'daily':
+                // Thống kê theo ngày
+                $query = "SELECT DATE(created_at) AS date, SUM(total) AS revenue FROM orders GROUP BY DATE(created_at)";
+                break;
+            case 'monthly':
+                // Thống kê theo tháng
+                $query = "SELECT DATE_FORMAT(created_at, '%Y-%m') AS date, SUM(total) AS revenue FROM orders GROUP BY DATE_FORMAT(created_at, '%Y-%m')";
+                break;
+            case 'weekly':
+                // Thống kê theo tuần, gồm năm và tuần
+                $query = "SELECT CONCAT(YEAR(created_at), '-W', WEEK(created_at)) AS date, SUM(total) AS revenue 
+                      FROM orders 
+                      GROUP BY YEAR(created_at), WEEK(created_at)";
+                break;
+            case 'yearly':
+                // Thống kê theo năm
+                $query = "SELECT YEAR(created_at) AS date, SUM(total) AS revenue FROM orders GROUP BY YEAR(created_at)";
+                break;
+            case 'payment_method':
+                // Thống kê theo phương thức thanh toán
+                $query = "SELECT payment_method AS method, SUM(total) AS revenue FROM orders GROUP BY payment_method";
+                break;
+            case 'product':
+                // Thống kê theo sản phẩm
+                $query = "SELECT oi.product_id, p.name AS product_name, SUM(oi.quantity * oi.price) AS revenue 
+                      FROM order_items oi
+                      JOIN products p ON oi.product_id = p.id
+                      GROUP BY oi.product_id";
+                break;
+            default:
+                throw new Exception("Invalid time period provided.");
+        }
+
+        // Chuẩn bị và thực thi truy vấn
+        $stmt = $this->conn->prepare($query);
+        $stmt->execute();
+
+        // Trả về kết quả dưới dạng mảng
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 }

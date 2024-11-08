@@ -10,8 +10,9 @@ if (!isset($_SESSION['user_name'], $_SESSION['user_email'], $_SESSION['user_id']
 $user_id = $_SESSION['user_id'];
 $orderController = new OrderController($conn);
 $orders = $orderController->getOrdersByUserId($user_id);
+$userController = new UserController($conn);
 
-// Xử lý điều kiện khi người dùng nhấn vào nút Admin Panel hoặc Logout
+// Xử lý điều kiện khi người dùng nhấn vào nút Admin Panel, Logout, hoặc cập nhật thông tin
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   if (isset($_POST['admin_panel']) && $_SESSION['user_role'] === 'admin') {
     // Điều hướng đến trang quản lý sản phẩm nếu người dùng có quyền admin
@@ -24,14 +25,42 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     header("Location: /login");
     exit();
   }
+  if (isset($_POST['update_profile'])) {
+    // Lấy dữ liệu từ form cập nhật
+    $name = $_POST['name'];
+    $phone = $_POST['phone'];
+    $address = $_POST['address'];
+
+    // Gọi hàm cập nhật thông tin
+    $updated = $userController->updateUserProfile($user_id, $name, $phone, $address);
+
+    if ($updated) {
+      // Cập nhật session với dữ liệu mới nếu cập nhật thành công
+      $_SESSION['user_name'] = $name;
+      $_SESSION['user_phone'] = $phone;
+      $_SESSION['user_address'] = $address;
+      $message = "Profile updated successfully.";
+    } else {
+      $message = "Failed to update profile.";
+    }
+  }
 }
 ?>
 
+<!-- Hiển thị alert bằng JavaScript nếu có thông báo -->
+<?php if (!empty($message)): ?>
+  <script>
+    alert("<?= htmlspecialchars($message) ?>");
+  </script>
+<?php endif; ?>
+
 <!-- Profile Section -->
-<div class="container mx-auto w-4/5 mt-10 mb-10 p-6 bg-white shadow-lg rounded-lg">
+<div class="container mx-auto w-4/5 mt-10 mb-10 p-4 bg-white shadow-lg rounded-lg">
   <h2 class="text-3xl font-bold text-center mb-6 text-gray-800">Profile</h2>
-  <div class="flex items-center justify-around p-6 bg-gray-50 shadow-lg rounded-xl w-4/5 mx-auto mb-6">
-    <!-- Thông tin người dùng (Tên, Email) -->
+
+  <!-- Thông tin người dùng hiển thị dưới dạng lưới -->
+  <div class="grid grid-cols-3 gap-8 p-6 bg-gray-50 shadow-lg rounded-xl w-4/5 mx-auto mb-6">
+    <!-- Name -->
     <div class="flex items-center space-x-4">
       <i class="fas fa-user text-2xl text-yellow-500"></i>
       <div>
@@ -39,20 +68,81 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <p class="text-gray-600"><?= htmlspecialchars($_SESSION['user_name']) ?></p>
       </div>
     </div>
-    <div class="flex items-center space-x-4 ml-4">
+
+    <!-- Email -->
+    <div class="flex items-center space-x-4">
       <i class="fas fa-envelope text-2xl text-yellow-500"></i>
       <div>
         <p class="font-semibold text-gray-800">Email</p>
         <p class="text-gray-600"><?= htmlspecialchars($_SESSION['user_email']) ?></p>
       </div>
     </div>
-    <!-- Nút Admin Panel chỉ hiển thị nếu người dùng là admin -->
-    <?php if ($_SESSION['user_role'] === 'admin'): ?>
-      <form method="POST" action="/account" class="ml-4">
-        <button type="submit" name="admin_panel" class="bg-yellow-400 hover:bg-yellow-500 text-black font-bold py-2 px-4 rounded-lg transition duration-200 shadow">Admin Panel</button>
-      </form>
-    <?php endif; ?>
+
+    <!-- Nút Admin Panel -->
+    <div class="flex items-center space-x-4 col-span-1 w-3/5 mx-auto">
+      <?php if ($_SESSION['user_role'] === 'admin'): ?>
+        <form method="POST" action="/account">
+          <button type="submit" name="admin_panel" class="bg-yellow-400 hover:bg-yellow-500 text-black font-bold py-2 px-4 rounded-lg transition duration-200 shadow">Admin Panel</button>
+        </form>
+      <?php endif; ?>
+    </div>
+
+    <!-- Phone -->
+    <div class="flex items-center space-x-4">
+      <i class="fas fa-phone text-2xl text-yellow-500"></i>
+      <div>
+        <p class="font-semibold text-gray-800">Phone</p>
+        <p class="text-gray-600"><?= htmlspecialchars($_SESSION['user_phone'] ?? 'N/A') ?></p>
+      </div>
+    </div>
+
+    <!-- Address -->
+    <div class="flex items-center space-x-4">
+      <i class="fas fa-map-marker-alt text-2xl text-yellow-500"></i>
+      <div>
+        <p class="font-semibold text-gray-800">Address</p>
+        <p class="text-gray-600"><?= htmlspecialchars($_SESSION['user_address'] ?? 'N/A') ?></p>
+      </div>
+    </div>
+
+    <!-- Nút Update Profile -->
+    <div class="flex items-center space-x-4 col-span-1 w-3/5 mx-auto">
+      <button onclick="toggleForm()" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg transition duration-200 shadow">Update Profile</button>
+    </div>
   </div>
+
+  <!-- Form Cập Nhật Thông Tin Người Dùng, mặc định bị ẩn -->
+  <div id="update-profile-form" class="space-y-6 mt-4 hidden w-4/5 mx-auto">
+    <h3 class="text-2xl font-bold text-center mt-8 text-gray-800">Update Profile</h3>
+    <form action="/account" method="POST" class="space-y-6 bg-gray-100 p-6 rounded-lg shadow-lg">
+      <div class="flex justify-between">
+        <div class="w-1/2 pr-3">
+          <label for="name" class="block text-gray-700 font-semibold">Name</label>
+          <input type="text" id="name" name="name" value="<?= htmlspecialchars($_SESSION['user_name']) ?>" class="w-full p-3 border border-gray-300 rounded-md" required>
+        </div>
+        <div class="w-1/2 pl-3">
+          <label for="phone" class="block text-gray-700 font-semibold">Phone</label>
+          <input type="text" id="phone" name="phone" value="<?= htmlspecialchars($_SESSION['user_phone'] ?? '') ?>" class="w-full p-3 border border-gray-300 rounded-md">
+        </div>
+      </div>
+      <div>
+        <label for="address" class="block text-gray-700 font-semibold">Address</label>
+        <input type="text" id="address" name="address" value="<?= htmlspecialchars($_SESSION['user_address'] ?? '') ?>" class="w-full p-3 border border-gray-300 rounded-md">
+      </div>
+      <div class="flex justify-center">
+        <button type="submit" name="update_profile" class="bg-blue-500 hover:bg-blue-600 text-white py-2 px-6 rounded-lg shadow-md">Update Profile</button>
+      </div>
+    </form>
+  </div>
+
+  <script>
+    function toggleForm() {
+      // Lấy phần tử form
+      const form = document.getElementById('update-profile-form');
+      // Ẩn/Hiện form
+      form.classList.toggle('hidden');
+    }
+  </script>
 
   <!-- Order History Section -->
   <h3 class="text-2xl font-bold text-center mt-8 text-gray-800">Order History</h3>

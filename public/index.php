@@ -75,6 +75,9 @@ switch ($page) {
     case 'export':
         include '../app/views/admin/export.php';
         break;
+    case 'statistics':
+        include '../app/views/admin/statistics.php';
+        break;
     default:
         include '../app/views/pages/404.php'; // Trang lỗi 404
         break;
