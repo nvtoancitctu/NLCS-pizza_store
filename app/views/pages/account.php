@@ -55,11 +55,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <?php endif; ?>
 
 <!-- Profile Section -->
-<div class="container mx-auto w-4/5 mt-10 mb-10 p-4 bg-white shadow-lg rounded-lg">
+<div class="container mx-auto w-4/5 mt-10 mb-10 p-4 bg-white shadow-sm rounded-lg">
   <h2 class="text-3xl font-bold text-center mb-6 text-gray-800">Profile</h2>
 
   <!-- Thông tin người dùng hiển thị dưới dạng lưới -->
-  <div class="grid grid-cols-3 gap-8 p-6 bg-gray-50 shadow-lg rounded-xl w-4/5 mx-auto mb-6">
+  <div class="grid grid-cols-3 gap-8 p-6 bg-gray-50 shadow-sm rounded-xl w-4/5 mx-auto mb-6">
     <!-- Name -->
     <div class="flex items-center space-x-4">
       <i class="fas fa-user text-2xl text-yellow-500"></i>
@@ -79,10 +79,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </div>
 
     <!-- Nút Admin Panel -->
-    <div class="flex items-center space-x-4 col-span-1 w-3/5 mx-auto">
+    <div class="flex items-center space-x-4 col-span-1 w-4/5 mx-auto">
       <?php if ($_SESSION['user_role'] === 'admin'): ?>
         <form method="POST" action="/account">
-          <button type="submit" name="admin_panel" class="bg-yellow-400 hover:bg-yellow-500 text-black font-bold py-2 px-4 rounded-lg transition duration-200 shadow">Admin Panel</button>
+          <button type="submit" name="admin_panel" class="bg-yellow-400 hover:bg-yellow-500 text-black font-bold py-2 px-4 rounded-lg transition duration-200">Admin Panel</button>
         </form>
       <?php endif; ?>
     </div>
@@ -106,15 +106,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </div>
 
     <!-- Nút Update Profile -->
-    <div class="flex items-center space-x-4 col-span-1 w-3/5 mx-auto">
-      <button onclick="toggleForm()" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg transition duration-200 shadow">Update Profile</button>
+    <div class="flex items-center space-x-4 col-span-1 w-4/5 mx-auto">
+      <button onclick="toggleForm()" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg transition duration-200">Update Profile</button>
     </div>
   </div>
 
   <!-- Form Cập Nhật Thông Tin Người Dùng, mặc định bị ẩn -->
   <div id="update-profile-form" class="space-y-6 mt-4 hidden w-4/5 mx-auto">
     <h3 class="text-2xl font-bold text-center mt-8 text-gray-800">Update Profile</h3>
-    <form action="/account" method="POST" class="space-y-6 bg-gray-100 p-6 rounded-lg shadow-lg">
+    <form action="/account" method="POST" class="space-y-6 bg-gray-100 p-6 rounded-lg shadow-sm">
       <div class="flex justify-between">
         <div class="w-1/2 pr-3">
           <label for="name" class="block text-gray-700 font-semibold">Name</label>
@@ -130,7 +130,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <input type="text" id="address" name="address" value="<?= htmlspecialchars($_SESSION['user_address'] ?? '') ?>" class="w-full p-3 border border-gray-300 rounded-md">
       </div>
       <div class="flex justify-center">
-        <button type="submit" name="update_profile" class="bg-blue-500 hover:bg-blue-600 text-white py-2 px-6 rounded-lg shadow-md">Update Profile</button>
+        <button type="submit" name="update_profile" class="bg-blue-500 hover:bg-blue-600 text-white py-2 px-6 rounded-lg shadow-md">Update</button>
       </div>
     </form>
   </div>

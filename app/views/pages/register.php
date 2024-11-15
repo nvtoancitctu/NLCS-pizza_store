@@ -59,10 +59,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         <!-- Hiển thị lỗi nếu có -->
         <?php if (!empty($error)): ?>
-            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                <?= htmlspecialchars($error) ?>
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
+            <script>
+                alert("<?= addslashes($error) ?>");
+            </script>
         <?php endif; ?>
 
         <div class="text-center">

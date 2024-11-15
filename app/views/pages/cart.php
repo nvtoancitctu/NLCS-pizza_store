@@ -45,26 +45,26 @@ if (isset($_GET['action'])) {
 
 <div class="container mx-auto">
     <?php if (!empty($cartItems)): ?>
-        <table class="table-auto w-4/5 mx-auto mb-4 border border-gray-300 bg-white shadow-lg rounded-lg overflow-hidden">
+        <table class="table-auto w-4/5 mx-auto mb-6 border border-gray-300 bg-white shadow-lg rounded-lg overflow-hidden">
             <thead>
-                <tr class="bg-gradient-to-r from-gray-200 to-gray-300 text-gray-700">
-                    <th class="px-4 py-3 text-left text-sm font-semibold">Product</th>
-                    <th class="px-4 py-3 text-left text-sm font-semibold">Price</th>
-                    <th class="px-4 py-3 text-left text-sm font-semibold">Quantity</th>
-                    <th class="px-4 py-3 text-left text-sm font-semibold">Total</th>
-                    <th class="px-4 py-3 text-left text-sm font-semibold">Actions</th>
+                <tr class="bg-gradient-to-r from-gray-100 to-gray-200 text-gray-700">
+                    <th class="px-6 py-3 text-left text-sm font-semibold">Product</th>
+                    <th class="px-6 py-3 text-left text-sm font-semibold">Price</th>
+                    <th class="px-6 py-3 text-center text-sm font-semibold">Quantity</th>
+                    <th class="px-6 py-3 text-center text-sm font-semibold">Total</th>
+                    <th class="px-6 py-3 text-center text-sm font-semibold">Actions</th>
                 </tr>
             </thead>
             <tbody>
                 <?php foreach ($cartItems as $item): ?>
-                    <tr class="border-t border-gray-300 hover:bg-gray-100 transition duration-150">
-                        <td class="px-4 py-3 flex items-center">
+                    <tr class="border-t border-gray-300 hover:bg-gray-50 transition duration-150">
+                        <td class="px-6 py-4 flex items-center">
                             <img src="/images/<?= htmlspecialchars($item['image']) ?>"
                                 alt="<?= htmlspecialchars($item['name']) ?>"
-                                class="w-14 h-14 mr-3 rounded-md shadow">
+                                class="w-16 h-16 mr-4 rounded-md shadow-md">
                             <span class="text-gray-800 font-medium"><?= htmlspecialchars($item['name']) ?></span>
                         </td>
-                        <td class="px-4 py-3 text-gray-800">
+                        <td class="px-6 py-4 text-gray-800">
                             <?php if ($item['price_to_display'] < $item['price']): ?>
                                 <div>
                                     <span class="text-xs text-gray-500 line-through">$<?= number_format($item['price'], 2) ?></span>
@@ -85,10 +85,10 @@ if (isset($_GET['action'])) {
                                 </button>
                             </form>
                         </td>
-                        <td class="px-4 py-3 text-gray-800 font-semibold">
+                        <td class="px-4 py-3 text-gray-800 font-semibold text-center">
                             $<?= number_format($item['total_price'], 2) ?>
                         </td>
-                        <td class="px-4 py-3">
+                        <td class="px-4 py-3 text-center">
                             <a href="/index.php?page=cart&action=delete&cart_id=<?= $item['id'] ?>"
                                 class="bg-red-500 text-white px-3 py-2 rounded hover:bg-red-600 transition duration-200 text-xs font-semibold">
                                 Delete

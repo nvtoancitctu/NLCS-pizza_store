@@ -43,44 +43,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['checkout'])) { // Ki�
 <h1 class="text-center mt-8 text-3xl font-bold text-blue-700 tracking-wide">Checkout</h1>
 
 <div class="container mx-auto px-4 mt-4">
-  <form method="POST" action="/checkout" id="checkout-form" class="bg-white shadow-md border rounded-2xl p-6 mx-auto max-w-xl mb-4">
-    <h2 class="text-xl font-semibold mb-4">Shipping Information</h2>
-    <div class="mb-4">
-      <textarea name="address" id="address" class="form-control border border-gray-300 rounded-lg w-full py-2 px-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500" required></textarea> <!-- Nhập địa chỉ giao hàng -->
-    </div>
+  <form method="POST" action="/checkout" id="checkout-form" class="bg-white shadow-lg border rounded-lg p-8 max-w-2xl mx-auto mb-6">
 
-    <h2 class="text-xl font-semibold mb-4">Payment Method</h2>
-    <div class="mb-4">
-      <select name="payment_method" class="border border-gray-300 rounded-lg w-full py-2 px-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500" required>
-        <option value="credit_card">Credit Card</option>
-        <option value="paypal">Paypal</option>
-        <option value="cash_on_delivery">COD</option>
-      </select>
-    </div>
-
-    <div class="overflow-x-auto">
-      <table class="min-w-full border border-black shadow-md rounded-lg">
-        <thead class="bg-gray-300 border-b">
-          <tr class="text-sm">
-            <th class="py-3 px-4 text-left text-gray-600">Product</th>
-            <th class="py-3 px-4 text-center text-gray-600">Quantity</th>
-            <th class="py-3 px-4 text-left text-gray-600">Price</th>
-            <th class="py-3 px-4 text-left text-gray-600">Total</th>
+    <!-- Danh sách sản phẩm trong giỏ hàng -->
+    <div class="overflow-x-auto mb-6">
+      <table class="min-w-full border rounded-lg">
+        <thead class="bg-gray-100 border-b">
+          <tr class="text-sm text-gray-700 font-semibold">
+            <th class="py-3 px-4 text-left">Product</th>
+            <th class="py-3 px-4 text-center">Quantity</th>
+            <th class="py-3 px-4 text-left">Price</th>
+            <th class="py-3 px-4 text-left">Total</th>
           </tr>
         </thead>
         <tbody>
           <?php foreach ($cartItems as $item): ?>
-            <tr class="text-xs border-b hover:bg-gray-100 transition duration-200">
-              <td class="py-2 px-4"><?= htmlspecialchars($item['name']) ?></td>
-              <td class="py-2 px-4 text-center"><?= htmlspecialchars($item['quantity']) ?></td>
-              <td class="py-2 px-4">
+            <tr class="text-sm border-b hover:bg-gray-50">
+              <td class="py-3 px-4"><?= htmlspecialchars($item['name']) ?></td>
+              <td class="py-3 px-4 text-center"><?= htmlspecialchars($item['quantity']) ?></td>
+              <td class="py-3 px-4">
                 <?php if ($item['price_to_display'] < $item['price']): ?>
-                  <p class="text-red-600">$<?= number_format($item['price_to_display'], 2) ?></p>
+                  <span class="text-red-600 font-semibold">$<?= number_format($item['price_to_display'], 2) ?></span>
                 <?php else: ?>
-                  <p>$<?= number_format($item['price'], 2) ?></p>
+                  <span>$<?= number_format($item['price'], 2) ?></span>
                 <?php endif; ?>
               </td>
-              <td class="py-2 px-4">
+              <td class="py-3 px-4">
                 $<?= number_format($item['total_price'], 2) ?>
               </td>
             </tr>
@@ -89,15 +77,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['checkout'])) { // Ki�
       </table>
     </div>
 
-    <h3 class="text-xl font-bold mt-4">
-      Total Amount: <span class="text-red-600">$<?= number_format($totalAmount, 2) ?></span>
-    </h3>
+    <!-- Thông tin giao hàng -->
+    <h2 class="text-lg font-bold mb-2">Shipping Information</h2>
+    <div class="mb-6">
+      <textarea name="address" id="address" class="w-full p-3 border rounded-lg text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-400" required placeholder="Enter your shipping address..."></textarea>
+    </div>
+
+    <!-- Phương thức thanh toán -->
+    <h2 class="text-lg font-bold mb-2">Payment Method</h2>
+    <div class="mb-6">
+      <select name="payment_method" class="w-full p-3 border rounded-lg text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-400" required>
+        <option value="credit_card">Credit Card</option>
+        <option value="paypal">Paypal</option>
+        <option value="cash_on_delivery">Cash on Delivery</option>
+      </select>
+    </div>
+
+    <!-- Tổng số tiền -->
+    <div class="text-lg font-bold mt-4">
+      Total Amount: <span class="text-red-500">$<?= number_format($totalAmount, 2) ?></span>
+    </div>
 
     <input type="hidden" name="checkout" value="1">
 
+    <!-- Các nút thao tác -->
     <div class="flex justify-between mt-6">
-      <button type="button" class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded" onclick="window.location.href='/cart'">Cancel</button> <!-- Nút hủy -->
-      <button type="submit" onclick="confirmCheckout(event)" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded">Place Order</button> <!-- Nút đặt hàng -->
+      <button type="button" class="bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded-lg transition duration-200" onclick="window.location.href='/cart'">Cancel</button>
+      <button type="submit" onclick="confirmCheckout(event)" class="bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded-lg transition duration-200">Place Order</button>
     </div>
   </form>
 </div>

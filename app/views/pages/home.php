@@ -1,12 +1,16 @@
 <?php
+// Kiểm tra và lấy thông báo thành công từ session
+$success = '';
+if (isset($_SESSION['success'])) {
+  $success = $_SESSION['success'];
+  unset($_SESSION['success']); // Xóa thông báo khỏi session
+}
+
 // Khởi tạo đối tượng Product
 $productModel = new Product($conn);
 
-// Lấy 3 sản phẩm ngẫu nhiên
-$randomProducts = $productModel->getRandomProducts(3);
-
-// Lấy 1 sản phẩm giảm giá có thời gian còn lại
-$discountProduct = $productModel->getDiscountProduct();
+$randomProducts = $productModel->getRandomProducts(3);  // Lấy 3 sản phẩm ngẫu nhiên
+$discountProduct = $productModel->getDiscountProduct(); // Lấy sản phẩm khuyến mãi
 
 // Khởi tạo ProductController
 $productController = new ProductController($conn);
@@ -14,6 +18,7 @@ $productController = new ProductController($conn);
 // Lấy ID sản phẩm từ URL
 $product_id = isset($_GET['id']) ? $_GET['id'] : null;
 $product = $productController->getProductDetails($product_id);
+
 ?>
 
 <style>
@@ -87,7 +92,7 @@ $product = $productController->getProductDetails($product_id);
       <div class="bg-yellow-50 rounded-2xl shadow-xl mb-8 p-6 transition-transform transform hover:scale-105 hover:shadow-2xl duration-300">
 
         <!-- Ưu đãi giới hạn -->
-        <div class="absolute top-4 left-8 bg-red-500 text-white text-xl font-bold py-1 px-2 rounded-full animate-pulse-custom">Limited-Time Offer</div>
+        <div class="absolute top-4 left-8 text-white text-xl font-bold py-1 px-2 rounded-full animate-pulse-custom" style="background: rgb(0, 230, 0);">Limited-Time Offer</div>
 
         <!-- Icon trái tim nổi bật với hiệu ứng đập -->
         <div class="absolute top-4 right-4 heart-icon heart-beat">
@@ -131,34 +136,34 @@ $product = $productController->getProductDetails($product_id);
             <form method="POST" action="/add" class="add-to-cart-form" style="display:inline;">
               <input type="hidden" name="product_id" value="<?= htmlspecialchars($product['id']); ?>">
               <input type="hidden" name="quantity" value="1">
-              <button type="button" class="add-to-cart-button bg-red-500 text-white px-5 py-2 rounded-lg transition duration-300 ease-in-out transform hover:bg-purple-600 hover:shadow-lg hover:-translate-y-1 hover:scale-105">Add to Cart</button>
+              <button type="button" class="font-semibold add-to-cart-button bg-blue-500 text-white px-5 py-2 rounded-lg transition duration-300 ease-in-out transform hover:bg-purple-600 hover:shadow-lg hover:-translate-y-1 hover:scale-105">Add to Cart</button>
             </form>
           </div>
         </div>
+      </div>
+      <!-- Countdown Timer and Progress Bar Script -->
+      <script>
+        // JavaScript countdown timer và cập nhật thanh tiến trình
+        function countdownTimer(endTime, elementId, progressBarId, initialTime) {
+          var countDownDate = new Date(endTime).getTime();
 
-        <!-- Countdown Timer and Progress Bar Script -->
-        <script>
-          // JavaScript countdown timer và cập nhật thanh tiến trình
-          function countdownTimer(endTime, elementId, progressBarId, initialTime) {
-            var countDownDate = new Date(endTime).getTime();
+          var x = setInterval(function() {
+            var now = new Date().getTime();
+            var distance = countDownDate - now;
 
-            var x = setInterval(function() {
-              var now = new Date().getTime();
-              var distance = countDownDate - now;
+            // Tính toán ngày, giờ, phút, giây còn lại
+            var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            var seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
-              // Tính toán ngày, giờ, phút, giây còn lại
-              var days = Math.floor(distance / (1000 * 60 * 60 * 24));
-              var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-              var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-              var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+            // Đảm bảo có hai chữ số cho giờ, phút, giây
+            hours = hours.toString().padStart(2, '0');
+            minutes = minutes.toString().padStart(2, '0');
+            seconds = seconds.toString().padStart(2, '0');
 
-              // Đảm bảo có hai chữ số cho giờ, phút, giây
-              hours = hours.toString().padStart(2, '0');
-              minutes = minutes.toString().padStart(2, '0');
-              seconds = seconds.toString().padStart(2, '0');
-
-              // Cập nhật nội dung phần tử với thời gian đếm ngược
-              document.getElementById(elementId).innerHTML = `
+            // Cập nhật nội dung phần tử với thời gian đếm ngược
+            document.getElementById(elementId).innerHTML = `
                 <div class="flex justify-center items-center p-2 w-1/3 bg-gray border border-gray-500 rounded-xl shadow-sm">
                   <div class="flex space-x-3 text-center">
                     <div class="flex flex-col items-center">
@@ -181,37 +186,35 @@ $product = $productController->getProductDetails($product_id);
                 </div>
               `;
 
-              // Cập nhật thanh tiến trình
-              var progressPercentage = (distance / initialTime) * 100;
-              var progressBar = document.getElementById(progressBarId);
-              progressBar.style.width = progressPercentage + "%";
-              progressBar.style.backgroundColor = getColor(progressPercentage);
+            // Cập nhật thanh tiến trình
+            var progressPercentage = (distance / initialTime) * 100;
+            var progressBar = document.getElementById(progressBarId);
+            progressBar.style.width = progressPercentage + "%";
+            progressBar.style.backgroundColor = getColor(progressPercentage);
 
-              // Kiểm tra nếu thời gian hết
-              if (distance < 0) {
-                clearInterval(x);
-                document.getElementById(elementId).innerHTML = "EXPIRED";
-                progressBar.style.width = "0%";
-                progressBar.style.backgroundColor = "rgb(0, 0, 0)"; // Đen khi hết thời gian
-              }
-            }, 1000);
-          }
-
-          function getColor(progress) {
-            if (progress < 50) {
-              return 'rgb(255, 0, 0)'; // Đỏ
-            } else if (progress < 80) {
-              return 'rgb(255, 255, 0)'; // Vàng
-            } else {
-              return 'rgb(0, 255, 0)'; // Xanh
+            // Kiểm tra nếu thời gian hết
+            if (distance < 0) {
+              clearInterval(x);
+              document.getElementById(elementId).innerHTML = "EXPIRED";
+              progressBar.style.width = "0%";
+              progressBar.style.backgroundColor = "rgb(0, 0, 0)"; // Đen khi hết thời gian
             }
+          }, 1000);
+        }
+
+        function getColor(progress) {
+          if (progress < 50) {
+            return 'rgb(255, 0, 0)'; // Đỏ
+          } else if (progress < 80) {
+            return 'rgb(255, 255, 0)'; // Vàng
+          } else {
+            return 'rgb(0, 255, 0)'; // Xanh
           }
+        }
 
-          // Gọi hàm countdownTimer cho từng sản phẩm
-          countdownTimer('<?php echo $product['discount_end_time']; ?>', 'discount-timer-<?php echo $product['id']; ?>', 'progress-bar-<?php echo $product['id']; ?>', <?php echo (strtotime($product['discount_end_time']) - time()) * 1000; ?>);
-        </script>
-
-      </div>
+        // Gọi hàm countdownTimer cho từng sản phẩm
+        countdownTimer('<?php echo $product['discount_end_time']; ?>', 'discount-timer-<?php echo $product['id']; ?>', 'progress-bar-<?php echo $product['id']; ?>', <?php echo (strtotime($product['discount_end_time']) - time()) * 1000; ?>);
+      </script>
 
     <?php endforeach; ?>
   <?php else: ?>
@@ -220,7 +223,7 @@ $product = $productController->getProductDetails($product_id);
 
   <!-- Featured Pizzas -->
   <h2 class="text-4xl font-extrabold text-center my-10 text-blue-700 drop-shadow-lg">Featured Pizzas</h2>
-  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mb-6">
+  <div class="bg-gray-50 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mb-6">
     <?php foreach ($randomProducts as $product): ?>
       <div class="rounded-2xl shadow-lg transition-transform transform hover:scale-105">
         <img src="/images/<?php echo htmlspecialchars($product['image']); ?>"
@@ -230,7 +233,7 @@ $product = $productController->getProductDetails($product_id);
           <h5 class="text-xl font-bold mb-2 text-center"><?php echo htmlspecialchars($product['name']); ?></h5>
           <p class="card-text text-sm text-gray-600 text-center mb-4"><?php echo htmlspecialchars($product['description']); ?></p>
           <div class="text-center mt-auto mb-2">
-            <button type="button" class="bg-blue-500 text-white px-5 py-2 rounded-lg transition duration-300 hover:bg-green-500 shadow-lg"
+            <button type="button" class="font-semibold bg-blue-500 text-white px-5 py-2 rounded-lg transition duration-300 ease-in-out transform hover:bg-green-600 hover:shadow-lg hover:-translate-y-1 hover:scale-105"
               onclick="window.location.href='/product-detail&id=<?php echo $product['id']; ?>'">View Details</button>
           </div>
         </div>

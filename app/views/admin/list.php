@@ -33,11 +33,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['search'])) {
         <!-- Phần nút thêm sản phẩm và thống kê -->
         <div class="col-md-6 d-flex align-items-center justify-content-start">
             <button type="button"
-                class="inline-block bg-green-500 hover:bg-green-600 text-white font-bold px-6 py-2 rounded-lg text-sm transition duration-300 transform hover:-translate-y-1 hover:scale-105 shadow-lg"
+                class="inline-block bg-green-500 hover:bg-green-600 text-white px-6 py-2 rounded-lg text-sm transition duration-300 transform hover:-translate-y-1 hover:scale-105"
                 onclick="window.location.href='/admin/add'">+ New Product
             </button>
             <button type="button"
-                class="ml-8 inline-block bg-blue-500 hover:bg-blue-600 text-white font-bold px-6 py-2 rounded-lg text-sm transition duration-300 transform hover:-translate-y-1 hover:scale-105 shadow-lg"
+                class="ml-8 inline-block bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-lg text-sm transition duration-300 transform hover:-translate-y-1 hover:scale-105"
                 onclick="window.location.href='/admin/statistics'">Statistics
             </button>
         </div>

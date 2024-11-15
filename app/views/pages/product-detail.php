@@ -53,18 +53,18 @@ if (!$product) {
             <!-- Form thêm vào giỏ hàng -->
             <form method="POST" class="add-to-cart-form" style="display:inline;">
                 <input type="hidden" name="product_id" value="<?php echo $product_id; ?>">
-                <div class="form-group mb-4">
-                    <label for="quantity" class="text-lg font-semibold mt-4">Quantity:</label>
-                    <input type="number" class="form-control w-25" id="quantity" name="quantity" value="1" min="1">
+                <div class="form-group mb-3 mt-3">
+                    <label for="quantity" class="text-lg font-semibold text-gray-700">Quantity:</label>
+                    <input type="number" class="w-20 text-center border border-gray-300 rounded-lg p-2 mt-1" id="quantity" name="quantity" value="1" min="1">
                 </div>
-                <button type="button" class="add-to-cart-button px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition duration-300">Add to Cart</button>
+                <button type="button" class="add-to-cart-button bg-blue-500 text-white px-5 py-2 rounded-lg transition duration-300 ease-in-out transform hover:bg-purple-600 hover:shadow-lg hover:-translate-y-1 hover:scale-105">Add to Cart</button>
             </form>
         </div>
     </div>
 
     <!-- Sản phẩm liên quan ngẫu nhiên -->
-    <div class="related-products mt-5">
-        <h2 class="text-center mt-8 text-4xl font-extrabold text-blue-700 tracking-wide">You May Also Like</h2>
+    <div class="related-products mt-8">
+        <h2 class="text-center mb-8 text-4xl font-extrabold text-blue-700 tracking-wide">You May Also Like</h2>
         <div class="row">
             <?php
             $relatedProducts = $productController->getRandomProducts(3); // Lấy 3 sản phẩm ngẫu nhiên
@@ -91,7 +91,7 @@ if (!$product) {
                             <?php endif; ?>
 
                             <div class="text-center mt-auto mb-2">
-                                <button type="button" class="bg-blue-500 text-white mt-2 px-5 py-2 rounded-lg transition duration-300 hover:bg-blue-600 shadow-lg"
+                                <button type="button" class="mt-2 bg-blue-500 text-white px-5 py-2 rounded-lg transition duration-300 ease-in-out transform hover:bg-purple-600 hover:shadow-lg hover:-translate-y-1 hover:scale-105"
                                     onclick="window.location.href='/product-detail&id=<?php echo $relatedProduct['id']; ?>'">View Details</button>
                             </div>
                         </div>

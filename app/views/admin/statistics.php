@@ -97,8 +97,8 @@ foreach ($salesData as $sales) {
     </div>
 </div>
 
-<div class="text-center mt-4 mb-4">
-    <button type="button" class="inline-block bg-blue-500 text-white px-6 py-2 rounded-full shadow-md hover:bg-blue-600"
+<div class="text-center mb-4">
+    <button type="button" class="inline-block bg-green-500 text-white px-5 py-2 rounded-full hover:bg-purple-600 transition-all duration-200"
         onclick="window.location.href='/admin/list'">Back to Admin</button>
 </div>
 
