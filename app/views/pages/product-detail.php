@@ -1,5 +1,10 @@
 <?php
 
+// Tạo token CSRF nếu chưa tồn tại
+if (empty($_SESSION['csrf_token'])) {
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+}
+
 // Khởi tạo ProductController
 $productController = new ProductController($conn);
 
@@ -11,6 +16,15 @@ $product = $productController->getProductDetails($product_id);
 if (!$product) {
     echo "<h1 class='text-center mt-5'>Product not found</h1>";
     exit();
+}
+
+// Kiểm tra token CSRF khi gửi yêu cầu POST
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
+        http_response_code(403);
+        echo "<h1 class='text-center mt-5'>Forbidden: Invalid CSRF token</h1>";
+        exit();
+    }
 }
 ?>
 

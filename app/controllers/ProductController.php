@@ -74,4 +74,16 @@ class ProductController
   {
     return $this->productModel->getDistinctCategories();
   }
+
+  // Đếm tổng số sản phẩm trong danh mục
+  public function countProducts($category_id = null)
+  {
+    return $this->productModel->countProducts($category_id);
+  }
+
+  // Lấy sản phẩm theo danh mục với phân trang
+  public function getProductsByCategoryWithPagination($category_id = null, $limit, $offset)
+  {
+    return $this->productModel->getProductsByCategoryWithPagination($category_id, $limit, $offset);
+  }
 }

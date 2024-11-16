@@ -174,11 +174,11 @@ class Product
     public function searchProducts($searchTerm)
     {
         $query = "SELECT * FROM products 
-                    WHERE name LIKE :searchTerm
-                    OR id LIKE :searchTerm
-                    OR description LIKE :searchTerm 
-                    OR price LIKE :searchTerm 
-                    OR discount LIKE :searchTerm";
+                WHERE name LIKE :searchTerm
+                OR id LIKE :searchTerm
+                OR description LIKE :searchTerm 
+                OR price LIKE :searchTerm 
+                OR discount LIKE :searchTerm";
         $stmt = $this->conn->prepare($query);
         // Thêm ký tự "%" vào từ khóa để tìm kiếm bất kỳ từ nào có chứa $searchTerm
         $stmt->bindValue(':searchTerm', '%' . $searchTerm . '%');
@@ -201,5 +201,62 @@ class Product
         }
 
         return $categories;
+    }
+
+    // Các phương thức bổ sung khác...
+
+    /**
+     * Đếm tổng số sản phẩm trong một danh mục
+     * @param int $category_id
+     * @return int
+     */
+    public function countProducts($category_id = null)
+    {
+        $query = "SELECT COUNT(*) as total FROM " . $this->table;
+        if ($category_id !== null) {
+            $query .= " WHERE category_id = :category_id";
+        }
+
+        $stmt = $this->conn->prepare($query);
+
+        if ($category_id !== null) {
+            $stmt->bindParam(':category_id', $category_id, PDO::PARAM_INT);
+        }
+
+        $stmt->execute();
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $result['total'];
+    }
+
+    // Các phương thức bổ sung khác...
+    /**
+     * Lấy sản phẩm theo danh mục với phân trang
+     * @param int $category_id
+     * @param int $limit
+     * @param int $offset
+     * @return array
+     */
+    public function getProductsByCategoryWithPagination($category_id = null, $limit, $offset)
+    {
+        if ($limit <= 0 || $offset < 0) {
+            throw new InvalidArgumentException("Invalid limit or offset values");
+        }
+
+        $query = "SELECT * FROM " . $this->table;
+        if ($category_id !== null) {
+            $query .= " WHERE category_id = :category_id";
+        }
+        $query .= " LIMIT :limit OFFSET :offset";
+
+        $stmt = $this->conn->prepare($query);
+
+        if ($category_id !== null) {
+            $stmt->bindParam(':category_id', $category_id, PDO::PARAM_INT);
+        }
+        $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
+        $stmt->bindParam(':offset', $offset, PDO::PARAM_INT);
+        $stmt->execute();
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 }

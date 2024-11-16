@@ -1,14 +1,27 @@
 <?php
+
 // Kiểm tra quyền admin
 if (!isset($_SESSION['user_role']) || $_SESSION['user_role'] !== 'admin') {
     header("Location: /login");
     exit();
 }
 
+// Tạo token CSRF nếu chưa tồn tại
+if (empty($_SESSION['csrf_token'])) {
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+}
+
 $productController = new ProductController($conn);
 $categories = $productController->getDistinctCategories();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Kiểm tra token CSRF
+    if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
+        http_response_code(403);
+        echo "<h1 class='text-center mt-5'>Forbidden: Invalid CSRF token</h1>";
+        exit();
+    }
+
     $name = $_POST['name'];
     $description = !empty($_POST['description']) ? $_POST['description'] : null;
     $price = $_POST['price'];
@@ -35,6 +48,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $productController->createProduct($name, $description, $price, $image, $category_id, $discount, $discount_end_time);
     $_SESSION['success'] = "Product has been added successfully!";
+    $_SESSION['limit'] = $productController->countProducts();
+    $_SESSION['page'] = 1;
     header("Location: /admin/list");
     exit();
 }
@@ -55,6 +70,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     <div class="w-full max-w-4xl">
         <form action="/admin/add" method="POST" enctype="multipart/form-data" class="bg-gray-50 border border-gray-200 rounded-lg px-8 pt-6 pb-8">
+            <!-- CSRF Token -->
+            <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
+
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <!-- Cột 1 -->
                 <div>

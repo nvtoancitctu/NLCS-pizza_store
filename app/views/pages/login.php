@@ -1,5 +1,10 @@
 <?php
 
+// Generate a CSRF token if one doesn't exist
+if (empty($_SESSION['csrf_token'])) {
+  $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+}
+
 // Khởi tạo UserController
 $userController = new UserController($conn);
 
@@ -21,6 +26,11 @@ if (isset($_SESSION['user_id'])) {
 
 // Xử lý khi người dùng gửi biểu mẫu đăng nhập
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+  // Check CSRF token
+  if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
+    die('Invalid CSRF token');
+  }
+
   $email = $_POST['email'];
   $password = $_POST['password'];
 
@@ -62,6 +72,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 <h1 class="text-center text-4xl font-bold mt-10 text-gray-900">Login</h1>
 <div class="container mx-auto max-w-md p-8 bg-white shadow-lg rounded-xl mt-8 mb-8">
   <form method="POST" action="/login">
+    <!-- CSRF Token -->
+    <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token']) ?>">
+
     <div class="mb-6">
       <label for="email" class="block text-gray-700 font-bold mb-2">Email:</label>
       <input type="email" name="email" class="shadow-sm appearance-none border border-gray-300 rounded-md w-full p-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-400 transition duration-150" required>

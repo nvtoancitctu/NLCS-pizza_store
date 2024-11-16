@@ -1,4 +1,10 @@
 <?php
+
+// Generate a CSRF token if one doesn't exist
+if (empty($_SESSION['csrf_token'])) {
+  $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+}
+
 // Kiểm tra và lấy thông báo thành công từ session
 $success = '';
 if (isset($_SESSION['success'])) {
@@ -134,6 +140,7 @@ $product = $productController->getProductDetails($product_id);
 
             <!-- Nút Thêm vào giỏ hàng -->
             <form method="POST" action="/add" class="add-to-cart-form" style="display:inline;">
+              <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token']) ?>">
               <input type="hidden" name="product_id" value="<?= htmlspecialchars($product['id']); ?>">
               <input type="hidden" name="quantity" value="1">
               <button type="button" class="font-semibold add-to-cart-button bg-blue-500 text-white px-5 py-2 rounded-lg transition duration-300 ease-in-out transform hover:bg-purple-600 hover:shadow-lg hover:-translate-y-1 hover:scale-105">Add to Cart</button>

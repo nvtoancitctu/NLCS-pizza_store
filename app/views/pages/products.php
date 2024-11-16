@@ -1,5 +1,10 @@
 <?php
 
+// Tạo token CSRF nếu chưa tồn tại
+if (empty($_SESSION['csrf_token'])) {
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+}
+
 // Initialize the Product Controller
 $productController = new ProductController($conn);
 
@@ -78,6 +83,8 @@ $products = $productController->listProducts($category_id);
                                 <a href="/product-detail&id=<?= htmlspecialchars($product['id']); ?>"
                                     class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-700 transition duration-300">View Details</a>
                                 <form method="POST" action="/index.php?page=cart&action=add" class="add-to-cart-form" style="display:inline;">
+                                    <!-- CSRF Token -->
+                                    <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token']); ?>">
                                     <input type="hidden" name="product_id" value="<?= htmlspecialchars($product['id']); ?>">
                                     <input type="hidden" name="quantity" value="1">
                                     <button type="button" class="add-to-cart-button px-4 py-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 transition duration-300">Add to Cart</button>

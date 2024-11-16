@@ -1,12 +1,18 @@
 <?php
+
 // Kiểm tra quyền admin
 if (!isset($_SESSION['user_role']) || $_SESSION['user_role'] !== 'admin') {
     header("Location: /login");
     exit();
 }
 
+// Tạo token CSRF nếu chưa tồn tại
+if (empty($_SESSION['csrf_token'])) {
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+}
+
 // Kiểm tra xem có giá trị time_period từ POST không
-$timePeriod = isset($_POST['time_period']) ? $_POST['time_period'] : 'daily'; // Mặc định 'daily' nếu không có giá trị
+$timePeriod = isset($_POST['time_period']) ? $_POST['time_period'] : 'daily';
 
 // Khởi tạo OrderController và lấy thời gian lựa chọn
 $statisticsController = new OrderController($conn);
@@ -20,13 +26,13 @@ $revenues = [];
 
 foreach ($salesData as $sales) {
     if ($timePeriod === 'payment_method') {
-        $labels[] = $sales['method'];  // Phương thức thanh toán
+        $labels[] = $sales['method'];           // Phương thức thanh toán
         $revenues[] = $sales['revenue'];
     } elseif ($timePeriod === 'product') {
-        $labels[] = $sales['product_name'];  // Tên sản phẩm
+        $labels[] = $sales['product_name'];     // Tên sản phẩm
         $revenues[] = $sales['revenue'];
     } else {
-        $labels[] = $sales['date'];  // Ngày (hoặc tuần, tháng, năm)
+        $labels[] = $sales['date'];             // Ngày (hoặc tuần, tháng, năm)
         $revenues[] = $sales['revenue'];
     }
 }
@@ -36,6 +42,8 @@ foreach ($salesData as $sales) {
 
 <!-- Form chọn khoảng thời gian -->
 <form method="POST" class="text-center mb-6">
+    <!-- CSRF Token -->
+    <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrf_token) ?>">
     <label for="time_period" class="mr-2 text-lg">Select Time Period:</label>
     <select name="time_period" id="time_period" onchange="this.form.submit()" class="p-2 border rounded">
         <option value="daily" <?= $timePeriod === 'daily' ? 'selected' : '' ?>>Daily</option>

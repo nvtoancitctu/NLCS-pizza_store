@@ -1,4 +1,10 @@
 <?php
+
+// Generate a CSRF token if one doesn't exist
+if (empty($_SESSION['csrf_token'])) {
+  $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+}
+
 // Kiểm tra xem người dùng đã đăng nhập chưa
 if (!isset($_SESSION['user_id'])) {
   header("Location: /login");
@@ -24,6 +30,11 @@ if (empty($cartItems)) {
 $totalAmount = $cartItems[0]['total_cart_price'] ?? 0; // Sử dụng giá trị tổng giỏ hàng từ sản phẩm đầu tiên
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['checkout'])) { // Kiểm tra xem có yêu cầu đặt hàng hay không
+  // Check CSRF token
+  if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
+    die('Invalid CSRF token');
+  }
+
   $address = trim(strip_tags($_POST['address'])); // Làm sạch địa chỉ
   $payment_method = $_POST['payment_method']; // Lấy phương thức thanh toán (cần xác thực đầu vào này)
 
@@ -44,6 +55,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['checkout'])) { // Ki�
 
 <div class="container mx-auto px-4 mt-4">
   <form method="POST" action="/checkout" id="checkout-form" class="bg-white shadow-lg border rounded-lg p-8 max-w-2xl mx-auto mb-6">
+    <!-- CSRF Token -->
+    <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token']) ?>">
 
     <!-- Danh sách sản phẩm trong giỏ hàng -->
     <div class="overflow-x-auto mb-6">

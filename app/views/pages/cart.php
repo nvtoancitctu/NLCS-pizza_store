@@ -1,5 +1,10 @@
 <?php
 
+// Generate a CSRF token if one doesn't exist
+if (empty($_SESSION['csrf_token'])) {
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+}
+
 // Kiểm tra đăng nhập
 if (!isset($_SESSION['user_id'])) {
     $_SESSION['success'] = "Please log in to add items to your cart!";
@@ -18,6 +23,11 @@ $cartItems = $cartController->viewCart($user_id);
 
 // Xử lý cập nhật số lượng sản phẩm trong giỏ
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['update'])) {
+    // Check CSRF token
+    if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
+        die('Invalid CSRF token');
+    }
+
     $cart_id = $_POST['cart_id'];
     $quantity = $_POST['quantity'];
     $cartController->updateCartItem($cart_id, $quantity);
@@ -28,12 +38,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['update'])) {
 // Xử lý xóa sản phẩm khỏi giỏ hàng
 if (isset($_GET['action'])) {
     if ($_GET['action'] === 'delete' && isset($_GET['cart_id']) && is_numeric($_GET['cart_id'])) {
+        // Check CSRF token
+        if (!isset($_GET['csrf_token']) || $_GET['csrf_token'] !== $_SESSION['csrf_token']) {
+            die('Invalid CSRF token');
+        }
+
         $cart_id = (int) $_GET['cart_id'];
         $cartController->deleteCartItem($cart_id);
         header("Location: /cart");
         exit();
     } else {
-        // 
         if ($_GET['action'] === 'delete') {
             echo "Invalid cart ID or action.";
         }
@@ -76,6 +90,7 @@ if (isset($_GET['action'])) {
                         </td>
                         <td class="px-4 py-3">
                             <form method="POST" action="/cart" class="flex items-center">
+                                <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token']) ?>">
                                 <input type="hidden" name="cart_id" value="<?= $item['id'] ?>">
                                 <input type="number" name="quantity" value="<?= $item['quantity'] ?>" min="1"
                                     class="border border-gray-300 rounded px-2 py-1 w-16 text-center focus:outline-none focus:ring-2 focus:ring-blue-400">
@@ -89,7 +104,7 @@ if (isset($_GET['action'])) {
                             $<?= number_format($item['total_price'], 2) ?>
                         </td>
                         <td class="px-4 py-3 text-center">
-                            <a href="/index.php?page=cart&action=delete&cart_id=<?= $item['id'] ?>"
+                            <a href="/index.php?page=cart&action=delete&cart_id=<?= $item['id'] ?>&csrf_token=<?= htmlspecialchars($_SESSION['csrf_token']) ?>"
                                 class="bg-red-500 text-white px-3 py-2 rounded hover:bg-red-600 transition duration-200 text-xs font-semibold">
                                 Delete
                             </a>

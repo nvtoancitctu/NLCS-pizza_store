@@ -1,5 +1,10 @@
 <?php
 
+// Generate a CSRF token if one doesn't exist
+if (empty($_SESSION['csrf_token'])) {
+  $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+}
+
 // Kiểm tra xem người dùng đã đăng nhập chưa, nếu chưa sẽ điều hướng về trang đăng nhập
 if (!isset($_SESSION['user_name'], $_SESSION['user_email'], $_SESSION['user_id'])) {
   header("Location: /login");
@@ -14,6 +19,11 @@ $userController = new UserController($conn);
 
 // Xử lý điều kiện khi người dùng nhấn vào nút Admin Panel, Logout, hoặc cập nhật thông tin
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+  // Check CSRF token
+  if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
+    die('Invalid CSRF token');
+  }
+
   if (isset($_POST['admin_panel']) && $_SESSION['user_role'] === 'admin') {
     // Điều hướng đến trang quản lý sản phẩm nếu người dùng có quyền admin
     header("Location: /admin/list");
@@ -55,14 +65,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <?php endif; ?>
 
 <!-- Profile Section -->
-<div class="container mx-auto w-4/5 mt-10 mb-10 p-4 bg-white shadow-sm rounded-lg">
-  <h2 class="text-3xl font-bold text-center mb-6 text-gray-800">Profile</h2>
+<div class="container mx-auto w-4/5 mt-10 mb-10 p-6 bg-white shadow-lg rounded-lg">
+  <h2 class="text-4xl font-bold text-center mb-8 text-gray-900">Profile</h2>
 
   <!-- Thông tin người dùng hiển thị dưới dạng lưới -->
-  <div class="grid grid-cols-3 gap-8 p-6 bg-gray-50 shadow-sm rounded-xl w-4/5 mx-auto mb-6">
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-8 p-6 bg-gray-50 shadow-md rounded-xl w-4/5 mx-auto mb-8">
     <!-- Name -->
     <div class="flex items-center space-x-4">
-      <i class="fas fa-user text-2xl text-yellow-500"></i>
+      <i class="fas fa-user text-3xl text-yellow-500"></i>
       <div>
         <p class="font-semibold text-gray-800">Name</p>
         <p class="text-gray-600"><?= htmlspecialchars($_SESSION['user_name']) ?></p>
@@ -71,7 +81,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     <!-- Email -->
     <div class="flex items-center space-x-4">
-      <i class="fas fa-envelope text-2xl text-yellow-500"></i>
+      <i class="fas fa-envelope text-3xl text-yellow-500"></i>
       <div>
         <p class="font-semibold text-gray-800">Email</p>
         <p class="text-gray-600"><?= htmlspecialchars($_SESSION['user_email']) ?></p>
@@ -79,9 +89,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </div>
 
     <!-- Nút Admin Panel -->
-    <div class="flex items-center space-x-4 col-span-1 w-4/5 mx-auto">
+    <div class="flex items-center space-x-4 col-span-1 w-full mx-auto">
       <?php if ($_SESSION['user_role'] === 'admin'): ?>
         <form method="POST" action="/account">
+          <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token']) ?>">
           <button type="submit" name="admin_panel" class="bg-yellow-400 hover:bg-yellow-500 text-black font-bold py-2 px-4 rounded-lg transition duration-200">Admin Panel</button>
         </form>
       <?php endif; ?>
@@ -89,7 +100,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     <!-- Phone -->
     <div class="flex items-center space-x-4">
-      <i class="fas fa-phone text-2xl text-yellow-500"></i>
+      <i class="fas fa-phone text-3xl text-yellow-500"></i>
       <div>
         <p class="font-semibold text-gray-800">Phone</p>
         <p class="text-gray-600"><?= htmlspecialchars($_SESSION['user_phone'] ?? 'N/A') ?></p>
@@ -98,7 +109,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     <!-- Address -->
     <div class="flex items-center space-x-4">
-      <i class="fas fa-map-marker-alt text-2xl text-yellow-500"></i>
+      <i class="fas fa-map-marker-alt text-3xl text-yellow-500"></i>
       <div>
         <p class="font-semibold text-gray-800">Address</p>
         <p class="text-gray-600"><?= htmlspecialchars($_SESSION['user_address'] ?? 'N/A') ?></p>
@@ -106,21 +117,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </div>
 
     <!-- Nút Update Profile -->
-    <div class="flex items-center space-x-4 col-span-1 w-4/5 mx-auto">
+    <div class="flex items-center space-x-4 col-span-1 w-full mx-auto">
       <button onclick="toggleForm()" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg transition duration-200">Update Profile</button>
     </div>
   </div>
 
   <!-- Form Cập Nhật Thông Tin Người Dùng, mặc định bị ẩn -->
   <div id="update-profile-form" class="space-y-6 mt-4 hidden w-4/5 mx-auto">
-    <h3 class="text-2xl font-bold text-center mt-8 text-gray-800">Update Profile</h3>
-    <form action="/account" method="POST" class="space-y-6 bg-gray-100 p-6 rounded-lg shadow-sm">
-      <div class="flex justify-between">
-        <div class="w-1/2 pr-3">
+    <h3 class="text-3xl font-bold text-center mt-8 text-gray-800">Update Profile</h3>
+    <form action="/account" method="POST" class="space-y-6 bg-gray-100 p-6 rounded-lg shadow-md">
+      <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token']) ?>">
+      <div class="flex flex-col md:flex-row justify-between">
+        <div class="w-full md:w-1/2 pr-0 md:pr-3 mb-4 md:mb-0">
           <label for="name" class="block text-gray-700 font-semibold">Name</label>
           <input type="text" id="name" name="name" value="<?= htmlspecialchars($_SESSION['user_name']) ?>" class="w-full p-3 border border-gray-300 rounded-md" required>
         </div>
-        <div class="w-1/2 pl-3">
+        <div class="w-full md:w-1/2 pl-0 md:pl-3">
           <label for="phone" class="block text-gray-700 font-semibold">Phone</label>
           <input type="text" id="phone" name="phone" value="<?= htmlspecialchars($_SESSION['user_phone'] ?? '') ?>" class="w-full p-3 border border-gray-300 rounded-md">
         </div>
@@ -145,16 +157,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   </script>
 
   <!-- Order History Section -->
-  <h3 class="text-2xl font-bold text-center mt-8 text-gray-800">Order History</h3>
+  <h3 class="text-3xl font-bold text-center mt-8 text-gray-800">Order History</h3>
   <div class="mt-6">
     <?php if ($orders): ?>
       <ol class="list-decimal pl-5 space-y-6">
         <?php foreach ($orders as $order): ?>
           <?php $orderdetails = $orderController->getOrderDetailsByOrderId($order['id']); ?>
           <li class="mb-6">
-            <div class="border border-gray-200 rounded-xl p-5 bg-blue-50 shadow-sm">
+            <div class="border border-gray-200 rounded-xl p-5 bg-blue-50 shadow-md">
               <!-- Thông tin đơn hàng cơ bản -->
-              <div class="w-2/5 p-3 bg-white border border-gray-200 rounded-xl shadow-sm space-y-2">
+              <div class="w-full md:w-2/5 p-3 bg-white border border-gray-200 rounded-xl shadow-md space-y-2">
                 <p class="text-sm text-gray-700"><strong>Order ID:</strong> <span class="text-blue-600">#<?= htmlspecialchars($order['id']) ?></span></p>
                 <p class="text-sm text-gray-700"><strong>Total:</strong> <span class="text-red-500 font-semibold">$<?= number_format($order['total'], 2) ?></span></p>
                 <p class="text-sm text-gray-700"><strong>Payment Method:</strong> <span class="capitalize"><?= ucfirst($order['payment_method']) ?></span></p>
@@ -198,6 +210,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
   <!-- Logout Button -->
   <form method="POST" class="flex justify-center mt-8">
+    <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token']) ?>">
     <button type="submit" name="logout" onclick="confirmLogout(event)" class="bg-red-500 text-white px-5 py-2 rounded-md hover:bg-red-600 transition duration-200 shadow">Logout</button>
   </form>
 </div>
