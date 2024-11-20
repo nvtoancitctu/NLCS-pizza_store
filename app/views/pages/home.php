@@ -241,7 +241,7 @@ $product = $productController->getProductDetails($product_id);
           <p class="card-text text-sm text-gray-600 text-center mb-4"><?php echo htmlspecialchars($product['description']); ?></p>
           <div class="text-center mt-auto mb-2">
             <button type="button" class="font-semibold bg-blue-500 text-white px-5 py-2 rounded-lg transition duration-300 ease-in-out transform hover:bg-green-600 hover:shadow-lg hover:-translate-y-1 hover:scale-105"
-              onclick="window.location.href='/product-detail&id=<?php echo $product['id']; ?>'">View Details</button>
+              onclick="window.location.href='/product-detail/id=<?php echo $product['id']; ?>'">View Details</button>
           </div>
         </div>
       </div>

@@ -259,4 +259,74 @@ class Product
 
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    public function exportProducts()
+    {
+        header('Content-Type: text/csv; charset=utf-8');
+        header('Content-Disposition: attachment; filename=products.csv');
+        $output = fopen('php://output', 'w');
+        fputcsv($output, ['ID', 'Name', 'Price', 'Stock', 'Category']);
+
+        $products = $this->conn->getAllProducts(); // Lấy danh sách sản phẩm từ model
+        foreach ($products as $product) {
+            fputcsv($output, [$product['id'], $product['name'], $product['price'], $product['stock'], $product['category']]);
+        }
+        fclose($output);
+        exit();
+    }
+
+    public function importOrUpdateProduct($data)
+    {
+        // Kiểm tra và xử lý giá trị đầu vào từ file CSV
+        $productId = $data['ID'] ?? null;
+        $name = $data['Name'] ?? 'Unnamed Product';
+        $description = $data['Description'] ?? null;
+        $price = isset($data['Price']) ? floatval($data['Price']) : 0.0;
+        $categoryId = isset($data['Category']) ? intval($data['Category']) : null;
+        $discount = isset($data['Discount']) && $data['Discount'] !== '' ? floatval($data['Discount']) : null;
+        $discountEndTime = isset($data['Discount End Time']) && $data['Discount End Time'] !== '' ? $data['Discount End Time'] : null;
+
+        // Kiểm tra sản phẩm đã tồn tại trong cơ sở dữ liệu chưa
+        $stmt = $this->conn->prepare("SELECT id FROM products WHERE id = :id");
+        $stmt->execute([':id' => $productId]);
+        $existingProduct = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if ($existingProduct) {
+            // Nếu sản phẩm đã tồn tại, cập nhật sản phẩm
+            $stmt = $this->conn->prepare("
+            UPDATE products SET 
+                name = :name,
+                description = :description,
+                price = :price,
+                category_id = :category_id,
+                discount = :discount,
+                discount_end_time = :discount_end_time
+            WHERE id = :id
+        ");
+            $stmt->execute([
+                ':name' => $name,
+                ':description' => $description,
+                ':price' => $price,
+                ':category_id' => $categoryId,
+                ':discount' => $discount,
+                ':discount_end_time' => $discountEndTime,
+                ':id' => $productId
+            ]);
+        } else {
+            // Nếu sản phẩm không tồn tại, thêm sản phẩm mới
+            $stmt = $this->conn->prepare("
+            INSERT INTO products (id, name, description, price, category_id, discount, discount_end_time) 
+            VALUES (:id, :name, :description, :price, :category_id, :discount, :discount_end_time)
+        ");
+            $stmt->execute([
+                ':id' => $productId,
+                ':name' => $name,
+                ':description' => $description,
+                ':price' => $price,
+                ':category_id' => $categoryId,
+                ':discount' => $discount,
+                ':discount_end_time' => $discountEndTime
+            ]);
+        }
+    }
 }

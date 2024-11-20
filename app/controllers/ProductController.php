@@ -86,4 +86,14 @@ class ProductController
   {
     return $this->productModel->getProductsByCategoryWithPagination($category_id, $limit, $offset);
   }
+
+  public function exportProducts()
+  {
+    return $this->productModel->exportProducts();
+  }
+
+  public function importOrUpdateProduct($data)
+  {
+    return $this->productModel->importOrUpdateProduct($data);
+  }
 }

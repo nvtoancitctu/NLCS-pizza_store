@@ -44,6 +44,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['search'])) {
 }
 
 $totalPages = ceil($totalProducts / $limit); // Tổng số trang
+
+// Kiểm tra hành động 'export-products'
+if (isset($_GET['action']) && $_GET['action'] === 'export-products') {
+    $productController->exportProducts();
+}
+
 ?>
 
 <!-- Hiển thị thông báo thành công nếu có -->
@@ -56,22 +62,34 @@ $totalPages = ceil($totalProducts / $limit); // Tổng số trang
 <h1 class="text-4xl font-extrabold text-center my-10 text-blue-700 drop-shadow-lg">Product Management</h1>
 
 <div class="container mx-auto p-6 bg-white shadow-xl rounded-lg mb-4 w-11/12">
-    <div class="row mb-4 d-flex align-items-center">
-        <!-- Phần nút thêm sản phẩm và thống kê -->
-        <div class="col-md-6 d-flex align-items-center justify-content-start">
-            <button type="button"
-                class="inline-block bg-green-500 hover:bg-green-600 text-white px-6 py-2 rounded-lg text-sm transition duration-300 transform hover:-translate-y-1 hover:scale-105"
-                onclick="window.location.href='/admin/add'">+ New Product
-            </button>
-            <button type="button"
-                class="ml-8 inline-block bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-lg text-sm transition duration-300 transform hover:-translate-y-1 hover:scale-105"
-                onclick="window.location.href='/admin/statistics'">Statistics
-            </button>
+    <div class="row mb-4">
+        <!-- Nút chức năng -->
+        <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap">
+            <!-- Nút thêm sản phẩm và thống kê -->
+            <div class="d-flex align-items-center mb-3">
+                <button class="btn btn-success me-3" onclick="window.location.href='/admin/add'">+ New Product</button>
+                <button class="btn btn-primary me-3" onclick="window.location.href='/admin/statistics'">Statistics</button>
+            </div>
+
+            <!-- Nút xuất/nhập dữ liệu -->
+            <div class="d-flex align-items-center mb-3">
+                <!-- Xuất dữ liệu -->
+                <button class="btn btn-outline-success me-4" onclick="window.location.href='/admin/export-products'">
+                    Export to CSV
+                </button>
+
+                <!-- Nhập dữ liệu -->
+                <form method="POST" action="/admin/import-products" enctype="multipart/form-data" class="d-flex align-items-center">
+                    <label for="product_file" class="form-label mb-0 me-3 align-self-center">Upload CSV:</label>
+                    <input type="file" name="product_file" id="product_file" class="form-control w-auto me-3" accept=".csv" required>
+                    <button type="submit" class="btn btn-primary">Import</button>
+                </form>
+            </div>
         </div>
 
-        <!-- Phần tìm kiếm -->
-        <div class="col-md-6 d-flex justify-content-end align-items-center">
-            <form method="POST" class="mb-0 w-100">
+        <!-- Thanh tìm kiếm -->
+        <div class="col-md-12">
+            <form method="POST" class="d-flex align-items-center">
                 <!-- CSRF Token -->
                 <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token']) ?>">
                 <div class="input-group w-100">
@@ -131,7 +149,7 @@ $totalPages = ceil($totalProducts / $limit); // Tổng số trang
                         </td>
                         <td class="px-4 py-2 border-b text-center">
                             <div class="flex justify-center space-x-2">
-                                <a href="/admin/edit&id=<?= $product['id'] ?>" class="px-4 py-2 bg-yellow-500 text-white rounded hover:bg-yellow-600 transition duration-200">Edit</a>
+                                <a href="/admin/edit/id=<?= $product['id'] ?>" class="px-4 py-2 bg-yellow-500 text-white rounded hover:bg-yellow-600 transition duration-200">Edit</a>
                                 <a href="javascript:void(0);" onclick="confirmDelete(<?= $product['id'] ?>)" class="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition duration-200">Delete</a>
                             </div>
                         </td>

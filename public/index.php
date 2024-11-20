@@ -78,6 +78,12 @@ switch ($page) {
     case 'statistics':
         include '../app/views/admin/statistics.php';
         break;
+    case 'export-products':
+        include '../app/views/admin/export-products.php';
+        break;
+    case 'import-products':
+        include '../app/views/admin/import-products.php';
+        break;
     default:
         include '../app/views/pages/404.php'; // Trang lỗi 404
         break;

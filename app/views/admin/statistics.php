@@ -56,21 +56,21 @@ foreach ($salesData as $sales) {
 </form>
 
 <!-- Bảng thống kê doanh thu và Biểu đồ -->
-<div class="container mx-auto p-6 bg-white shadow-xl rounded-lg mb-4 w-10/12 flex justify-between">
+<div class="container mx-auto p-6 bg-white shadow-xl rounded-lg mb-4 min-w-10/12">
 
     <!-- Bảng thống kê doanh thu -->
-    <div class="w-full lg:w-2/3 pr-4">
+    <div class="overflow-x-auto mb-6">
         <table class="min-w-full bg-white border border-gray-200 rounded-lg shadow-md">
             <thead>
                 <tr class="bg-gray-100 text-gray-800 text-center">
                     <?php if ($timePeriod === 'payment_method'): ?>
-                        <th class="px-4 py-2 border-b">Payment Method</th>
+                        <th class="px-4 py-3 border-b">Payment Method</th>
                     <?php elseif ($timePeriod === 'product'): ?>
-                        <th class="px-4 py-2 border-b">Product Name</th>
+                        <th class="px-4 py-3 border-b">Product Name</th>
                     <?php else: ?>
-                        <th class="px-4 py-2 border-b">Date</th>
+                        <th class="px-4 py-3 border-b">Date</th>
                     <?php endif; ?>
-                    <th class="px-4 py-2 border-b">Total Sales</th>
+                    <th class="px-4 py-3 border-b">Total Sales</th>
                 </tr>
             </thead>
             <tbody>
@@ -78,20 +78,20 @@ foreach ($salesData as $sales) {
                     <?php foreach ($salesData as $sales): ?>
                         <tr class="hover:bg-gray-50">
                             <?php if ($timePeriod === 'payment_method'): ?>
-                                <td class="px-4 py-2 border-b text-center"><?= htmlspecialchars($sales['method']) ?></td>
+                                <td class="px-4 py-3 border-b text-center"><?= htmlspecialchars($sales['method']) ?></td>
                             <?php elseif ($timePeriod === 'product'): ?>
-                                <td class="px-4 py-2 border-b text-center"><?= htmlspecialchars($sales['product_name']) ?></td>
+                                <td class="px-4 py-3 border-b text-center"><?= htmlspecialchars($sales['product_name']) ?></td>
                             <?php else: ?>
-                                <td class="px-4 py-2 border-b text-center"><?= htmlspecialchars($sales['date']) ?></td>
+                                <td class="px-4 py-3 border-b text-center"><?= htmlspecialchars($sales['date']) ?></td>
                             <?php endif; ?>
-                            <td class="px-4 py-2 border-b text-center text-green-600 font-bold">
+                            <td class="px-4 py-3 border-b text-center text-green-600 font-bold">
                                 $<?= number_format($sales['revenue'], 2) ?>
                             </td>
                         </tr>
                     <?php endforeach; ?>
                 <?php else: ?>
                     <tr>
-                        <td colspan="2" class="px-4 py-2 border-b text-center text-gray-500">No sales data available</td>
+                        <td colspan="2" class="px-4 py-3 border-b text-center text-gray-500">No sales data available</td>
                     </tr>
                 <?php endif; ?>
             </tbody>
@@ -99,9 +99,8 @@ foreach ($salesData as $sales) {
     </div>
 
     <!-- Biểu đồ doanh thu -->
-    <div class="w-4/5 lg:w-1/3 pl-4">
-        <!-- Biểu đồ sẽ tự động điều chỉnh kích thước khi màn hình thay đổi -->
-        <canvas id="salesChart" class="w-full h-auto max-h-96"></canvas>
+    <div class="mt-6">
+        <canvas id="salesChart" class="w-full max-h-96"></canvas>
     </div>
 </div>
 

@@ -26,7 +26,7 @@ $products = $productController->listProducts($category_id);
 <div class="text-center mb-6">
     <a href="/products" class="inline-block px-4 py-2 rounded-lg <?= !$category_id ? 'bg-red-600 text-white' : 'bg-gray-200 text-gray-600' ?> m-2 hover:bg-red-700 transition duration-300">All</a>
     <?php foreach ($categories as $category): ?>
-        <a href="/products&category_id=<?= $category['id'] ?>"
+        <a href="/products/category_id=<?= $category['id'] ?>"
             class="inline-block px-4 py-2 rounded-lg <?= ($category_id == $category['id']) ? 'bg-red-600 text-white' : 'bg-gray-200 text-gray-600' ?> m-2 hover:bg-red-700 transition duration-300">
             <?= htmlspecialchars($category['name']) ?>
         </a>
@@ -80,9 +80,9 @@ $products = $productController->listProducts($category_id);
 
                             <!-- Buttons for View Details and Add to Cart -->
                             <div class="mt-4 mb-4 flex justify-center space-x-4">
-                                <a href="/product-detail&id=<?= htmlspecialchars($product['id']); ?>"
+                                <a href="/product-detail/id=<?= htmlspecialchars($product['id']); ?>"
                                     class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-700 transition duration-300">View Details</a>
-                                <form method="POST" action="/index.php?page=cart&action=add" class="add-to-cart-form" style="display:inline;">
+                                <form method="POST" action="add" class="add-to-cart-form" style="display:inline;">
                                     <!-- CSRF Token -->
                                     <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token']); ?>">
                                     <input type="hidden" name="product_id" value="<?= htmlspecialchars($product['id']); ?>">

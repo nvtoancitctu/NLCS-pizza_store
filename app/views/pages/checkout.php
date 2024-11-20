@@ -45,7 +45,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['checkout'])) { // Ki�
   $cartController->clearCart($user_id);
 
   // Điều hướng đến trang thành công đơn hàng
-  header("Location: /order-success&order_id=$order_id");
+  header("Location: /order-success/order_id=$order_id");
   exit();
 }
 ?>
