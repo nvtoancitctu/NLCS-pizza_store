@@ -67,7 +67,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <!-- Profile Section -->
 <div class="container mx-auto w-4/5 mt-10 mb-10 p-6 bg-white shadow-lg rounded-lg">
   <h2 class="text-4xl font-bold text-center mb-8 text-gray-900">Profile</h2>
-
   <!-- Thông tin người dùng hiển thị dưới dạng lưới -->
   <div class="grid grid-cols-1 md:grid-cols-3 gap-8 p-6 bg-gray-50 shadow-md rounded-xl w-4/5 mx-auto mb-8">
     <!-- Name -->
@@ -78,7 +77,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <p class="text-gray-600"><?= htmlspecialchars($_SESSION['user_name']) ?></p>
       </div>
     </div>
-
     <!-- Email -->
     <div class="flex items-center space-x-4">
       <i class="fas fa-envelope text-3xl text-yellow-500"></i>
@@ -89,11 +87,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </div>
 
     <!-- Nút Admin Panel -->
-    <div class="flex items-center space-x-4 col-span-1 w-full mx-auto">
+    <div class="flex justify-center space-x-4 col-span-1 w-full">
       <?php if ($_SESSION['user_role'] === 'admin'): ?>
         <form method="POST" action="/account">
           <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token']) ?>">
-          <button type="submit" name="admin_panel" class="bg-yellow-400 hover:bg-yellow-500 text-black font-bold py-2 px-4 rounded-lg transition duration-200">Admin Panel</button>
+          <button type="submit" name="admin_panel"
+            class="bg-yellow-400 hover:bg-yellow-500 text-black font-bold py-2 px-6 rounded-lg transition duration-200">
+            Admin Panel
+          </button>
         </form>
       <?php endif; ?>
     </div>
@@ -106,7 +107,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <p class="text-gray-600"><?= htmlspecialchars($_SESSION['user_phone'] ?? 'N/A') ?></p>
       </div>
     </div>
-
     <!-- Address -->
     <div class="flex items-center space-x-4">
       <i class="fas fa-map-marker-alt text-3xl text-yellow-500"></i>
@@ -117,8 +117,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </div>
 
     <!-- Nút Update Profile -->
-    <div class="flex items-center space-x-4 col-span-1 w-full mx-auto">
-      <button onclick="toggleForm()" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg transition duration-200">Update Profile</button>
+    <div class="flex justify-center space-x-4 col-span-1 w-full">
+      <button onclick="toggleForm()"
+        class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-3 rounded-lg transition duration-200">
+        Update Profile
+      </button>
     </div>
   </div>
 
@@ -175,29 +178,39 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <p class="text-sm text-gray-700"><strong>Order Date:</strong> <?= htmlspecialchars($order['created_at']) ?></p>
               </div>
               <!-- Thông tin chi tiết các sản phẩm trong đơn hàng -->
-              <table class="table-auto w-full text-left mt-3 border border-gray-50 rounded-xl shadow bg-white">
-                <thead class="bg-yellow-100">
-                  <tr>
-                    <th class="border px-4 py-2">Product Name</th>
-                    <th class="border px-4 py-2 text-center">Quantity</th>
-                    <th class="border px-4 py-2 text-center">Price</th>
-                    <th class="border px-4 py-2 text-center">Subtotal</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <?php foreach ($orderdetails as $item): ?>
-                    <tr class="hover:bg-gray-200 transition text-center">
-                      <td class="border px-4 py-2 text-left"><?= htmlspecialchars($item['name']) ?></td>
-                      <td class="border px-4 py-2"><?= htmlspecialchars($item['quantity']) ?></td>
-                      <td class="border px-4 py-2">
-                        <!-- Hiển thị giá discount màu đỏ nếu có giảm giá, ngược lại là giá thường -->
-                        <?= $item['price_to_display'] < $item['price'] ? "<span class='text-red-500'>$" . number_format($item['price_to_display'], 2) . "</span>" : "$" . number_format($item['price'], 2) ?>
-                      </td>
-                      <td class="border px-4 py-2">$<?= number_format($item['total_price'], 2) ?></td>
+              <div class="table-responsive overflow-x-auto mt-4">
+                <table class="table-auto w-full text-sm text-left text-gray-700 border border-gray-200 shadow-md bg-white">
+                  <thead class="bg-yellow-200 text-gray-800 uppercase">
+                    <tr>
+                      <th scope="col" class="px-4 py-2 text-center">Product Name</th>
+                      <th scope="col" class="px-4 py-2 text-center">Quantity</th>
+                      <th scope="col" class="px-4 py-2 text-center">Price</th>
+                      <th scope="col" class="px-4 py-2 text-center">Subtotal</th>
                     </tr>
-                  <?php endforeach; ?>
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody class="divide-y divide-gray-200">
+                    <?php foreach ($orderdetails as $item): ?>
+                      <tr class="hover:bg-gray-100 transition text-center">
+                        <td class="px-4 py-2 text-left font-medium text-gray-900">
+                          <?= htmlspecialchars($item['name']) ?>
+                        </td>
+                        <td class="px-4 py-2">
+                          <?= htmlspecialchars($item['quantity']) ?>
+                        </td>
+                        <td class="px-4 py-2">
+                          <?= $item['price_to_display'] < $item['price']
+                            ? "<span class='text-red-500 font-semibold'>$" . number_format($item['price_to_display'], 2) . "</span>"
+                            : "$" . number_format($item['price'], 2)
+                          ?>
+                        </td>
+                        <td class="px-4 py-2">
+                          $<?= number_format($item['total_price'], 2) ?>
+                        </td>
+                      </tr>
+                    <?php endforeach; ?>
+                  </tbody>
+                </table>
+              </div>
             </div>
           </li>
         <?php endforeach; ?>

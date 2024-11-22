@@ -61,7 +61,7 @@ if (isset($_GET['action']) && $_GET['action'] === 'export-products') {
 
 <h1 class="text-4xl font-extrabold text-center my-10 text-blue-700 drop-shadow-lg">Product Management</h1>
 
-<div class="container mx-auto p-6 bg-white shadow-xl rounded-lg mb-4 w-11/12">
+<div class="container-fluid mx-auto p-6 bg-white shadow-xl rounded-lg mb-4 w-full lg:w-11/12">
     <div class="row mb-4">
         <!-- Nút chức năng -->
         <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap">
@@ -72,27 +72,27 @@ if (isset($_GET['action']) && $_GET['action'] === 'export-products') {
             </div>
 
             <!-- Nút xuất/nhập dữ liệu -->
-            <div class="d-flex align-items-center mb-3">
+            <div class="d-flex align-items-center mb-3 flex-wrap">
                 <!-- Xuất dữ liệu -->
-                <button class="btn btn-outline-success me-4" onclick="window.location.href='/admin/export-products'">
+                <button class="btn btn-outline-success me-4 mb-2" onclick="window.location.href='/admin/export-products'">
                     Export to CSV
                 </button>
 
                 <!-- Nhập dữ liệu -->
-                <form method="POST" action="/admin/import-products" enctype="multipart/form-data" class="d-flex align-items-center">
+                <form method="POST" action="/admin/import-products" enctype="multipart/form-data" class="d-flex align-items-center flex-wrap">
                     <label for="product_file" class="form-label mb-0 me-3 align-self-center">Upload CSV:</label>
-                    <input type="file" name="product_file" id="product_file" class="form-control w-auto me-3" accept=".csv" required>
-                    <button type="submit" class="btn btn-primary">Import</button>
+                    <input type="file" name="product_file" id="product_file" class="form-control w-auto me-3 mb-2" accept=".csv" required>
+                    <button type="submit" class="btn btn-primary mb-2">Import</button>
                 </form>
             </div>
         </div>
 
         <!-- Thanh tìm kiếm -->
         <div class="col-md-12">
-            <form method="POST" class="d-flex align-items-center">
+            <form method="POST" class="d-flex align-items-center flex-wrap">
                 <!-- CSRF Token -->
                 <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token']) ?>">
-                <div class="input-group w-100">
+                <div class="input-group w-100 mb-2">
                     <input type="text" name="search_term" class="form-control" placeholder="Search products..."
                         value="<?= htmlspecialchars($searchTerm ?? '') ?>" aria-label="Search products"
                         aria-describedby="button-search">
@@ -104,7 +104,6 @@ if (isset($_GET['action']) && $_GET['action'] === 'export-products') {
 
     <!-- Form chọn số lượng sản phẩm hiển thị -->
     <form method="POST" class="text-center mb-6">
-        <!-- Đặt giá trị page về 1 -->
         <input type="hidden" name="page" value="1">
 
         <label for="limit" class="mr-2 text-lg">Select Number of Products:</label>
@@ -116,84 +115,81 @@ if (isset($_GET['action']) && $_GET['action'] === 'export-products') {
     </form>
 
     <!-- Danh mục sản phẩm -->
-    <table class="min-w-full bg-white border border-gray-200 rounded-lg shadow-md">
-        <thead>
-            <tr class="bg-gray-100 text-gray-800 text-center">
-                <th class="px-4 py-2 border-b">ID</th>
-                <th class="px-4 py-2 border-b">Image</th>
-                <th class="px-4 py-2 border-b">Name</th>
-                <th class="px-4 py-2 border-b">Price</th>
-                <th class="px-4 py-2 border-b">Description</th>
-                <th class="px-4 py-2 border-b">Discount</th>
-                <th class="px-4 py-2 border-b">Actions</th>
-            </tr>
-        </thead>
-        <?php if (count($products) > 0): ?>
-            <tbody>
-                <?php foreach ($products as $product): ?>
-                    <tr class="hover:bg-gray-50">
-                        <!-- Hiển thị thông tin sản phẩm -->
-                        <td class="px-4 py-2 border-b text-center"><?= htmlspecialchars($product['id']) ?></td>
-                        <td class="px-4 py-2 border-b text-center">
-                            <img src="/images/<?= htmlspecialchars($product['image']); ?>" class="w-16 h-16 object-cover mx-auto rounded-lg" alt="<?= htmlspecialchars($product['name']); ?>">
-                        </td>
-                        <td class="px-4 py-2 border-b font-semibold text-gray-800"><?= htmlspecialchars($product['name']) ?></td>
-                        <td class="px-4 py-2 border-b text-green-600 font-bold text-center">$<?= number_format($product['price'], 2) ?></td>
-                        <td class="px-4 py-2 border-b text-gray-600"><?= htmlspecialchars(substr($product['description'], 0, 50)) ?>...</td>
-                        <td class="px-4 py-2 border-b text-red-500 font-bold text-center">
-                            <?php if (!empty($product['discount']) && $product['discount'] > 0): ?>
-                                $<?= number_format($product['discount'], 2) ?>
-                            <?php else: ?>
-                                <span class="text-gray-500">No Discount</span>
-                            <?php endif; ?>
-                        </td>
-                        <td class="px-4 py-2 border-b text-center">
-                            <div class="flex justify-center space-x-2">
-                                <a href="/admin/edit/id=<?= $product['id'] ?>" class="px-4 py-2 bg-yellow-500 text-white rounded hover:bg-yellow-600 transition duration-200">Edit</a>
-                                <a href="javascript:void(0);" onclick="confirmDelete(<?= $product['id'] ?>)" class="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition duration-200">Delete</a>
-                            </div>
-                        </td>
-                    </tr>
-                <?php endforeach; ?>
-            </tbody>
-        <?php else: ?>
-            <tbody>
-                <tr>
-                    <td colspan="7" class="text-center text-gray-500 py-4">No products found.</td>
+    <div class="table-responsive">
+        <table class="min-w-full bg-white border border-gray-200 rounded-lg shadow-md">
+            <thead>
+                <tr class="bg-gray-100 text-gray-800 text-center">
+                    <th class="px-3 py-2 border-b">ID</th>
+                    <th class="px-3 py-2 border-b">Image</th>
+                    <th class="px-3 py-2 border-b">Name</th>
+                    <th class="px-3 py-2 border-b">Price</th>
+                    <th class="px-3 py-2 border-b">Description</th>
+                    <th class="px-3 py-2 border-b">Discount</th>
+                    <th class="px-3 py-2 border-b">Actions</th>
                 </tr>
+            </thead>
+            <tbody>
+                <?php if (count($products) > 0): ?>
+                    <?php foreach ($products as $product): ?>
+                        <tr class="hover:bg-gray-50">
+                            <td class="px-3 py-2 border-b text-center"><?= htmlspecialchars($product['id']) ?></td>
+                            <td class="px-3 py-2 border-b text-center">
+                                <img src="/images/<?= htmlspecialchars($product['image']); ?>" class="w-16 h-16 object-cover mx-auto rounded-lg" alt="<?= htmlspecialchars($product['name']); ?>">
+                            </td>
+                            <td class="px-3 py-2 border-b font-semibold text-gray-800 text-center"><?= htmlspecialchars($product['name']) ?></td>
+                            <td class="px-3 py-2 border-b text-green-600 font-bold text-center">$<?= number_format($product['price'], 2) ?></td>
+                            <td class="px-3 py-2 border-b text-gray-600"><?= htmlspecialchars(substr($product['description'], 0, 50)) ?>...</td>
+                            <td class="px-3 py-2 border-b text-red-500 font-bold text-center">
+                                <?php if (!empty($product['discount']) && $product['discount'] > 0): ?>
+                                    $<?= number_format($product['discount'], 2) ?>
+                                <?php else: ?>
+                                    <span class="text-gray-500">No Discount</span>
+                                <?php endif; ?>
+                            </td>
+                            <td class="px-3 py-2 border-b text-center">
+                                <div class="d-flex justify-content-center flex-wrap">
+                                    <a href="/admin/edit/id=<?= $product['id'] ?>" class="btn btn-warning me-2 mb-2">Edit</a>
+                                    <a href="javascript:void(0);" onclick="confirmDelete(<?= $product['id'] ?>)" class="btn btn-danger mb-2">Delete</a>
+                                </div>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                <?php else: ?>
+                    <tr>
+                        <td colspan="7" class="text-center text-gray-500 py-4">No products found.</td>
+                    </tr>
+                <?php endif; ?>
             </tbody>
-        <?php endif; ?>
-    </table>
+        </table>
+        <form method="POST" class="text-center mt-6 flex justify-center items-center space-x-4">
+            <!-- Trường ẩn để giữ giá trị limit -->
+            <input type="hidden" name="limit" value="<?= htmlspecialchars($limit) ?>">
 
-    <form method="POST" class="text-center mt-6 flex justify-center items-center space-x-4">
-        <!-- Trường ẩn để giữ giá trị limit -->
-        <input type="hidden" name="limit" value="<?= htmlspecialchars($limit) ?>">
+            <!-- Dropdown chọn số trang -->
+            <div class="flex items-center">
+                <label for="page" class="text-lg mr-2">Page:</label>
+                <select name="page" id="page" onchange="this.form.submit()" class="p-2 border rounded">
+                    <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+                        <option value="<?= $i ?>" <?= $page == $i ? 'selected' : '' ?>><?= $i ?></option>
+                    <?php endfor; ?>
+                </select>
+            </div>
 
-        <!-- Dropdown chọn số trang -->
-        <div class="flex items-center">
-            <label for="page" class="text-lg mr-2">Page:</label>
-            <select name="page" id="page" onchange="this.form.submit()" class="p-2 border rounded">
-                <?php for ($i = 1; $i <= $totalPages; $i++): ?>
-                    <option value="<?= $i ?>" <?= $page == $i ? 'selected' : '' ?>><?= $i ?></option>
-                <?php endfor; ?>
-            </select>
-        </div>
+            <!-- Nút Previous -->
+            <button type="submit" name="page" value="<?= max(1, $page - 1) ?>"
+                class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition duration-300 <?= $page <= 1 ? 'cursor-not-allowed opacity-50' : '' ?>"
+                <?= $page <= 1 ? 'disabled' : '' ?>>
+                Previous
+            </button>
 
-        <!-- Nút Previous -->
-        <button type="submit" name="page" value="<?= max(1, $page - 1) ?>"
-            class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition duration-300 <?= $page <= 1 ? 'cursor-not-allowed opacity-50' : '' ?>"
-            <?= $page <= 1 ? 'disabled' : '' ?>>
-            Previous
-        </button>
-
-        <!-- Nút Next -->
-        <button type="submit" name="page" value="<?= min($totalPages, $page + 1) ?>"
-            class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition duration-300 <?= $page >= $totalPages ? 'cursor-not-allowed opacity-50' : '' ?>"
-            <?= $page >= $totalPages ? 'disabled' : '' ?>>
-            Next
-        </button>
-    </form>
-
+            <!-- Nút Next -->
+            <button type="submit" name="page" value="<?= min($totalPages, $page + 1) ?>"
+                class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition duration-300 <?= $page >= $totalPages ? 'cursor-not-allowed opacity-50' : '' ?>"
+                <?= $page >= $totalPages ? 'disabled' : '' ?>>
+                Next
+            </button>
+        </form>
+    </div>
 </div>
 
 <script>
