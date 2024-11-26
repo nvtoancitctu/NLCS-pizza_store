@@ -35,6 +35,29 @@ class Product
      */
     public function createProduct($name, $description, $price, $image, $category_id, $discount = null, $discount_end_time = null)
     {
+        // Kiểm tra nếu bảng products trống, thì reset AUTO_INCREMENT về 1
+        $query = "SELECT COUNT(*) FROM products";
+        $stmt = $this->conn->prepare($query);
+        $stmt->execute();
+        $rowCount = $stmt->fetchColumn();
+
+        // Nếu bảng trống, reset AUTO_INCREMENT về 1
+        if ($rowCount == 0) {
+            $resetQuery = "ALTER TABLE products AUTO_INCREMENT = 1";
+        } else {
+            // Nếu bảng có dữ liệu, lấy giá trị MAX(id) và set AUTO_INCREMENT tiếp theo
+            $maxIdQuery = "SELECT MAX(id) FROM products";
+            $stmt = $this->conn->prepare($maxIdQuery);
+            $stmt->execute();
+            $maxId = $stmt->fetchColumn();
+
+            // Đặt AUTO_INCREMENT tiếp theo là MAX(id) + 1
+            $resetQuery = "ALTER TABLE products AUTO_INCREMENT = " . ($maxId + 1);
+        }
+
+        // Thực thi câu lệnh ALTER TABLE để thiết lập AUTO_INCREMENT
+        $this->conn->prepare($resetQuery)->execute();
+
         $query = "INSERT INTO " . $this->table . " (name, description, price, image, category_id, discount, discount_end_time) VALUES (?, ?, ?, ?, ?, ?, ?)";
         $stmt = $this->conn->prepare($query);
         return $stmt->execute([$name, $description, $price, $image, $category_id, $discount, $discount_end_time]);

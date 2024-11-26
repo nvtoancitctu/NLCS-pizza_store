@@ -73,6 +73,29 @@ class Cart
      */
     public function addToCart($user_id, $product_id, $quantity)
     {
+        // Kiểm tra nếu bảng cart trống, thì reset AUTO_INCREMENT về 1
+        $query = "SELECT COUNT(*) FROM cart";
+        $stmt = $this->conn->prepare($query);
+        $stmt->execute();
+        $rowCount = $stmt->fetchColumn();
+
+        // Nếu bảng trống, reset AUTO_INCREMENT về 1
+        if ($rowCount == 0) {
+            $resetQuery = "ALTER TABLE cart AUTO_INCREMENT = 1";
+        } else {
+            // Nếu bảng có dữ liệu, lấy giá trị MAX(id) và set AUTO_INCREMENT tiếp theo
+            $maxIdQuery = "SELECT MAX(id) FROM cart";
+            $stmt = $this->conn->prepare($maxIdQuery);
+            $stmt->execute();
+            $maxId = $stmt->fetchColumn();
+
+            // Đặt AUTO_INCREMENT tiếp theo là MAX(id) + 1
+            $resetQuery = "ALTER TABLE cart AUTO_INCREMENT = " . ($maxId + 1);
+        }
+
+        // Thực thi câu lệnh ALTER TABLE để thiết lập AUTO_INCREMENT
+        $this->conn->prepare($resetQuery)->execute();
+
         $query = "SELECT id FROM " . $this->table . " WHERE user_id = ? AND product_id = ?";
         $stmt = $this->conn->prepare($query);
         $stmt->execute([$user_id, $product_id]);
@@ -113,11 +136,11 @@ class Cart
         return $stmt->execute([$cart_id]);
     }
 
-    /**
-     * Xóa toàn bộ giỏ hàng của người dùng
-     * @param int $user_id - ID của người dùng
-     * @return bool - Trạng thái thành công của việc xóa
-     */
+    // /**
+    //  * Xóa toàn bộ giỏ hàng của người dùng
+    //  * @param int $user_id - ID của người dùng
+    //  * @return bool - Trạng thái thành công của việc xóa
+    //  */
     public function clearUserCart($user_id)
     {
         $query = "DELETE FROM " . $this->table . " WHERE user_id = ?";

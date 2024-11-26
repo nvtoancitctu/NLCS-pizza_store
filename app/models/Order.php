@@ -22,6 +22,29 @@ class Order
      */
     public function createOrder($user_id, $items, $payment_method, $address)
     {
+        // Kiểm tra nếu bảng orders trống, thì reset AUTO_INCREMENT về 1
+        $query = "SELECT COUNT(*) FROM orders";
+        $stmt = $this->conn->prepare($query);
+        $stmt->execute();
+        $rowCount = $stmt->fetchColumn();
+
+        // Nếu bảng trống, reset AUTO_INCREMENT về 1
+        if ($rowCount == 0) {
+            $resetQuery = "ALTER TABLE orders AUTO_INCREMENT = 1";
+        } else {
+            // Nếu bảng có dữ liệu, lấy giá trị MAX(id) và set AUTO_INCREMENT tiếp theo
+            $maxIdQuery = "SELECT MAX(id) FROM orders";
+            $stmt = $this->conn->prepare($maxIdQuery);
+            $stmt->execute();
+            $maxId = $stmt->fetchColumn();
+
+            // Đặt AUTO_INCREMENT tiếp theo là MAX(id) + 1
+            $resetQuery = "ALTER TABLE orders AUTO_INCREMENT = " . ($maxId + 1);
+        }
+
+        // Thực thi câu lệnh ALTER TABLE để thiết lập AUTO_INCREMENT
+        $this->conn->prepare($resetQuery)->execute();
+
         // Kiểm tra xem $items có phải là mảng không
         if (!is_array($items)) {
             throw new InvalidArgumentException('Items must be an array');
@@ -38,7 +61,7 @@ class Order
         }
 
         // Thực hiện truy vấn để tạo đơn hàng
-        $query = "INSERT INTO " . $this->table . " (user_id, total, payment_method, address) VALUES (?, ?, ?, ?)";
+        $query = "INSERT INTO orders (user_id, total, payment_method, address) VALUES (?, ?, ?, ?)";
         $stmt = $this->conn->prepare($query);
         $stmt->execute([$user_id, $total, $payment_method, $address]);
 
@@ -66,6 +89,29 @@ class Order
      */
     public function addOrderItem($order_id, $product_id, $quantity, $price)
     {
+        // Kiểm tra nếu bảng order_items trống, thì reset AUTO_INCREMENT về 1
+        $query = "SELECT COUNT(*) FROM order_items";
+        $stmt = $this->conn->prepare($query);
+        $stmt->execute();
+        $rowCount = $stmt->fetchColumn();
+
+        // Nếu bảng trống, reset AUTO_INCREMENT về 1
+        if ($rowCount == 0) {
+            $resetQuery = "ALTER TABLE order_items AUTO_INCREMENT = 1";
+        } else {
+            // Nếu bảng có dữ liệu, lấy giá trị MAX(id) và set AUTO_INCREMENT tiếp theo
+            $maxIdQuery = "SELECT MAX(id) FROM order_items";
+            $stmt = $this->conn->prepare($maxIdQuery);
+            $stmt->execute();
+            $maxId = $stmt->fetchColumn();
+
+            // Đặt AUTO_INCREMENT tiếp theo là MAX(id) + 1
+            $resetQuery = "ALTER TABLE order_items AUTO_INCREMENT = " . ($maxId + 1);
+        }
+
+        // Thực thi câu lệnh ALTER TABLE để thiết lập AUTO_INCREMENT
+        $this->conn->prepare($resetQuery)->execute();
+
         $query = "INSERT INTO order_items (order_id, product_id, quantity, price) VALUES (?, ?, ?, ?)";
         $stmt = $this->conn->prepare($query);
         return $stmt->execute([$order_id, $product_id, $quantity, $price]);

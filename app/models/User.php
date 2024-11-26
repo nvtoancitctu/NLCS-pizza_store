@@ -45,9 +45,35 @@ class User
         // Mã hóa mật khẩu và thực hiện đăng ký
         $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
+        // Kiểm tra nếu bảng users trống, thì reset AUTO_INCREMENT về 1
+        $query = "SELECT COUNT(*) FROM users";
+        $stmt = $this->conn->prepare($query);
+        $stmt->execute();
+        $rowCount = $stmt->fetchColumn();
+
+        // Nếu bảng trống, reset AUTO_INCREMENT về 1
+        if ($rowCount == 0) {
+            $resetQuery = "ALTER TABLE users AUTO_INCREMENT = 1";
+        } else {
+            // Nếu bảng có dữ liệu, lấy giá trị MAX(id) và set AUTO_INCREMENT tiếp theo
+            $maxIdQuery = "SELECT MAX(id) FROM users";
+            $stmt = $this->conn->prepare($maxIdQuery);
+            $stmt->execute();
+            $maxId = $stmt->fetchColumn();
+
+            // Đặt AUTO_INCREMENT tiếp theo là MAX(id) + 1
+            $resetQuery = "ALTER TABLE users AUTO_INCREMENT = " . ($maxId + 1);
+        }
+
+        // Thực thi câu lệnh ALTER TABLE để thiết lập AUTO_INCREMENT
+        $this->conn->prepare($resetQuery)->execute();
+
         try {
+
+
             $stmt = $this->conn->prepare("INSERT INTO users (name, email, password) VALUES (:name, :email, :password)");
             $stmt->execute(['name' => $name, 'email' => $email, 'password' => $hashedPassword]);
+
             return "Registration successful!";
         } catch (PDOException $e) {
             return "Error during registration: " . $e->getMessage();
