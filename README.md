@@ -1,9 +1,13 @@
-# Project Niên Luận Cơ Sở - CNTT (CT271)
+# E-Commerce Website in PHP MySQL (Lover's Hub Pizza Store)
 
-Học kỳ 1, Năm học 2024-2025
+Học kỳ 1, Năm học: 2024-2025
 
-## Tên dự án: WEBSITE BÁN BÁNH PIZZA
+Phát triển từ website học phần Công Nghệ Web
 
-Họ và tên SV: NGUYỄN VĂN TOÀN
+## Dự án niên luận cơ sở ngành công nghệ thông tin
+
+Sinh viên: NGUYỄN VĂN TOÀN
 
 MSSV: B2111824
+
+Tiến độ: 25/9-27/11/2025
